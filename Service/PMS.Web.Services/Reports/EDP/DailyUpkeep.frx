@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/02/2022 13:11:34" ReportInfo.Modified="06/28/2022 09:19:06" ReportInfo.CreatorVersion="2020.1.0.0">
+  <Styles Name="Gray">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Fill.Color="Gainsboro" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Fill.Color="Gainsboro" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqULvGFykoY70YkPWC433o5tI+rnjzNr0acomhxfoeNWm5UESES6wfI9SFEQk9SY8imI8nU+3NgmVV5xUUvSIwbGC2jGigSpJj9krFfVQ5dqIrl4hSGgH0jnD5//uBUgLFu/XwXick2pkVGxKCxoR/1iE6EGLnXXtIluXXw53bym5iJzKsuYzn4VfzvRFw8TJGKFVz7AYTX/MWv7mj3ablfA==">
+      <TableDataSource Name="Table" Alias="Data_Upkeep" DataType="System.Int32" Enabled="true" SelectCommand="Exec rpt_Ops_Upkeep_Daily @UnitId, @Date">
+        <Column Name="StartDate" DataType="System.DateTime"/>
+        <Column Name="EndDate" DataType="System.DateTime"/>
+        <Column Name="UNITCODE" DataType="System.String"/>
+        <Column Name="UNITNAME" DataType="System.String"/>
+        <Column Name="ACTID" DataType="System.String"/>
+        <Column Name="ACTNAME" DataType="System.String"/>
+        <Column Name="UOM" DataType="System.String"/>
+        <Column Name="UPAHHI" DataType="System.Int32"/>
+        <Column Name="UPAHSDHI" DataType="System.Int32"/>
+        <Column Name="MATERIALNAME" DataType="System.String"/>
+        <Column Name="QTYMATHI" DataType="System.Int32"/>
+        <Column Name="QTYMATSDHI" DataType="System.Int32"/>
+        <Column Name="COSTMATHI" DataType="System.Int32"/>
+        <Column Name="COSTMATSDHI" DataType="System.Int32"/>
+        <Column Name="COST" DataType="System.Int32"/>
+        <Column Name="HKHA" DataType="System.Int32"/>
+        <Column Name="MATHA" DataType="System.Int32"/>
+        <Column Name="COSTHA" DataType="System.Int32"/>
+        <Column Name="THNTANAM" DataType="System.Int16"/>
+        <Column Name="DAILYHAHI" DataType="System.Decimal"/>
+        <Column Name="DAILYHASDHI" DataType="System.Decimal"/>
+        <Column Name="DAILYHKHI" DataType="System.Decimal"/>
+        <Column Name="DAILYHKSDHI" DataType="System.Decimal"/>
+        <Column Name="DAILYUPAHHI" DataType="System.Decimal"/>
+        <Column Name="DAILYUPAHSDHI" DataType="System.Decimal"/>
+        <Column Name="BORHAHI" DataType="System.Decimal"/>
+        <Column Name="BORHASDHI" DataType="System.Decimal"/>
+        <Column Name="BORPREMIHI" DataType="System.Decimal"/>
+        <Column Name="BORPREMISDHI" DataType="System.Decimal"/>
+        <Column Name="UOMMAT" DataType="System.String"/>
+        <CommandParameter Name="UnitId" DataType="22" Expression="[UnitId]"/>
+        <CommandParameter Name="Date" DataType="22" Expression="[EDate]"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="UnitId" DataType="System.String"/>
+    <Parameter Name="EDate" DataType="System.String"/>
+    <Total Name="DAILY_HAHI" Expression="[Data_Upkeep.DAILYHAHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="DAILY_HASDHI" Expression="[Data_Upkeep.DAILYHASDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="DAILY_HKHI" Expression="[Data_Upkeep.DAILYHKHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="DAILY_HKSDHI" Expression="[Data_Upkeep.DAILYHKSDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="DAILY_UPAHHI" Expression="[Data_Upkeep.DAILYUPAHHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="DAILY_UPAHSDHI" Expression="[Data_Upkeep.DAILYUPAHSDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="BOR_HAHI" Expression="[Data_Upkeep.BORHAHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="BOR_HASDHI" Expression="[Data_Upkeep.BORHASDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="BOR_PREMIHI" Expression="[Data_Upkeep.BORPREMIHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="BOR_PREMISDHI" Expression="[Data_Upkeep.BORPREMISDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="UPAHHI" Expression="[Data_Upkeep.UPAHHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="UPAHSDHI" Expression="[Data_Upkeep.UPAHSDHI]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="COST" Expression="[Data_Upkeep.COST]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="SUM_DAILY_HAHI" Expression="[Data_Upkeep.DAILYHAHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_DAILY_HASDHI" Expression="[Data_Upkeep.DAILYHASDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_DAILY_HKHI" Expression="[Data_Upkeep.DAILYHKHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_DAILY_HKSDHI" Expression="[Data_Upkeep.DAILYHKSDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_DAILY_UPAHHI" Expression="[Data_Upkeep.DAILYUPAHHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_DAILY_UPAHSDHI" Expression="[Data_Upkeep.DAILYUPAHSDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_BOR_HAHI" Expression="[Data_Upkeep.BORHAHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_BOR_HASDHI" Expression="[Data_Upkeep.BORHASDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_BOR_PREMIHI" Expression="[Data_Upkeep.BORPREMIHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_BOR_PREMISDHI" Expression="[Data_Upkeep.BORPREMISDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_UPAHHI" Expression="[Data_Upkeep.UPAHHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_UPAHSDHI" Expression="[Data_Upkeep.UPAHSDHI]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="SUM_COST" Expression="[Data_Upkeep.COST]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="420.1" PaperHeight="296.9" RawPaperSize="8" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1512.38" Height="151.2">
+      <TextObject Name="Text1" Top="9.45" Width="1065.96" Height="28.35" Text="LAPORAN HARIAN UPKEEP" HorzAlign="Center" VertAlign="Center" Font="Arial, 16pt, style=Bold, Underline"/>
+      <TextObject Name="Text68" Top="56.7" Width="75.6" Height="18.9" Text="Estate" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text69" Top="75.6" Width="75.6" Height="18.9" Text="Dari Tanggal" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text70" Top="94.5" Width="75.6" Height="18.9" Text="s/d Tanggal" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text71" Left="75.6" Top="56.7" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text72" Left="75.6" Top="75.6" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text73" Left="75.6" Top="94.5" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text74" Left="85.05" Top="56.7" Width="189" Height="18.9" Text="[Data_Upkeep.UNITNAME]" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text75" Left="85.05" Top="75.6" Width="189" Height="18.9" Text="[DateSerial(Year([EDate]),Month([EDate]),1)]" Format="Custom" Format.Format="dd/MM/yyyy" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text76" Left="85.05" Top="94.5" Width="189" Height="18.9" Text="[ToDateTime([EDate])]" Format="Custom" Format.Format="dd/MM/yyyy" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text85" Left="1096.2" Top="9.45" Width="207.9" Height="28.35" Text="Dibuat," HorzAlign="Center" VertAlign="Center" Font="Calibri, 10pt"/>
+      <TextObject Name="Text86" Left="1304.1" Top="9.45" Width="207.9" Height="28.35" Text="Disetujui," HorzAlign="Center" VertAlign="Center" Font="Calibri, 10pt"/>
+      <TextObject Name="Text87" Left="1096.2" Top="113.4" Width="207.9" Height="28.35" Text="Estate Manager" HorzAlign="Center" VertAlign="Center" Font="Calibri, 11pt, style=Bold"/>
+      <TextObject Name="Text88" Left="1304.1" Top="113.4" Width="207.9" Height="28.35" Text="GM / DPC / SPC" HorzAlign="Center" VertAlign="Center" Font="Calibri, 11pt, style=Bold"/>
+      <LineObject Name="Line1" Left="1096.2" Top="9.45" Height="132.3" Diagonal="true"/>
+      <LineObject Name="Line2" Left="1096.2" Top="9.45" Width="415.8" Diagonal="true"/>
+      <LineObject Name="Line3" Left="1304.1" Top="9.45" Height="132.3" Diagonal="true"/>
+      <LineObject Name="Line4" Left="1512" Top="9.45" Height="132.3" Diagonal="true"/>
+      <LineObject Name="Line5" Left="1096.2" Top="141.75" Width="415.8" Diagonal="true"/>
+      <LineObject Name="Line6" Left="1096.2" Top="113.4" Width="415.8" Diagonal="true"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="155.2" Width="1512.38" Height="56.7">
+      <TextObject Name="Text3" Width="47.25" Height="56.7" Fill.Color="PaleGreen" Text="Activity" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text5" Left="47.25" Width="132.3" Height="56.7" Fill.Color="PaleGreen" Text="Activity Name" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text7" Left="179.55" Width="47.25" Height="56.7" Fill.Color="PaleGreen" Text="Tahun Tanam" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text9" Left="226.8" Width="47.25" Height="56.7" Fill.Color="PaleGreen" Text="Satuan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text11" Left="274.05" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text13" Left="321.3" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text15" Left="378" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text17" Left="425.25" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text19" Left="481.95" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text21" Left="538.65" Top="37.8" Width="75.6" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text23" Left="614.25" Top="37.8" Width="37.8" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text25" Left="652.05" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text27" Left="699.3" Top="37.8" Width="37.8" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text29" Left="737.1" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text31" Left="784.35" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text33" Left="841.05" Top="37.8" Width="85.05" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text35" Left="926.1" Top="18.9" Width="94.5" Height="37.8" Fill.Color="PaleGreen" Text="Nama Bahan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text37" Left="1020.6" Top="18.9" Width="37.8" Height="37.8" Fill.Color="PaleGreen" Text="Sat" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text39" Left="1058.4" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text41" Left="1105.65" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text43" Left="1162.35" Top="37.8" Width="47.25" Height="18.9" Fill.Color="PaleGreen" Text="HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text45" Left="1209.6" Top="37.8" Width="56.7" Height="18.9" Fill.Color="PaleGreen" Text="sd HI" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text47" Left="1266.3" Width="66.15" Height="56.7" Fill.Color="PaleGreen" Text="Total Cost" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text49" Left="1332.45" Top="18.9" Width="56.7" Height="37.8" Fill.Color="PaleGreen" Text="HK/Ha" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text51" Left="1389.15" Top="18.9" Width="66.15" Height="37.8" Fill.Color="PaleGreen" Text="Bahan/Ha" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text53" Left="1455.3" Top="18.9" Width="56.7" Height="37.8" Fill.Color="PaleGreen" Text="Cost/Ha" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text56" Left="274.05" Width="340.2" Height="18.9" Fill.Color="PaleGreen" Text="Harian" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text57" Left="274.05" Top="18.9" Width="103.95" Height="18.9" Fill.Color="PaleGreen" Text="Hasil Kerja" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text58" Left="378" Top="18.9" Width="103.95" Height="18.9" Fill.Color="PaleGreen" Text="HK" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text59" Left="481.95" Top="18.9" Width="132.3" Height="18.9" Fill.Color="PaleGreen" Text="Upah" HorzAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text60" Left="614.25" Top="18.9" Width="85.05" Height="18.9" Fill.Color="PaleGreen" Text="Hasil Kerja" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text61" Left="699.3" Top="18.9" Width="85.05" Height="18.9" Fill.Color="PaleGreen" Text="Premi (Rp)" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text62" Left="784.35" Width="141.75" Height="37.8" Fill.Color="PaleGreen" Text="Total Upah" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text63" Left="614.25" Width="170.1" Height="18.9" Fill.Color="PaleGreen" Text="Borongan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text64" Left="1332.45" Width="179.55" Height="18.9" Fill.Color="PaleGreen" Text="Analisa" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text65" Left="1058.4" Top="18.9" Width="103.95" Height="18.9" Fill.Color="PaleGreen" Text="Jumlah Bahan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text66" Left="1162.35" Top="18.9" Width="103.95" Height="18.9" Fill.Color="PaleGreen" Text="Cost Bahan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <TextObject Name="Text67" Left="926.1" Width="340.2" Height="18.9" Fill.Color="PaleGreen" Text="Bahan" HorzAlign="Center" VertAlign="Center" Font="Calibri, 9pt, style=Bold"/>
+      <LineObject Name="Line7" Width="1512" Diagonal="true"/>
+      <LineObject Name="Line9" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line10" Left="1512" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line19" Top="56.7" Width="1512" Diagonal="true"/>
+      <LineObject Name="Line8" Left="47.25" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line26" Left="179.55" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line27" Left="226.8" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line28" Left="274.05" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line29" Left="614.25" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line30" Left="784.35" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line31" Left="926.1" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line32" Left="1266.3" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line33" Left="1332.45" Height="56.7" Diagonal="true"/>
+      <LineObject Name="Line34" Left="321.3" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line35" Left="425.25" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line36" Left="538.65" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line37" Left="652.05" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line38" Left="737.1" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line39" Left="841.05" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line40" Left="1105.65" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line41" Left="1209.6" Top="37.8" Height="18.9" Diagonal="true"/>
+      <LineObject Name="Line42" Left="1389.15" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line43" Left="1455.3" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line44" Left="1162.35" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line45" Left="1058.4" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line46" Left="1020.6" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line47" Left="481.95" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line48" Left="378" Top="18.9" Height="37.8" Diagonal="true"/>
+      <LineObject Name="Line102" Left="274.05" Top="37.8" Width="652.05" Diagonal="true"/>
+      <LineObject Name="Line103" Left="274.05" Top="18.9" Width="510.3" Diagonal="true"/>
+      <LineObject Name="Line104" Left="926.1" Top="18.9" Width="340.2" Diagonal="true"/>
+      <LineObject Name="Line105" Left="1058.4" Top="37.8" Width="207.9" Diagonal="true"/>
+      <LineObject Name="Line106" Left="1332.45" Top="18.9" Width="179.55" Diagonal="true"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="215.9" Width="1512.38" Condition="[Data_Upkeep.ACTID]">
+      <TextObject Name="Text54" Width="1512.38" Dock="Fill" Font="Arial, 10pt, style=Bold" Style="Group"/>
+      <DataBand Name="Data1" Top="219.9" Width="1512.38" Height="37.8" EvenStyle="EvenRows" DataSource="Table">
+        <TextObject Name="Text2" Width="47.25" Height="37.8" Text="[Data_Upkeep.ACTID]" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text4" Left="47.25" Width="132.3" Height="37.8" Text="[Data_Upkeep.ACTNAME]" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text6" Left="179.55" Width="47.25" Height="37.8" Text="[Data_Upkeep.THNTANAM]" HorzAlign="Center" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text8" Left="226.8" Width="47.25" Height="37.8" Text="[Data_Upkeep.UOM]" HorzAlign="Center" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text10" Left="274.05" Width="47.25" Height="37.8" Text="[Data_Upkeep.DAILYHAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text12" Left="321.3" Width="56.7" Height="37.8" Text="[Data_Upkeep.DAILYHASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text14" Left="378" Width="47.25" Height="37.8" Text="[Data_Upkeep.DAILYHKHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text16" Left="425.25" Width="56.7" Height="37.8" Text="[Data_Upkeep.DAILYHKSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text18" Left="481.95" Width="56.7" Height="37.8" Text="[Data_Upkeep.DAILYUPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text20" Left="538.65" Width="75.6" Height="37.8" Text="[Data_Upkeep.DAILYUPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text22" Left="614.25" Width="37.8" Height="37.8" Text="[Data_Upkeep.BORHAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text26" Left="699.3" Width="37.8" Height="37.8" Text="[Data_Upkeep.BORPREMIHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text28" Left="737.1" Width="47.25" Height="37.8" Text="[Data_Upkeep.BORPREMISDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text30" Left="784.35" Width="56.7" Height="37.8" Text="[Data_Upkeep.UPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text32" Left="841.05" Width="85.05" Height="37.8" Text="[Data_Upkeep.UPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text34" Left="926.1" Width="94.5" Height="37.8" Text="[Data_Upkeep.MATERIALNAME]" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text36" Left="1020.6" Width="37.8" Height="37.8" Text="[Data_Upkeep.UOMMAT]" HorzAlign="Center" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text38" Left="1058.4" Width="47.25" Height="37.8" Text="[Data_Upkeep.QTYMATHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text40" Left="1105.65" Width="56.7" Height="37.8" Text="[Data_Upkeep.QTYMATSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text42" Left="1162.35" Width="47.25" Height="37.8" Text="[Data_Upkeep.COSTMATHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text44" Left="1209.6" Width="56.7" Height="37.8" Text="[Data_Upkeep.COSTMATSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text46" Left="1266.3" Width="66.15" Height="37.8" Text="[Data_Upkeep.COST]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text50" Left="1389.15" Width="66.15" Height="37.8" Text="[Data_Upkeep.MATHA]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text52" Left="1455.3" Width="56.7" Height="37.8" Text="[Data_Upkeep.COSTHA]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text24" Left="652.05" Width="47.25" Height="37.8" Text="[Data_Upkeep.BORHASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <TextObject Name="Text48" Left="1332.45" Width="56.7" Height="37.8" Text="[Data_Upkeep.HKHA]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt"/>
+        <LineObject Name="Line11" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line13" Top="37.8" Width="1512" Diagonal="true"/>
+        <LineObject Name="Line18" Width="1512" Diagonal="true"/>
+        <LineObject Name="Line21" Left="1512" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line12" Left="47.25" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line49" Left="179.55" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line50" Left="226.8" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line51" Left="274.05" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line52" Left="321.3" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line53" Left="378" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line54" Left="425.25" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line55" Left="481.95" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line56" Left="538.65" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line57" Left="614.25" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line58" Left="652.05" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line59" Left="699.3" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line60" Left="737.1" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line61" Left="784.35" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line62" Left="841.05" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line63" Left="926.1" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line64" Left="1020.6" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line65" Left="1058.4" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line66" Left="1105.65" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line67" Left="1162.35" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line68" Left="1209.6" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line69" Left="1266.3" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line70" Left="1332.45" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line71" Left="1389.15" Height="37.8" Diagonal="true"/>
+        <LineObject Name="Line72" Left="1455.3" Height="37.8" Diagonal="true"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="261.7" Width="1512.38" Height="28.35" Fill.Color="LightGray">
+        <TextObject Name="Text83" Left="614.25" Width="37.8" Height="28.35" Text="[BOR_HAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text77" Left="652.05" Width="47.25" Height="28.35" Text="[BOR_HASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text78" Left="274.05" Width="47.25" Height="28.35" Text="[DAILY_HAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text79" Left="321.3" Width="56.7" Height="28.35" Text="[DAILY_HASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text80" Left="378" Width="47.25" Height="28.35" Text="[DAILY_HKHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text81" Left="425.25" Width="56.7" Height="28.35" Text="[DAILY_HKSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text82" Left="481.95" Width="56.7" Height="28.35" Text="[DAILY_UPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text84" Left="538.65" Width="75.6" Height="28.35" Text="[DAILY_UPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text89" Left="699.3" Width="37.8" Height="28.35" Text="[BOR_PREMIHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text90" Left="737.1" Width="47.25" Height="28.35" Text="[BOR_PREMISDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text91" Left="784.35" Width="56.7" Height="28.35" Text="[UPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text92" Left="841.05" Width="85.05" Height="28.35" Text="[UPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text93" Left="47.25" Width="132.3" Height="28.35" Text="Sub Total" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <TextObject Name="Text94" Left="1266.3" Width="66.15" Height="28.35" Text="[COST]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+        <LineObject Name="Line14" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line17" Left="1512" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line16" Top="28.35" Width="1512" Diagonal="true"/>
+        <LineObject Name="Line20" Width="1512" Diagonal="true"/>
+        <LineObject Name="Line15" Left="274.05" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line73" Left="321.3" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line74" Left="378" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line75" Left="425.25" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line76" Left="481.95" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line83" Left="538.65" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line84" Left="614.25" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line86" Left="652.05" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line87" Left="699.3" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line88" Left="737.1" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line89" Left="784.35" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line90" Left="841.05" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line91" Left="926.1" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line92" Left="1266.3" Height="28.35" Diagonal="true"/>
+        <LineObject Name="Line93" Left="1332.45" Height="28.35" Diagonal="true"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="294.05" Width="1512.38" Height="28.35" Fill.Color="PaleGreen">
+      <TextObject Name="Text95" Left="274.05" Width="47.25" Height="28.35" Text="[SUM_DAILY_HAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text96" Left="47.25" Width="132.3" Height="28.35" Text="Grand Total" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text97" Left="321.3" Width="56.7" Height="28.35" Text="[SUM_DAILY_HASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text98" Left="378" Width="47.25" Height="28.35" Text="[SUM_DAILY_HKHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text99" Left="425.25" Width="56.7" Height="28.35" Text="[SUM_DAILY_HKSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text100" Left="481.95" Width="56.7" Height="28.35" Text="[SUM_DAILY_UPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text101" Left="538.65" Width="75.6" Height="28.35" Text="[SUM_DAILY_UPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text102" Left="614.25" Width="37.8" Height="28.35" Text="[SUM_BOR_HAHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text103" Left="652.05" Width="47.25" Height="28.35" Text="[SUM_BOR_HASDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text104" Left="699.3" Width="37.8" Height="28.35" Text="[SUM_BOR_PREMIHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text105" Left="737.1" Width="47.25" Height="28.35" Text="[SUM_BOR_PREMISDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text106" Left="784.35" Width="56.7" Height="28.35" Text="[SUM_UPAHHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text107" Left="841.05" Width="85.05" Height="28.35" Text="[SUM_UPAHSDHI]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <TextObject Name="Text108" Left="1266.3" Width="66.15" Height="28.35" Text="[SUM_COST]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="Calibri, 8pt, style=Bold"/>
+      <LineObject Name="Line22" Width="1512" Diagonal="true"/>
+      <LineObject Name="Line23" Top="28.35" Width="1512" Diagonal="true"/>
+      <LineObject Name="Line24" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line25" Left="1512" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line77" Left="274.05" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line78" Left="321.3" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line79" Left="378" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line80" Left="425.25" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line81" Left="481.95" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line82" Left="538.65" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line85" Left="614.25" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line94" Left="1332.45" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line95" Left="1266.3" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line96" Left="926.1" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line97" Left="841.05" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line98" Left="784.35" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line99" Left="737.1" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line100" Left="699.3" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line101" Left="652.05" Height="28.35" Diagonal="true"/>
+      <LineObject Name="Line107" Left="1266.3" Top="28.35" Diagonal="true"/>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="326.4" Width="1512.38" Height="18.9">
+      <TextObject Name="Text55" Width="1512.38" Height="18.9" Dock="Fill" Fill.Color="Gainsboro" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

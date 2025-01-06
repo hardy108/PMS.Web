@@ -1,0 +1,563 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+    ViewData["Title"] = "Upkeep";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblBlockId = "tblUpkeepBlock";
+    string tblMaterialId = "tblUpkeepMaterial";
+    string tblEmployeeId = "tblUpkeepEmployee";
+    ViewBag.AllowEditDetail = true;
+   
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnly)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" });
+    }
+
+
+    bool allowEditDetail = false;
+    try
+    {
+        allowEditDetail = !readOnly && ViewBag.AllowEditDetail;
+    }
+    catch { }
+
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+
+        <x-field-text id="UPKEEPCODE" binding-field="UPKEEPCODE" caption="No. BKM" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="0">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-date binding-field="UPKEEPDATE" caption="Tgl. BKM" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text binding-field="STATUS" caption="Status BKM" read-only="true" place-holder="Status BKM" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-employee id="MANDORID" binding-field="MANDORID" caption="Mandor" xs-size="12" md-size="3" api-url-param="STATUS=A&Mandor1=true&MandorTanam=true&MandorNonTanam=true" read-only="@ViewBag.ReadOnly" min-length-search="2">
+        </x-field-data-list-employee>
+        <x-field-data-list-activity id="ACTIVITYID" binding-field="ACTIVITYID" caption="Jenis Pekerjaan" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" min-length-search="2">
+        </x-field-data-list-activity>
+        <x-field-text binding-field="CANCELEDCOMMENT" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+
+
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Block">
+            @if (allowEditDetail)
+            {
+            <x-form-row>
+                <x-field-data-list-block-by-user-name id="cboBlock" binding-field="BLOCKIDs" multiple="true" xs-size="12" ascendants="@(ascendants)" caption="Pilih Blok" min-length-search="1" place-holder="Blok">
+
+                </x-field-data-list-block-by-user-name>
+            </x-form-row>
+            }
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <div id="tblBlocks"></div>
+                </x-form-col>
+            </x-form-row>
+
+        </x-tab-panel>
+
+        <x-tab-panel caption="Material">
+            @if (allowEditDetail)
+            {
+                <x-form-row>
+                    <x-field-data-list-material id="cboMaterial" binding-field="MATERIALIDs" multiple="true" xs-size="12" caption="Pilih Kode Material" min-length-search="1" place-holder="Material">
+
+                    </x-field-data-list-material>
+                </x-form-row>
+            }
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <div id="tblMaterials"></div>
+                </x-form-col>
+            </x-form-row>
+        </x-tab-panel>
+
+        <x-tab-panel caption="Karyawan">
+            @if (allowEditDetail)
+            {
+                <x-form-row>
+                    <x-field-data-list-employee id="cboEmployee" binding-field="EMPIDs" multiple="true" xs-size="12" caption="Pilih Karyawan (input min 3 huruf)" min-length-search="3" place-holder="Karyawan">
+
+                    </x-field-data-list-employee>
+                </x-form-row>
+            }
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <div id="tblEmployees"></div>
+                </x-form-col>
+            </x-form-row>
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+<x-modal id="mdlSelectBatch" caption="Pilih Nursery Batch">
+    <x-modal-body>
+        <x-field-data-list-nursery-batch id="cboBatch" multiple="false" caption="Nursery Batch"></x-field-data-list-nursery-batch>
+    </x-modal-body>
+</x-modal>
+
+
+<script>
+
+    var allowEditDetail = @((allowEditDetail)?"true":"false");
+    var tblBlock = null;
+    var tblBlockReady = false;
+    var tblMaterial = null;
+    var tblMaterialReady = false;
+    var tblEmployee = null;
+    var tblEmployeeReady = false;
+    var selectedActivity = null;
+    var selectedMaterialID = null;
+
+
+    if (allowEditDetail) {
+        $('#ACTIVITYID').on('addvalue:flexdatalist', function (event, selectedValue) {
+            selectedActivity = selectedValue;
+            if (tblBlockReady) {
+                var rows = tblBlock.getRows();
+                if (rows && Array.isArray(rows) && rows.length > 0) {
+                    rows.forEach(function (row) {
+                        row.update({ UOM1: selectedValue.UOM1, UOM2: selectedValue.UOM2 });
+                    });
+                }
+            }
+        });
+        $('#ACTIVITYID').on('after:flexdatalist.remove', function (event, x, data) {
+            selectedActivity = null;
+            var rows = tblBlock.getRows();
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    row.update({ UOM1: null, UOM2: null });
+                });
+            }
+        });
+    }
+
+
+    var numberInputFormatter = function (cell, fieldName) {
+        var value = 0.00;
+        if (!isNaN(cell.getValue()))
+            value = Number(cell.getValue()).RoundNumber(2);
+
+
+        var textbox = "";
+        if (allowEditDetail) {
+            textbox = "<input type='number' value='" + value + "' class='input-sm' style='width:100%'>";
+            textbox = $.parseHTML(textbox);
+            $(textbox).on("change", function () {
+                var row = cell.getRow();
+                var rowData = row.getData();
+                var oldValue = Number(rowData[fieldName]).RoundNumber(2);
+                var newValue = oldValue;
+                if (!isNaN(this.value)) {
+                    newValue = Number(this.value).RoundNumber(2);
+
+                    rowData[fieldName] = newValue;
+                    row.update(rowData);
+                    this.value = newValue;
+                };
+
+            });
+            return textbox[0];
+        }
+        else {
+            return value;
+        };
+    }
+    var initTableBlock = function () {
+
+        var outputFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "OUTPUT");
+        };
+
+        var outputKonversiFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "OUTPUTKONVERSI");
+        };
+
+        var columns = [
+            { title: "Blok", field: "BLOCKID", width: 120,visible:false },
+            { title: "Blok", field: "BLOCKCODE", width: 100 },
+            { title: "Tahun Tanam", field: "THNTANAM", width: 100 },
+            { title: "Luas (Ha)", field: "CURRENTPLANTED", width: 90 },
+            { title: "Juml. Kary. (HK)", field: "VALUE", width: 120, minWidth: 120 },
+            { title: "Hasil Kerja", field: "OUTPUTAREA", hozAlign: "center", width: 100, minWidth: 100, formatter: outputFormatter },
+            { title: "Satuan", field: "UOM1", hozAlign: "center", width: 100, minWidth: 100 },
+            { title: "Konversi", field: "OUTPUTKONVERSI", hozAlign: "center", formatter: outputKonversiFormatter, width: 100, minWidth: 100 },
+            { title: "Satuan Konversi", field: "UOM2", hozAlign: "center", width: 120, minWidth: 120 }
+        ];
+
+        tblBlock = new Tabulator("#tblBlocks", {
+            data: record.TUPKEEPBLOCK,
+            index: "BLOCKID",
+            layout: "fitColumns",
+            headerSort: false,
+            columns: columns,
+            dataLoaded: function (data) {
+                tblBlockReady = true;
+            }
+        });
+        if (allowEditDetail) {
+            $('#cboBlock').on('after:flexdatalist.remove', function (event, x, data) {
+                if (tblBlockReady) {
+                    var removedValue;
+                    if (data) {
+                        if (Array.isArray(data) && data.length > 0) {
+                            data = data[0];
+                        }
+                    }
+                    if (data.value) {
+                        if (Array.isArray(data.value) && data.value.length > 0)
+                            removedValue = data.value[0];
+                        else
+                            removedValue = data.value;
+                    }
+                    if (removedValue) {
+                        var data = tblBlock.getData();
+                        if (data && Array.isArray(data) && data.length > 0) {
+                            data.forEach(function (value, index) {
+                                if (value.BLOCKID == removedValue) {
+                                    var row = tblBlock.rowManager.getRowFromPosition(index);
+                                    if (row)
+                                        row.delete();
+                                    found = true;
+                                    return;
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('#cboBlock').on('addvalue:flexdatalist', function (event, selectedValue) {
+                if (tblBlockReady) {
+                    var data = tblBlock.getData();
+                    var found;
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        data.forEach(function (value, index) {
+                            if (value.BLOCKID == selectedValue.BLOCKID) {
+                                found = true;
+                                return;
+                            }
+                        });
+                    }
+                    if (!found) {
+                        var uom1 = null, uom2 = null;
+                        if (selectedActivity) {
+                            uom1 = selectedActivity.UOM1;
+                            uom2 = selectedActivity.UOM2;
+                        }
+                        tblBlock.addRow({
+                            BLOCKID: selectedValue.BLOCKID,
+                            BLOCKCODE: selectedValue.CODE,
+                            THNTANAM: selectedValue.THNTANAM,
+                            CURRENTPLANTED: selectedValue.CURRENTPLANTED,
+                            UOM1: uom1,
+                            UOM2: uom2,
+                            OUTPUTAREA: 0.00,
+                            OUTPUTKONVERSI: 0.00,
+                            VALUE: 0.00
+                        });
+                    }
+                }
+            });
+        }
+    }
+    var showNurseryBatchSelector = function (materialID) {
+        $('#cboBatch').flexdatalist('value', null);
+        selectedMaterialID = materialID;
+        $('#mdlSelectBatch').modal('show');
+
+    }
+
+
+
+
+    var initTableMaterial = function () {
+
+        var qtyFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "QUANTITY");
+        };
+
+        var batchSelectorFormatter = function (cell, params, onRendered) {
+            var rowData = cell.getRow().getData();
+            if (!rowData.REQBATCH)
+                return null;
+
+
+            var btn = "<button type='button' class='btn btn-sm btn-block btn-primary'>...</button>";
+            btn = $.parseHTML(btn);
+            $(btn).on("click", function () {
+                showNurseryBatchSelector(rowData.MATERIALID);
+            });
+            return btn[0];
+        }
+
+
+
+        var columns = [
+            { title: "REQBATCH", field: "REQBATCH", width: 120, visible: false },
+            { title: "Kode Material", field: "MATERIALID", width: 120 },
+            { title: "Nama Material", field: "MATERIALNAME", width: 200 },
+            { title: "Jumlah", field: "QUANTITY", width: 100, minWidth: 100, formatter: qtyFormatter },
+            { title: "Satuan", field: "UOM", hozAlign: "center", width: 100, minWidth: 100 },
+            { title: "Batch", field: "BATCHID", hozAlign: "center", width: 150, minWidth: 150 }
+        ];
+
+        if (allowEditDetail)
+            columns.push({ title: "", hozAlign: "center", width: 50, minWidth: 50, maxWidth: 50, formatter: batchSelectorFormatter });
+
+        tblMaterial = new Tabulator("#tblMaterials", {
+            data: record.TUPKEEPMATERIALSUM,
+            index: "MATERIALID",
+            layout: "fitColumns",
+            headerSort: false,
+            columns: columns,
+            dataLoaded: function (data) {
+                tblMaterialReady = true;
+            }
+        });
+        if (allowEditDetail) {
+            $('#cboMaterial').on('after:flexdatalist.remove', function (event, x, data) {
+                if (tblMaterialReady) {
+                    var removedValue;
+                    if (data) {
+                        if (Array.isArray(data) && data.length > 0) {
+                            data = data[0];
+                        }
+                    }
+                    if (data.value) {
+                        if (Array.isArray(data.value) && data.value.length > 0)
+                            removedValue = data.value[0];
+                        else
+                            removedValue = data.value;
+                    }
+                    if (removedValue) {
+                        var data = tblMaterial.getData();
+                        if (data && Array.isArray(data) && data.length > 0) {
+                            data.forEach(function (value, index) {
+                                if (value.MATERIALID == removedValue) {
+                                    var row = tblMaterial.rowManager.getRowFromPosition(index);
+                                    if (row)
+                                        row.delete();
+                                    found = true;
+                                    return;
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('#cboMaterial').on('addvalue:flexdatalist', function (event, selectedValue) {
+                if (tblMaterialReady) {
+                    var data = tblMaterial.getData();
+                    var found;
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        data.forEach(function (value, index) {
+                            if (value.MATERIALID == selectedValue.MATERIALID) {
+                                found = true;
+                                return;
+                            }
+                        });
+                    }
+                    if (!found) {
+
+                        tblMaterial.addRow({
+                            MATERIALID: selectedValue.MATERIALID,
+                            MATERIALNAME: selectedValue.MATERIALNAME,
+                            UOM: selectedValue.UOM,
+                            QUANTITY: 0.00,
+                            REQBATCH:selectedValue.REQBATCH,
+                            BATCHID: null
+                        });
+
+                        if (selectedValue.REQBATCH) {
+                            showNurseryBatchSelector(selectedValue.MATERIALID);
+                        }
+                    }
+                }
+            });
+            $('#cboBatch').on('addvalue:flexdatalist', function (event, selectedValue) {
+                if (tblMaterialReady) {
+                    var rows = tblMaterial.getRows();
+
+                    if (rows && Array.isArray(rows) && rows.length > 0) {
+                        rows.forEach(function (row) {
+                            var rowData = row.getData();
+                            if (rowData.MATERIALID == selectedMaterialID) {
+                                rowData.BATCHID = selectedValue.BLOCKID;
+                                row.update(rowData);
+                                return;
+                            }
+                        });
+                    }
+                    $('#mdlSelectBatch').modal('hide');
+                }
+            });
+        }
+    }
+
+    var initTableEmployee = function () {
+
+        var hkFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "VALUE");
+        };
+
+
+
+        var columns = [
+            { title: "Kode Karyawan", field: "EMPLOYEEID", width: 140 },
+            { title: "Nama Karyawan", field: "EMPNAME", width: 200 },
+            { title: "Tipe Karyawan", field: "EMPTYPE", width: 120 },
+            { title: "Unit", field: "UNITCODE", width: 120 },
+            { title: "HK", field: "VALUE", width: 100, minWidth: 100, formatter: hkFormatter }
+        ];
+
+        tblEmployee = new Tabulator("#tblEmployees", {
+            data: record.TUPKEEPMATERIALSUM,
+            index: "EMPID",
+            layout: "fitColumns",
+            headerSort: false,
+            columns: columns,
+            dataLoaded: function (data) {
+                tblEmployeeReady = true;
+            }
+        });
+        if (allowEditDetail) {
+            $('#cboEmployee').on('after:flexdatalist.remove', function (event, x, data) {
+                if (tblEmployeeReady) {
+                    var removedValue;
+                    if (data) {
+                        if (Array.isArray(data) && data.length > 0) {
+                            data = data[0];
+                        }
+                    }
+                    if (data.value) {
+                        if (Array.isArray(data.value) && data.value.length > 0)
+                            removedValue = data.value[0];
+                        else
+                            removedValue = data.value;
+                    }
+                    if (removedValue) {
+                        var data = tblEmployee.getData();
+                        if (data && Array.isArray(data) && data.length > 0) {
+                            data.forEach(function (value, index) {
+                                if (value.EMPLOYEEID == removedValue) {
+                                    var row = tblEmployee.rowManager.getRowFromPosition(index);
+                                    if (row)
+                                        row.delete();
+                                    found = true;
+                                    return;
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            $('#cboEmployee').on('addvalue:flexdatalist', function (event, selectedValue) {
+                if (tblEmployeeReady) {
+                    var data = tblEmployee.getData();
+                    var found;
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        data.forEach(function (value, index) {
+                            if (value.EMPLOYEEID == selectedValue.EMPID) {
+                                found = true;
+                                return;
+                            }
+                        });
+                    }
+                    if (!found) {
+
+                        tblEmployee.addRow({
+                            EMPLOYEEID: selectedValue.EMPID,
+                            EMPNAME: selectedValue.EMPNAME,
+                            EMPTYPE: selectedValue.EMPTYPE,
+                            UNITCODE: selectedValue.UNITCODE,
+
+                            VALUE: 0.00
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+
+
+    var customDisplay = function () {
+
+        initTableBlock();
+        initTableMaterial();
+        initTableEmployee();
+        return true;
+
+    }
+
+
+    var beforeSendAction = function (action, savedRecord) {
+        var upkeepBlocks = tblBlock.getData();
+
+        savedRecord["TUPKEEPBLOCK"] = upkeepBlocks;
+        savedRecord.TUPKEEPBLOCK_COUNT = upkeepBlocks.length();
+
+        var materialDetails = tblMaterial.getData();
+        savedRecord["TUPKEEPMATERIALSUM"] = materialDetails;
+        savedRecord.TUPKEEPMATERIALSUM_COUNT = materialDetails.length();
+
+        var employeeDetails = tblEmployee.getData();
+        savedRecord["TUPKEEPEMPLOYEE"] = employeeDetails
+        savedRecord.TUPKEEPEMPLOYEE_COUNT = employeeDetails.length();
+
+        //var totHK = 0;
+        //savedRecord["TUPKEEPEMPLOYEE"].forEach(function (emp) {
+        //    totHK = totHK + parseFloat(emp.VALUE);
+        //});
+
+        //var totOutput = 0.00;
+        //savedRecord["TUPKEEPBLOCK"].forEach(function (block) {
+        //    totOutput = totOutput + parseFloat(block.OUTPUTAREA);
+        //});
+
+        //savedRecord["TUPKEEPBLOCK"].forEach(function (blck) {
+        //    blck.VALUE = parseFloat(blck.OUTPUTAREA) / totOutput * totHK;
+        //});
+
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

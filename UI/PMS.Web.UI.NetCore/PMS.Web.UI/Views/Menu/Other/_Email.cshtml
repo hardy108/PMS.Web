@@ -1,0 +1,121 @@
+﻿
+@{
+
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnly = mode != "New" && mode != "Edit" && mode != "Approval";
+
+    bool onCreate = false;
+    bool onApproval = false;
+    bool onExecution = false;
+
+    try
+    {
+        if (ViewBag.OnCreate)
+        {
+            onCreate = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnApproval)
+        {
+            onApproval = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnExecution)
+        {
+            onExecution = true;
+        }
+    }
+    catch { }
+
+    onCreate = onCreate && !readOnly;
+    onApproval = onApproval && !readOnly;
+    onExecution = onExecution && !readOnly;
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="REGISTERID" binding-field="REGISTERID" caption="Register No." read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-input binding-field="CREATEDDATE_IN_TEXT" caption="Register Date" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="CREATEDBY" caption="Registered By" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="WFDOCSTATUSTEXT" caption="Status" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-department id="DEPTID" caption="Departemen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DEPTID" min-length-search="0">
+        </x-field-data-list-department>
+        <x-field-text id="REQUESTER" binding-field="REQUESTER" caption="Requester" read-only="@(!onCreate)" place-holder="Requester" xs-size="12" md-size="4">
+        </x-field-text>
+        <x-field-date id="REQUESTDATE" picker-option="DateOnly" xs-size="12" md-size="2" caption="Request Date" date-format="dd-MMM-yyyy" binding-field="REQUESTDATE" read-only="@(!onCreate)">
+        </x-field-date>
+        
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="NOTES" caption="Notes" xs-size="12" read-only="@(!onCreate)" binding-field="NOTES" rows="6">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-form-col md-size="6" xs-size="12">
+            <x-field-file property-name="REQUESTFILE" caption="Request File" read-only="@(!onCreate)" binding-field="REQUESTFILE">
+            </x-field-file>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="EMAIL" binding-field="EMAIL" caption="Email Address" read-only="@(!onExecution)" place-holder="Email Address" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-date id="EXECUTIONDATE" picker-option="DateOnly" xs-size="12" md-size="3" caption="Execution Date" date-format="dd-MMM-yyyy" binding-field="EXECUTIONDATE" read-only="@(!onExecution)">
+        </x-field-date>
+    </x-form-row>
+
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {        
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,170 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    ViewData["Title"] = "BKU";
+    Layout = null;
+    //Layout = "~/Views/Shared/_LayoutDisplay2.cshtml";
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+
+
+    string tblActivityId = "tblBKUActivity";
+    string tblMaterialId = "tblBKUMaterial";
+    string tblEmployeeId = "tblBKUEmployee";
+    //string tblHerbisidaId = "tblRkhHerbisida";
+
+
+
+
+}
+
+<script>
+    var dictActivities = {},
+        dictEmployees = {},
+        dictBlocks = {},
+        dictMaterials = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. BKU" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="2">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="DIVISI" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert"
+                                               min-length-search="3" api-url="api/divisi/list" binding-field="DIVID"
+                                               multiple="false" text-fields="{FULLNAME}" value-field="DIVID" search-by-word="true" search-contain="true"
+                                               search-fields="[DIVID,fullname]" visible-fields="[DIVID,FULLNAME]">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-text id="DOKUMEN" binding-field="DOKUMEN" caption="Dokumen" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        @*<x-field-data-list id="VEHICLE" caption="EQUIPMENT ID" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert"
+                           min-length-search="3" api-url="api/vehicle/list" binding-field="EQUIPID"
+                           multiple="false" text-fields="{ID}" value-field="ID" search-by-word="true" search-contain="true"
+                           search-fields="[ID,UNITID]" visible-fields="[ID,UNITID]">
+        </x-field-data-list>*@
+        @*<x-field-data-list-vehicle id="VEHICLE" binding-field="EQUIPID" caption="EQUIPMENT ID" multiple="true" md-size="3" xs-size="12"
+                                   accendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" value-field="*">
+        </x-field-data-list-vehicle>*@
+        <x-field-data-list-vehicle id="VEHICLE" binding-field="EQUIPID" caption="Kode Equipment" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="ID" visible-fields="[CODE,NO]">
+        </x-field-data-list-vehicle>
+        <x-field-text id="VEHICLETYPEID"  read-only="true" caption="Tipe Kendaraan" place-holder="" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-data-list id="NOPOL" caption="No Polisi" read-only="true" place-holder=""  xs-size="12" md-size="3">
+        </x-field-data-list>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area binding-field="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="6">
+        </x-field-text-area>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Timesheet">
+            @Html.Partial("_BKUActivity.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Material">
+            @Html.Partial("_BKUMaterial.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Karyawan">
+            @Html.Partial("_BKUEmployee.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+
+<script>
+
+
+    $('#VEHICLE').change(function () {
+        var vehId = $('#VEHICLE').val();
+
+        helper.callAjaxRequestJson("api/vehicle/get/" + vehId, null, "get", function (data) {
+            $('#VEHICLETYPEID').val(data.TYPEID);
+            $('#NOPOL').val(data.NO);
+        });
+
+    });
+
+
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+
+        dictActivities = {};
+        if (record.TEQUIPTIMESHEETACTIVITY && record.TEQUIPTIMESHEETACTIVITY.length > 0) {
+            record.TEQUIPTIMESHEETACTIVITY.forEach(function (value) {
+                dictActivities[value.ACTID] = value;
+            });
+        }
+
+        dictEmployees = {};
+        if (record.TEQUIPTIMESHEETEMPLOYEE && record.TEQUIPTIMESHEETEMPLOYEE.length > 0) {
+            record.TEQUIPTIMESHEETEMPLOYEE.forEach(function (value) {
+                dictEmployees[value.EMPID] = value;
+            });
+        }
+
+        dictMaterials = {};
+        if (record.TEQUIPTIMESHEETMATERIAL && record.TEQUIPTIMESHEETMATERIAL.length > 0) {
+            record.TEQUIPTIMESHEETMATERIAL.forEach(function (value) {
+                dictMaterials[value.MATID] = value;
+            });
+        }
+
+        return true;
+    };
+
+    var customDisplay = function () {
+
+        @(tblActivityId)_Handlers.initTable(record.TEQUIPTIMESHEETACTIVITY);
+        @(tblMaterialId)_Handlers.initTable(record.TEQUIPTIMESHEETMATERIAL);
+        @(tblEmployeeId)_Handlers.initTable(record.TEQUIPTIMESHEETEMPLOYEE);
+
+
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlActivity');
+        return true;
+    }
+
+     var beforeSendAction = function (action, savedRecord) {
+         savedRecord["TEQUIPTIMESHEETACTIVITY"] = @(tblActivityId)_Handlers.saveRows();
+         if (savedRecord["TEQUIPTIMESHEETACTIVITY"])
+             savedRecord["TEQUIPTIMESHEETACTIVITY_COUNT"] = savedRecord["TEQUIPTIMESHEETACTIVITY"].length;
+
+         savedRecord["TEQUIPTIMESHEETMATERIAL"] = @(tblMaterialId)_Handlers.saveRows();
+         if (savedRecord["TEQUIPTIMESHEETMATERIAL"])
+             savedRecord["TEQUIPTIMESHEETMATERIAL_COUNT"] = savedRecord["TEQUIPTIMESHEETMATERIAL"].length;
+
+         savedRecord["TEQUIPTIMESHEETEMPLOYEE"] = @(tblEmployeeId)_Handlers.saveRows();
+         if (savedRecord["TEQUIPTIMESHEETEMPLOYEE"])
+             savedRecord["TEQUIPTIMESHEETEMPLOYEE_COUNT"] = savedRecord["TEQUIPTIMESHEETEMPLOYEE"].length;
+
+        return savedRecord;
+    }
+
+
+</script>

@@ -1,0 +1,531 @@
+﻿<h5 class="text-center"><b>FORMULIR DOKUMEN</b></h5>
+<div class="row" id="divAttachment">
+    <div class="col-sm-7">
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br />
+                        <div class="container-fluid">
+                            <div class="row"  id="divBtnUpload">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button id="btnUploadKTP" type="button" class="btn btn-primary" data-id="KTP" data-toggle="modal" data-target="#modalAttachmentUpload">Upload KTP</button>
+                                        <button id="btnUploadKK" type="button" class="btn btn-primary" data-id="KK" data-toggle="modal" data-target="#modalAttachmentUpload">Upload KK</button>
+                                        <button id="btnUploadOther" type="button" class="btn btn-primary" data-id="" data-toggle="modal" data-target="#modalAttachmentUpload">Upload Dokumen Lain</button>
+                                        <b id="totalAttachmentPrompt">&nbsp Total Attachment Size: 0 MB</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <th>File Name</th>
+                                                    <th>File Size</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbodyAttachment"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+<div id="modalAttachmentUpload" class="modal fade in">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Upload Dokumen</h4>
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <input type="hidden" id="docType" />
+                                    <input type="file" id="attachments" multiple accept="image/*,application/pdf" onchange="afterSelectFiles()">
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table">
+                            <tbody id="tbodyAttachmentUpload"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="buttonAttachmentUpload" onclick="uploadFiles()" class="btn btn-primary pull-left">Upload Attachments</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var uploadedDocs = [];
+    var currentDocs = [];// {FileContents:xx,FileName, File Size, Description}
+    var uploadCount = 0;
+
+    var files;
+    var totalUploadFilesSize;
+    var totalFileSize = 0;
+    var docType = "";
+    $('#modalAttachmentUpload').on('show.bs.modal', function (event) {
+        docType = "";
+        if ($(event.relatedTarget).data('id'))
+            docType = $(event.relatedTarget).data('id');
+        
+    });
+
+    var createAttachmentRow = function (fileId, fileSize, fileName, fileType, description, newFile, readonly) {
+
+
+        var row = document.createElement("tr");
+        $(row).data("FileID", fileId);
+        $(row).data("FileSize", fileSize);
+        $(row).data("FileName", fileName);
+        $(row).data("FileType", fileType);
+        $(row).data("Description", description);
+        $(row).data("NewFile", newFile);
+
+
+        var col = document.createElement("td");
+        $(col).data(description);
+        col.innerHTML = description;
+        row.append(col);
+
+        col = document.createElement("td");
+        var fileLink = document.createElement("a");
+        fileLink.setAttribute("onClick", "downloadAttachment($(this).parent().parent())");
+        fileLink.innerHTML = fileName;
+        fileLink.style.cursor = "pointer";
+        col.append(fileLink);
+        row.append(col);
+
+        col = document.createElement("td");
+        col.innerHTML = (fileSize / 1024 / 1024).toFixed(2) + " MB";
+        row.append(col);
+
+        if (!readonly) {
+            col = document.createElement("td");
+            row.append(col);
+
+            var deleteAttachment = document.createElement("a");
+            deleteAttachment.className = "fooicon fooicon-trash";
+            deleteAttachment.setAttribute("onClick", "deleteAttachmentRow($(this).parent().parent())");
+            deleteAttachment.style.cursor = "pointer";
+            col.append(deleteAttachment);
+        }
+        totalFileSize += fileSize;
+        document.getElementById("totalAttachmentPrompt").innerHTML = "&nbsp Total Attachment Size: " + (totalFileSize / 1024 / 1024).toFixed(2) + " MB (Max " + _MAX_ATTACHMENT_FILE_SIZE + " MB)";
+
+        $("#tbodyAttachment").append(row);
+    };
+
+    var deleteAttachmentRow = function (row) {
+        if (confirm("Attachment will be deleted, continue?")) {
+            if (row.data("NewFile")) {
+                var postData = { FileID: row.data("FileID") };
+                $.ajax({
+                    url: _API_URL + 'api/file/delete',
+                    headers: { "Authorization": authServices.getBearerToken() },
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(postData),
+                    cache: false,
+                    processData: false
+                })
+            }
+            totalFileSize -= row.data("FileSize");
+            document.getElementById("totalAttachmentPrompt").innerHTML = "&nbsp Total Attachment Size: " + (totalFileSize / 1024 / 1024).toFixed(2) + " MB (Max " + _MAX_ATTACHMENT_FILE_SIZE + " MB)";
+            row.remove();
+        }
+    };
+
+    var uploadFile = function (currentDoc) {
+        var formData = new FormData();
+
+        formData.append("fileContents", currentDoc.FileContents);
+        formData.append("description", currentDoc.Description);
+
+        $.ajax({
+            url: _API_URL + 'api/file/upload?description=' + currentDoc.Description,
+            headers: { "Authorization": authServices.getBearerToken() },
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function (res) {
+            createAttachmentRow(res, currentDoc.FileSize, currentDoc.FileName, currentDoc.FileType, currentDoc.Description, true);
+            if (uploadCount == currentDocs.length - 1) {
+                $('#modalAttachmentUpload').modal('hide');
+                clearFiles();
+                $('#buttonAttachmentUpload').text("Upload Attachments");
+            }
+            else {
+                uploadCount++;
+            }
+
+        }).fail(function (res) {
+            alert("Error when uploading attachment " + currentDoc.FileName + "");
+            if (uploadCount == currentDocs.length - 1) {
+                $('#modalAttachmentUpload').modal('hide');
+                clearFiles();
+                $('#buttonAttachmentUpload').text("Upload Attachments");
+            }
+            else {
+                uploadCount++;
+            }
+        })
+    }
+
+    var uploadFiles = function () {
+        if (currentDocs) {
+            for (i = 0; i < currentDocs.length; i++) {
+                currentDocs[i].Description = document.getElementsByName("fileDescriptions")[i].value;
+                if (!currentDocs[i].Description) {
+                    alert("Jenis dokumen tidak boleh kosong");
+                    return false;
+                }
+            }
+
+            uploadCount = 0;
+            $('#buttonAttachmentUpload').text("Uploading...");
+            for (i = 0; i < currentDocs.length; i++) {
+                uploadFile(currentDocs[i]);
+            }
+        }
+        else {
+            alert("Please browse file/s to upload.");
+        }
+    };
+
+    var afterSelectFiles = function () {
+        var form = document.getElementById("attachments");
+        currentDocs = [];
+        filesBlob = [];
+        files = form.files;
+        if (files.length > 0) {
+            for (i = 0; i < files.length; i++) {
+                currentDocs.push({ FileContents: files[i], FileName: files[i].name, FileSize: files[i].size, FileType: files[i].type, Description: '' });
+            }
+        }
+
+
+
+        if (_MAX_ATTACHMENT_FILE_SIZE > 3) {
+            if (validateFilesUploadSize(form)) {
+                $("tr[name='fileName']").remove();
+                return;
+            }
+
+            if (validateFilesSize(form)) {
+                $("tr[name='fileName']").remove();
+                return;
+            }
+        }
+        else {
+            if (validateFilesSize(form)) {
+                $("tr[name='fileName']").remove();
+                return;
+            }
+        }
+
+        $("tr[name='fileName']").remove();
+
+        if (files.length > 0) {
+
+            var row = document.createElement("tr");
+            row.setAttribute("name", "fileName");
+            $("#tbodyAttachmentUpload").append(row);
+
+            var col = document.createElement("th");
+            col.style.width = "25%";
+            col.innerHTML = "Jenis Dokumen";
+            row.append(col);
+
+            col = document.createElement("th");
+            col.innerHTML = "Nama File";
+            row.append(col);
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            readFile(files[i]);
+        }
+    }
+
+    var employeeFiles = [];
+    var beforeSaveFiles = function () {
+        var ktpUploaded = false;
+        var kkUploaded = false;
+        var i = 0;
+        
+        totalUploadFilesSize = 0;
+        employeeFiles = [];
+
+        $('#tbodyAttachment  > tr').each(function () {
+            i++;
+            var fileId = $(this).data("FileID"),
+                description = $(this).data("Description");
+
+            if (!description) {
+                return "Jenis dokumen tidak boleh kosong";
+            }
+            if (!fileId) {
+                return "File tidak valid";
+            }
+
+            totalUploadFilesSize += $(this).data("FileSize");
+
+            if (description == "KTP")
+                ktpUploaded = true;
+            else if (description == "KK")
+                kkUploaded = true;
+            employeeFiles.push({
+                //REGISTRATIONID: "",
+                EMPID: "",
+                FILEID: fileId,
+                FILENAME: $(this).data("FileName"),
+                FILETYPE: $(this).data("FileType"),
+                FILESIZE: $(this).data("FileSize"),
+                DESCRIPTION: description
+            });
+        });
+
+        if (!ktpUploaded) {
+            return "File KTP belum diupload";
+        }
+
+        if (!kkUploaded) {
+            return "File KK belum diupload";
+        }
+        var totalUploadFilesSizeMB = totalUploadFilesSize / 1024 / 1024;
+        if (totalUploadFilesSizeMB > _MAX_ATTACHMENT_FILE_SIZE) {
+            return "Total file yang diperbolehkn maksimal " + _MAX_ATTACHMENT_FILE_SIZE + "(MB)";
+        }
+
+        return true;
+    };
+
+    var displayFiles = function (record, readonly) {
+        $("#tbodyAttachment").html("");
+        if (Array.isArray(record.MEMPLOYEEFILE)) {
+            record.MEMPLOYEEFILE.forEach(function (data) {
+                createAttachmentRow(data.FILEID, data.FILESIZE, data.FILENAME, data.FILETYPE, data.DESCRIPTION, false, readonly);
+            });
+        }
+    };
+
+
+    var downloadAttachment = function (row) {
+
+        var fileId = row.data("FileID");
+        var fileName = row.data("FileName");
+
+        if (!fileId || !fileName) {
+            alert("Invalid file");
+            return false;
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", _API_URL + "api/file/get/" + fileId + "?FileName=" + fileName, true);
+        xhr.setRequestHeader("Authorization", authServices.getBearerToken());
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+
+                var uInt8Array = new Uint8Array(this.response);
+                var i = uInt8Array.length;
+                var biStr = new Array(i);
+                while (i--) {
+                    biStr[i] = String.fromCharCode(uInt8Array[i]);
+                }
+                var data = biStr.join('');
+                var base64 = window.btoa(data);
+
+                //var url = window.URL.createObjectURL(base64);
+                var a = document.createElement("a");
+                a.href = "data:application/octed-stream;base64," + base64;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+        };
+        xhr.send();
+    };
+
+
+    function onAttachmentUpload(form) {
+
+
+        if (currentDocs) {
+            uploadCount = 0;
+            $('#buttonAttachmentUpload').text("Uploading...");
+            for (i = 0; i < currentDocs.length; i++) {
+                currentDocs[i].Description = document.getElementsByName("fileDescriptions")[i].value;
+                uploadFile(currentDocs[i]);
+            }
+        }
+        else {
+            alert("Please browse file/s to upload.");
+        }
+    }
+
+    function onAttachmentSubmit(form) {
+        if (document.getElementById("tbodyAttachment") != null && document.getElementById("tbodyAttachment").getElementsByTagName("tr").length > 0) {
+            var iAttachment = 0;
+            while (document.getElementsByName("DocumentAttachments[X].Description").length > 0) {
+                document.getElementsByName("DocumentAttachments[X].Description")[0].setAttribute("name", "DocumentAttachments[" + iAttachment + "].Description")
+                document.getElementsByName("DocumentAttachments[X].FileName")[0].setAttribute("name", "DocumentAttachments[" + iAttachment + "].FileName")
+                document.getElementsByName("DocumentAttachments[X].FileID")[0].setAttribute("name", "DocumentAttachments[" + iAttachment + "].FileID")
+                document.getElementsByName("DocumentAttachments[X].FileType")[0].setAttribute("name", "DocumentAttachments[" + iAttachment + "].FileType")
+                document.getElementsByName("DocumentAttachments[X].FileSize")[0].setAttribute("name", "DocumentAttachments[" + iAttachment + "].FileSize")
+                iAttachment++;
+            }
+        }
+    }
+
+    function onAtachmentDelete(form) {
+        if (confirm("Attachment will be deleted, continue?")) {
+            totalFileSize -= document.getElementsByName("DocumentAttachments[X].FileSize")[form.parentElement.parentElement.rowIndex - 1].value;
+            document.getElementById("totalAttachmentPrompt").innerHTML = "&nbsp Total Attachment Size: " + (totalFileSize / 1024 / 1024).toFixed(2) + " MB (Max " + _MAX_ATTACHMENT_FILE_SIZE + " MB)";
+            form.parentNode.parentNode.parentNode.removeChild(form.parentNode.parentNode);
+        }
+    }
+
+    function clearFiles() {
+        //event.preventDefault();
+        //if (!confirm("Are you sure?")) return;
+
+        //var newForm = document.createElement("input");
+        //newForm.setAttribute("type", "file");
+        //newForm.setAttribute("id", "attachments");
+        //newForm.setAttribute("name", "attachments");
+        //newForm.setAttribute("multiple", "multiple");
+        //newForm.setAttribute("onchange", "afterSelectFiles()");
+        $("#attachments").val(null);
+
+
+
+        $("tr[name='fileName']").remove();
+
+        files = null;
+    }
+
+
+
+    function validateFilesUploadSize(form) {
+        totalUploadFilesSize = 0;
+        for (var i = 0; i < files.length; i++) {
+            totalUploadFilesSize += files[i].size;
+        }
+        totalUploadFilesSize /= 1024;
+        totalUploadFilesSize /= 1024;
+
+        if (totalUploadFilesSize > _MAX_ATTACHMENT_FILE_SIZE) {
+            alert("You can only upload attachment(s) less than 3 MB at a time.");
+
+            $("#attachments").val(null);
+
+            return true;
+        }
+        return false;
+    }
+
+    function validateFilesSize(form) {
+        totalUploadFilesSize = 0;
+        for (var i = 0; i < files.length; i++) {
+            totalUploadFilesSize += files[i].size;
+        }
+        totalUploadFilesSize /= 1024;
+        totalUploadFilesSize /= 1024;
+
+        var currentTotalFileSize = totalFileSize;
+        currentTotalFileSize /= 1024;
+        currentTotalFileSize /= 1024;
+
+        if (currentTotalFileSize + totalUploadFilesSize > _MAX_ATTACHMENT_FILE_SIZE) {
+            alert("Total attachments will be exceeding max size of " + _MAX_ATTACHMENT_FILE_SIZE + " MB.");
+
+            $("#attachments").val(null);
+
+            return true;
+        }
+        return false;
+    }
+
+    function readFile(file) {
+        
+        var reader = new FileReader();
+        var idocType = document.createElement("input");
+        idocType.setAttribute("name", "fileDescriptions");
+        idocType.className = "col-sm-12";
+        idocType.setAttribute("value", "");
+        if (docType) {
+            idocType.setAttribute("value", docType);
+            idocType.setAttribute("readonly", "true");
+        }
+
+
+        reader.onload = function (e) {
+            var row = document.createElement("tr");
+            row.setAttribute("name", "fileName");
+            $("#tbodyAttachmentUpload").append(row);
+
+            var col = document.createElement("td");
+            col.style.width = "40%";
+            row.append(col);
+            col.append(idocType);
+
+            var name = document.createElement("input");
+            name.setAttribute("type", "text");
+            name.setAttribute("value", file.name);
+            name.setAttribute("name", "fileNames");
+            name.style.display = "none";
+            col.append(name);
+
+            col = document.createElement("td");
+            row.append(col);
+
+            var data = URL.createObjectURL(file);
+            var fileLink = document.createElement("a");
+            fileLink.href = data;
+            fileLink.download = file.name;
+            fileLink.innerHTML = file.name;
+            col.append(fileLink);
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    function getTotalFileSize() {
+        for (var i = 0; i < document.getElementById("tbodyAttachment").getElementsByTagName("tr").length; i++) {
+            totalFileSize += parseInt(document.getElementsByName("DocumentAttachments[X].FileSize")[i].value);
+        }
+        document.getElementById("totalAttachmentPrompt").innerHTML = "&nbsp Total Attachment Size: " + (totalFileSize / 1024 / 1024).toFixed(2) + " MB (Max " + _MAX_ATTACHMENT_FILE_SIZE + " MB)";
+    }
+
+
+
+</script>

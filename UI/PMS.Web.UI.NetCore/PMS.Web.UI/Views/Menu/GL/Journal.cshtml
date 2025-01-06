@@ -1,0 +1,142 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    ViewData["Title"] = "Jurnal";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    string tblId = "detail", mdlId = "mdlDetail";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<script>
+    var totalDebit = 0,
+        totalCredit = 0;
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="CODE" binding-field="CODE" caption="No. Jurnal" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Unit" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-journal-type id="TYPE" modul="GL" caption="Tipe" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="TYPE" min-length-search="0">
+        </x-field-data-list-journal-type>
+        <x-field-text binding-field="STATUS_IN_TEXT" caption="Status Jurnal" read-only="true" place-holder="Status" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-input binding-field="NO" caption="No. Voucher" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" place-holder="Nomor Voucher">
+        </x-field-input>
+        <x-field-date binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text binding-field="REF" caption="Referensi" read-only="@ViewBag.ReadOnly" place-holder="Rerefensi" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>        
+        <x-field-text binding-field="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        &nbsp;
+    </x-form-row>
+    @Html.Partial("_JournalDetail.cshtml")
+
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    setButton(true);
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                setButton(true);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var setButton = function (readonly) {
+        if (readonly)
+            $('#divButtons').hide();
+    };
+
+
+    var beforeDisplay = function () {                
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        detail_Handlers.initTable(record.TJOURNALITEM);
+        return true;
+
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit") {
+            savedRecord["TJOURNALITEM"] = @(tblId)_Handlers.saveRows();
+            if (savedRecord["TJOURNALITEM"])
+                savedRecord["TJOURNALITEM_COUNT"] = savedRecord["TJOURNALITEM"].length;
+        }
+
+        if (!isNaN(savedRecord.TOTALDEBIT))
+            savedRecord.TOTALDEBIT = parseFloat(savedRecord.TOTALDEBIT);
+        else
+            savedRecord.TOTALDEBIT = 0;
+
+        if (!isNaN(savedRecord.TOTALCREDIT))
+            savedRecord.TOTALCREDIT = parseFloat(savedRecord.TOTALCREDIT);
+        else
+            savedRecord.TOTALCREDIT = 0;
+        savedRecord.NETCHANGE = savedRecord.TOTALDEBIT - savedRecord.TOTALCREDIT;
+        if (savedRecord.NETCHANGE && savedRecord.NETCHANGE != 0) {
+            alert("Jurnal tidak balance")
+            return false;
+        }
+
+        
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

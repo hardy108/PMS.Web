@@ -1,0 +1,272 @@
+﻿@using PMS.Web.UI.Code
+
+
+@{
+    string viewSource = ViewBag.ViewSource;
+    ViewData["Title"] = string.IsNullOrWhiteSpace(ViewBag.Menu.Description) ? ViewBag.Menu.MenuName : ViewBag.Menu.Description;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string jsonId = ViewBag.JsonID;
+    string jsonFunctionDisplay = jsonId + "_displayJson(responseData)";
+    string jsonFunctionSave = jsonId + "_saveJson()";
+}
+
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">@ViewBag.Title - @ViewBag.Mode</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" id="divContentContainer">
+        @Html.Partial(viewSource)
+    </div>
+    <!-- /.row -->
+    <!-- /.box-body -->
+    <div class="box-footer with-border">
+        <div class="col-xs-12" style="display:none" id="calloutErrorMessage">
+        </div>
+        <div class="col-xs-12" id="divButtons">
+        </div>
+    </div>
+</div>
+
+<script>
+    var mode = "@ViewBag.Mode";
+    var mode2 = "@ViewBag.Mode2";
+    var menuId = "@ViewBag.MenuID";
+    var authorizationData;
+    var apiUrl = "api/@jsonId/";
+    var needApproval = @(ViewBag.Menu.NeedApproval?"true":"false");
+    var apiHost = "@(ViewBag.ApiHost)";
+        if (!apiHost)
+            apiHost = _API_URL;
+
+    var checkAuthorization = function () {
+        if (displayRecord) displayRecord();
+        return true;
+    };
+
+     var backToMainListPage = function () {
+        window.location = "/Menu/Open/@(ViewBag.Menu.MenuID)/List";
+        return true;
+    };
+
+    var setApprovalButtons = function () {
+
+        var buttons = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>",
+            urlGet =  "api/workflow/getnextactions/@ViewBag.Key";
+
+        if (mode2 == "Display") {
+            $('#divButtons').html(buttons);
+            return;
+        }
+        if (mode == "Approval") {
+            $.ajax({
+                type: "get",
+                url: apiHost + urlGet,
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (responseData, textStatus, jqXHR) {
+                    var buttonApprovals = "";
+                    if (responseData) {
+                        if (Array.isArray(responseData) && responseData.length > 0) {
+                            responseData.forEach(function (data) {
+                                var action = '"doAction(\'Approval\',\'' + data.ActionTypeID + '\',\'' + data.Name + '\')"';
+                                buttonApprovals += "<button id='btn" + data.ActionTypeID + "' type='button' class='btn btn-primary' onclick=" + action + ">" + data.Name + "</button>&nbsp;&nbsp;";
+                            });
+                        }
+                    }
+                    if (buttonApprovals) {
+                        if ($('#divApprovalNotes'))
+                            $('#divApprovalNotes').show();
+                        if ($('#txtApprovalNotes'))
+                            helper.setInputReadOnly('txtApprovalNotes', 'readonly', false);
+                    }
+                    if (buttonApprovals)
+                        buttonApprovals += "&nbsp;&nbsp;";
+                    $('#divButtons').html(buttonApprovals + buttons);
+                },
+                error: function (error) {
+                    $('#divButtons').html(buttons);
+                }
+            });
+        }
+    }
+
+    var setButtons = function () {
+        var buttons = "";
+        var action = "";
+
+        var buttonBack = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>";
+
+        if (mode == "New") {
+            action = '"doAction(\'New\',\'New\',\'Insert\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Edit") {
+            action = '"doAction(\'Edit\',\'Edit\',\'Update\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Delete") {
+            action = '"doAction(\'Delete\',\'Delete\',\'Delete\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Delete</button>&nbsp;&nbsp;";
+        }
+
+
+        if (mode == "New" || mode == "Edit") {
+            if (needApproval) {
+                action = '"doAction(\'Approval\',\'SUBM\',\'Ask Approval\')"';
+                buttons += "<button id='btnAskApproval' type='button' class='btn btn-primary' onclick=" + action +">Ask Approval</button>&nbsp;&nbsp;";
+            }
+        }
+        if (mode == "Approval") {
+            return setApprovalButtons();
+        }
+        else {
+            if (buttons)
+                buttons += "&nbsp;&nbsp;";
+            $('#divButtons').html(buttons + buttonBack);
+            return true;
+        }
+    };
+
+    var showError = function (errorTitle, errorMessage) {
+        var htmlError = '';
+        if (errorTitle && errorTitle != '')
+            htmlError += "<h4 id='calloutTitle'>" + errorTitle + "</h4>";
+        if (errorMessage && errorMessage != '')
+            htmlError += "<p id='calloutMessage'>" + errorMessage + "</p>";
+        if (htmlError != '') {
+            htmlError = "<div class='callout callout-danger'>" + htmlError + "</div>";
+            $('#calloutErrorMessage').html(htmlError);
+            $('#calloutErrorMessage').show();
+            return;
+        }
+        hideError();
+    };
+    var hideError = function () {
+        $('#calloutErrorMessage').html('');
+        $('#calloutErrorMessage').hide();
+    };
+
+
+
+
+
+
+    var apiUrl = "api/@jsonId/";
+
+
+
+    var displayRecord = function () {
+        var jsonString = '@(Html.Raw(ViewBag.DataString))';
+        jsonString = jsonString.replace(/\n/g, "\\n");
+        var responseData = JSON.parse(jsonString);
+
+
+        @jsonFunctionDisplay;
+
+        if ((mode == "Edit" || mode == "Delete")
+            && responseData.WFDOCTRANSNO
+            && responseData.WFDOCSTATUS
+            && responseData.WFDOCSTATUS !== "50") {
+
+            alert("This record is not allowed to be edited or deleted because it has been submitted for approval");
+            mode = "Display";
+
+        }
+        setButtons();
+
+        if (!customDisplayRecord(responseData))
+            return;
+
+        setEditingControl(mode);
+
+    };
+
+    var doAction = function (action, actionCode, actionName) {
+        if ($('#txtActionCode'))
+            $('#txtActionCode').val(actionCode);
+
+        var record = @jsonFunctionSave;
+
+        var actionParam = "";
+
+        hideError();
+
+
+
+        if (action == "Approval") {
+            if (record.APPRVNOTES) {
+                if (!confirm('Are you sure to ' + actionName + ' this record?')) {
+                    return;
+                }
+
+            }
+            else {
+                if (!confirm('Are you sure to ' + actionName + ' this record without any notes?')) {
+                    if ($('#txtApprovalNotes')) {
+                        helper.setInputReadOnly("txtApprovalNotes", "readonly", false);
+                        $('#txtApprovalNotes').focus();
+                    }
+                    if ($('#divApprovalNotes'))
+                        $('#divApprovalNotes').show();
+
+                    return;
+                }
+            }
+
+            actionParam = "?approvalCode=" + actionCode + "&approvalNotes=" + record.APPRVNOTES;
+            if (mode == "New")
+                actionParam = actionParam + "&NewRecord=true";
+
+        }
+        else if (!confirm('Are you sure to ' + actionName + ' this record?')) {
+                return;
+        }
+
+
+        if (!beforeSendAction(action,record))
+            return;
+
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        $.ajax({
+            type: "post",
+            contentType: "application/x-www-form-urlencoded",
+            headers: { "Authorization": authServices.getBearerToken() },
+            url: apiHost + apiUrl + action + actionParam,
+            data: record,
+            success: function (responseData, textStatus, jqXHR) {
+
+                if (!responseData) {
+                    showError("Error", "Unknown Error");
+                    return;
+                }
+
+                alert(action + " @ViewBag.Title Success");
+                afterSendAction(action, record, responseData);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#divContentContainer').waitMe('hide');
+                showError("Error", jqXHR.responseText);
+            }
+        });
+    };
+
+    $(function () {
+        var iTimeOut;
+        var checkPendingRequest = function () {
+            if ($.active > 0) {
+                iTimeOut = window.setTimeout(checkPendingRequest, 500);
+            }
+            else {
+                window.clearTimeout(iTimeOut);
+                checkAuthorization();
+            }
+        };
+        iTimeOut = window.setTimeout(checkPendingRequest, 500);
+    });
+
+</script>

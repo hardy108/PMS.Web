@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/11/2020 09:42:52" ReportInfo.Modified="02/14/2022 15:37:10" ReportInfo.CreatorVersion="2020.1.0.0">
+  <Styles Name="Blue">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Fill.Color="LightSkyBlue" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Fill.Color="LightSkyBlue" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="AliceBlue" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqULvGFykoY70YkPWC433o5tI+rnjzNr0acomhxfoeNWm5UESES6wfI9SFEQk9SY8imI8nU+3NgmVV5xUUvSIwbGC2jGigSpJj9krFfVQ5dqIrl4hSGgH0jnD5//uBUgLFu/XwXick2pkVGxKCxoR/1iE6EGLnXXtIluXXw53bym5iJzKsuYzn4VfzvRFw8TJGqEEbtlorpRP6oMJlOEns8A==">
+      <TableDataSource Name="Table" Alias="Data_EmployeeJoint" DataType="System.Int32" Enabled="true" SelectCommand="Exec rpt_EmployeeJoint @Date, @Id">
+        <Column Name="RegionName" DataType="System.String"/>
+        <Column Name="AreaId" DataType="System.String"/>
+        <Column Name="AreaName" DataType="System.String"/>
+        <Column Name="UnitId" DataType="System.String"/>
+        <Column Name="UnitName" DataType="System.String"/>
+        <Column Name="EmpId" DataType="System.String"/>
+        <Column Name="EmpName" DataType="System.String"/>
+        <Column Name="CompanyId" DataType="System.String"/>
+        <Column Name="Sex" DataType="System.String"/>
+        <Column Name="PlaceOfBirth" DataType="System.String"/>
+        <Column Name="Birthday" DataType="System.DateTime"/>
+        <Column Name="Age" DataType="System.Int32"/>
+        <Column Name="Religion" DataType="System.String"/>
+        <Column Name="Education" DataType="System.String"/>
+        <Column Name="REGION" DataType="System.String"/>
+        <Column Name="COMPANY" DataType="System.String"/>
+        <Column Name="UNITCODE" DataType="System.String"/>
+        <Column Name="JABATAN" DataType="System.String"/>
+        <Column Name="TYPE" DataType="System.String"/>
+        <Column Name="TMK" DataType="System.DateTime"/>
+        <Column Name="SUKU" DataType="System.String"/>
+        <Column Name="DIVISI" DataType="System.String"/>
+        <Column Name="MASAKERJA" DataType="System.String"/>
+        <Column Name="STATUSKELUARGA" DataType="System.String"/>
+        <Column Name="NOKTP" DataType="System.String"/>
+        <CommandParameter Name="Date" DataType="22" Expression="[EDate]"/>
+        <CommandParameter Name="Id" DataType="22" Expression="[Id]"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="Id" DataType="System.String"/>
+    <Parameter Name="EDate" DataType="System.String"/>
+    <Total Name="Total_Area" TotalType="Count" Evaluator="Data1"/>
+    <Total Name="Total_Region" TotalType="Count" Evaluator="Data1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="750" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="2759.4" Height="56.7">
+      <TextObject Name="Text1" Width="2759.4" Height="56.7" Dock="Fill" Text="Master Karyawan Baru&#13;&#10;Period : [ToDateTime([EDate])]" Format="Date" Format.Format="MMMM yyyy" VertAlign="Center" Font="Arial Narrow, 12pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="59.9" Width="2759.4" Height="18.9">
+      <TextObject Name="Text17" Left="803.25" Width="141.75" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="EMPID" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text19" Left="945" Width="292.95" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="EMPNAME" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text21" Left="1474.2" Width="113.4" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TMK" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text27" Left="94.5" Width="94.5" Height="18.9" Anchor="None" Border.Lines="All" Fill.Color="LightSkyBlue" Text="REGION" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text28" Left="94.5" Width="311.85" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="COMPANY" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text32" Left="491.4" Width="170.1" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="UNITNAME" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text34" Left="661.5" Width="75.6" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="UNITID" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text36" Left="737.1" Width="66.15" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="DIVISI" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text38" Left="1237.95" Width="189" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="JABATAN" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text40" Left="1426.95" Width="47.25" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TYPE" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text42" Left="1587.6" Width="132.3" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="MASA KERJA" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text43" Left="1719.9" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="SEX" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text44" Left="1757.7" Width="170.1" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="STATUS KELUARGA" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text45" Left="1927.8" Width="151.2" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="PLACEOFBIRTH" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text53" Left="2164.05" Width="47.25" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="AGE" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text54" Left="2211.3" Width="151.2" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="SUKU" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text55" Left="2362.5" Width="113.4" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="RELIGION" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text56" Left="2475.9" Width="94.5" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="EDUCATION" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text57" Left="2570.4" Width="189" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="NO KTP" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text58" Width="94.5" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="REGION" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text59" Left="2079" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="BIRTHDAY" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+      <TextObject Name="Text60" Left="406.35" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="UNITCODE" HorzAlign="Center" VertAlign="Center" Font="Arial Narrow, 10pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="82" Width="2759.4" Height="18.9" EvenStyle="EvenRows" DataSource="Table">
+      <TextObject Name="Text16" Left="803.25" Width="141.75" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.EmpId]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text18" Left="945" Width="292.95" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.EmpName]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text20" Left="1474.2" Width="113.4" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.TMK]" Format="Date" Format.Format="dd MMM yyyy" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.REGION]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text29" Left="94.5" Width="311.85" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.COMPANY]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text31" Left="406.35" Width="85.05" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.UNITCODE]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text33" Left="491.4" Width="170.1" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.UnitName]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text35" Left="661.5" Width="75.6" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.UnitId]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text37" Left="737.1" Width="66.15" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.DIVISI]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text39" Left="1237.95" Width="189" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.JABATAN]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text41" Left="1426.95" Width="47.25" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.TYPE]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text46" Left="1587.6" Width="132.3" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.MASAKERJA]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text47" Left="1719.9" Width="37.8" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.Sex]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text48" Left="1757.7" Width="170.1" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.STATUSKELUARGA]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text49" Left="1927.8" Width="151.2" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.PlaceOfBirth]" Format="Date" Format.Format="dd MMM yyyy" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text50" Left="2079" Width="85.05" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.Birthday]" Format="Date" Format.Format="dd/MM/yyyy" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text51" Left="2164.05" Width="47.25" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.Age]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text3" Left="2211.3" Width="151.2" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.SUKU]" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text4" Left="2362.5" Width="113.4" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.Religion]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text5" Left="2475.9" Width="94.5" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.Education]" HorzAlign="Center" Font="Arial Narrow, 9pt"/>
+      <TextObject Name="Text6" Left="2570.4" Width="189" Height="18.9" Border.Lines="All" Text="[Data_EmployeeJoint.NOKTP]" Font="Arial Narrow, 9pt"/>
+      <Sort>
+        <Sort Expression="[Data_EmployeeJoint.UnitId]"/>
+        <Sort Expression="[Data_EmployeeJoint.DIVISI]"/>
+        <Sort Expression="[Data_EmployeeJoint.EmpId]"/>
+      </Sort>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="104.1" Width="2759.4" Height="18.9">
+      <TextObject Name="Text25" Width="2759.4" Height="18.9" Dock="Fill" Fill.Color="LightSkyBlue" Text="[PageN]" HorzAlign="Right" Font="Arial Narrow, 10pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

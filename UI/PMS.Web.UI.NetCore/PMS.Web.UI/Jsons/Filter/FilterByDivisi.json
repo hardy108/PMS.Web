@@ -1,0 +1,39 @@
+[
+  [
+    {
+      "Id": "UnitID",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      //"XSSize": 0,
+      //"SMSize": 0,
+      "MDSize": 3
+      //"LGSize": 0,
+      //"XLSize": 0
+
+    },
+    {
+      "Id": "DivisionID",
+      "Caption": "Divisi",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "Ascendants": [
+        {
+          "ElementID": "UnitID",
+          "FieldID": "UnitID"
+        }
+      ],
+      "MDSize": 3
+    },
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean      
+      "MDSize": 6
+    }
+
+  ]
+  
+]
+
+

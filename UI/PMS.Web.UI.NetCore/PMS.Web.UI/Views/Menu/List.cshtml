@@ -1,0 +1,323 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(ViewBag.Menu.Description) ? ViewBag.Menu.MenuName : ViewBag.Menu.Description;
+}
+
+<input type="hidden" value="@ViewBag.Menu.MenuID" id="menuId" />
+
+<div class="row" id="divContentContainer">
+    <div class="col-xs-12">
+        <div class="box">
+            @if (ViewBag.ShowAdd || ViewBag.HasFilter)
+            {
+                <div class="box-header">
+
+                    @if (ViewBag.ShowAdd)
+                    {
+                        <div class="col-xs-6 col-md-2" id="btnNewRecord">
+                            <button type="button" class="btn btn-primary" onclick="doAction('New')">
+                                New Record
+                            </button>
+                        </div>
+                    }
+
+
+                    <!-- tools box -->
+                    <!-- /. tools -->
+                    @if (ViewBag.HasFilter)
+                    {
+                        <button type="button" id="btnFilter" class="btn btn-primary btn-sm dropdown-toggle pull-right" data-toggle="collapse" data-target="#formFilter" aria-expanded="false" aria-controls="formFilter">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    }
+                </div>
+            }
+
+            <div class="box-body">
+                @if (ViewBag.HasFilter)
+                {
+
+                    <div class="panel panel-default">
+                        <div id="formFilter" class="panel-collapse collapse in">
+                            @Html.Partial("/Views/Filter/_Filter.cshtml")
+                        </div>
+                    </div>
+
+                }
+                <div class="table-responsive">
+                    <table id="mainTable" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="max-width:100%"></table>
+                </div>
+                <ul id="pagination" class="pagination-md"></ul>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+
+
+
+<script>
+
+
+
+    var menuId = "@ViewBag.Menu.MenuID";
+    var keyFields = @Html.Raw(ViewBag.KeyFields);
+    var ftColumns = JSON.parse('@(Html.Raw(ViewBag.ListColumns))');
+    var rowActionName = "@(Html.Raw(ViewBag.RowAction))";
+    var controllerName = "@(ViewBag.Menu.ControllerName)";
+
+    var keyFunction = function (rowData) {
+        if (keyFields.length <= 0)
+            return null;
+        var result = "";
+        keyFields.forEach(function (keyField) {
+            result += rowData[keyField] + "#";
+        });
+        return result.substr(0, result.length - 1);
+    }
+
+
+    //var keyword = "";
+
+    var totalPages = 0, startPage = 1, visiblePages = 10;
+
+
+    var showData = function () {
+        var filter = GetFilter();
+
+        var queryString = xJsonToQueryString(filter);
+        var apiHost = "@(ViewBag.ApiHost)";
+        if (!apiHost)
+            apiHost = _API_URL;
+
+        var url = "@Html.Raw(ViewBag.ApiUrl)";
+        if (url.indexOf("?") >= 0)
+            queryString = "&" + queryString;
+        else
+            queryString = "?" + queryString;
+
+        var ajax = $.ajax({
+            type: "get",
+            url: apiHost + url + queryString,
+            //data: filter,
+            headers: { "Authorization": authServices.getBearerToken() }
+        });
+
+        removeRows();
+
+        var newColumns = [];
+        ftColumns.forEach(function (column) {
+            if (column.xtype) {
+                column.visible = false;
+                newColumns.push(column);
+
+                var newColumn = helper.footableDisplayColumn(column);
+                newColumns.push(newColumn);
+            }
+            else
+                newColumns.push(column);
+
+        });
+        newColumns[0].formatter = function (value, option, rowData) { return keyFunction(rowData); };
+        if (totalPages > 0) {
+            $("#mainTable").footable({
+                "columns": newColumns,
+                "rows": ajax,
+                "on": {
+                    'postdraw.ft.table': function (e, ft) {
+                        $.each(ft.rows.all, function (index, row) {
+                            v = row.val();
+                            v.Action = rowActionName;
+                            row.val(v, false, true);
+                        });
+
+                    }
+                }
+            });
+        }
+        else
+        {
+            $("#mainTable").footable({
+                "columns": newColumns,
+                "rows": null
+            });
+        }
+
+        if ($('#formFilter'))
+            $('#formFilter').collapse('hide');
+    };
+
+
+    var checkAuthorization = function () {
+        $('#pageHeader').html("@(ViewBag.Menu.MenuName)");
+        doPagination();
+
+    };
+
+    var doApproval = function (e) {
+        var url = "/";
+        var key = keyFunction(e.parents('tr').data()['__FooTableRow__'].value);
+        var indexController = FooTable.getRow(e.closest('tr')).value["EditControllerName"];
+        if (!indexController) {
+            alert("Form approval belum dikonfigurasi");
+            return false;
+        }
+        var url = "/Menu/Open/" + indexController + "/Approval/" + key + "?ref=" + menuId;
+
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        window.location = url;
+        return false;
+    }
+
+    var doUnpost = function (e) {
+        doAction('Unpost', e.parents('tr').data()['__FooTableRow__'].value)
+    }
+
+    var doPost = function (e) {
+        doAction('Post', e.parents('tr').data()['__FooTableRow__'].value)
+
+    }
+
+    var doDelete = function (e) {
+        doAction('Delete', e.parents('tr').data()['__FooTableRow__'].value)
+    }
+
+    var doEdit = function (e) {
+        doAction('Edit', e.parents('tr').data()['__FooTableRow__'].value)
+    }
+
+    var doDisplay = function (e) {
+        doAction('Display', e.parents('tr').data()['__FooTableRow__'].value)
+    }
+
+    var doAction = function (action, value) {
+
+        if (!controllerName) {
+            alert("unknown action");
+            return false;
+        }
+
+
+        var url = "/Menu/Open/" + menuId + "/" + action;
+        if (action != "New")
+            url += "/" + keyFunction(value);
+
+
+
+        //if (menuId)
+        //    url += "?MenuID=" + menuId;
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        window.location = url;
+        return false;
+    }
+
+    var doActionApprovalfunction = function (key, indexController, viewPath) {
+        var url = "/";
+        if (!indexController)
+            indexController = "Menu"
+        url += indexController + "/Approval/" + key;
+        if (viewPath)
+            url += "?viewPath=" + viewPath
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        window.location = url;
+        return false;
+    };
+
+
+
+    function removeRows() {
+        $("#mainTable>tbody>tr").each(function (index, elem) {
+            $(elem).remove();
+        });
+    }
+
+
+    var doPagination = function () {
+        $('#pagination').twbsPagination('destroy');
+
+        var filter = GetFilter();
+        var queryString = xJsonToQueryString(filter);
+        var apiHost = "@(ViewBag.ApiHost)";
+        if (!apiHost)
+            apiHost = _API_URL;
+
+        var url = "@Html.Raw(ViewBag.ApiUrlCount)";
+        if (url.indexOf("?") >= 0)
+            queryString = "&" + queryString;
+        else
+            queryString = "?" + queryString;
+
+
+        helper.callRemoteAjaxRequestJson(apiHost,url + queryString , null, "get", function (responseData) {
+            var recordCount = responseData;
+
+            if (recordCount <= 0) {
+                filter.PageNo = 1;
+                filter.PageSize = _LIST_PAGE_SIZE;
+                sessionStorage.setItem("Filter_@ViewBag.FilterID", JSON.stringify(filter));
+                totalPages = 0;
+                showData();
+
+            }
+            totalPages = Math.ceil(recordCount / _LIST_PAGE_SIZE);
+            if (totalPages * _LIST_PAGE_SIZE < recordCount)
+                totalPages++;
+
+            if (totalPages >= 1) {
+                $('#pagination').twbsPagination({
+                    totalPages: totalPages,
+                    visiblePages: visiblePages,
+                    startPage: startPage,
+                    hideOnlyOnePage: true,
+                    initiateStartPageClick: true,
+                    onPageClick: function (event, page) {
+                        filter.PageNo = page;
+                        filter.PageSize = _LIST_PAGE_SIZE;
+                        sessionStorage.setItem("Filter_@ViewBag.FilterID", JSON.stringify(filter));
+                        showData();
+                    }
+                });
+            }
+        });
+    };
+
+    var GetFilter = function () {
+        var filterText = sessionStorage.getItem("Filter_@ViewBag.FilterID");
+        var filter = {};
+        if (filterText) {
+            filter = JSON.parse(filterText);
+        }
+        else {
+            filter = {
+                PageNo: 1,
+                PageSize: _LIST_PAGE_SIZE,
+                MenuID: "@ViewBag.Menu.MenuID"
+            };
+        }
+        return filter;
+    }
+    checkAuthorization();
+
+
+</script>
+

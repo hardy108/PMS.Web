@@ -1,0 +1,86 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Jabatan";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="POSITIONID" binding-field="POSITIONID" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-position-group id="GROUPID" binding-field="GROUPID" caption="Kelompok" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-data-list-position-group>
+        @*<input type="hidden" name="ID" id="ID" data-bf="ID" />*@
+
+        <x-field-text id="POSITIONNAME" binding-field="POSITIONNAME" caption="Nama" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-select id="POSFLAG" binding-field="POSFLAG" caption="Flag Jabatan" read-only="@ViewBag.ReadOnly" place-holder="POSFLAG" xs-size="12" md-size="6">
+            <option value="1">Mandor 1</option>
+            <option value="2">Mandor Panen</option>
+            <option value="3">Mandor</option>
+            <option value="4">Kerani</option>
+            <option value="6">Karyawan Panen</option>
+            <option value="7">Karyawan Bongkar Muat & Pemeliharaan</option>
+            <option value="999">Lain-lain</option>
+        </x-field-select>
+
+        <x-field-select id="GENDERFLAG" binding-field="GENDERFLAG" caption="Jenis Kelamin Yang Diperbolehkan" read-only="@ViewBag.ReadOnly" place-holder="POSFLAG" xs-size="12" md-size="3">
+            <option value="">Umum</option>
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>            
+        </x-field-select>
+
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        //var groupId = $("#ID").val();
+        //$("#GROUPID").val(groupId);
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#POSFLAG").val("999").trigger("change");
+            $("#ACTIVE").val("true").trigger("change");
+        }
+
+        //var group = [];
+        //$('#GROUPID').on('change', function () {
+        //    group = $('#GROUPID').flexdatalist('value');
+        //    var groupId = group.ID;
+        //    $("#ID").val(groupId);
+        //});
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

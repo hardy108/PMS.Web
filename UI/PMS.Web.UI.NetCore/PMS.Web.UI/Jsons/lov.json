@@ -1,0 +1,47 @@
+[
+  {
+    "LOVID": "LOV-ACTIVITY",
+    "LOVName": "List of Activity",
+    "ListID": "LOV-ACTIVITY",
+    "ApiUrl": "api/activity/list?active=true",
+    "ApiUrlCount": "api/activity/listcount?active=true",
+    "FilterJson": "FilterByKeyword",
+    "MandatoryFilterItems": [ "SearchTerm" ],
+    "FilterValidation": "Keyword harus diisi",
+    "KeyFields": [ "ACTIVITYID" ]
+  },
+  {
+    "LOVID": "LOV-BLOCK",
+    "LOVName": "List of Block",
+    "ListID": "LOV-BLOCK",
+    "ApiUrl": "api/block/list",
+    "ApiUrlCount": "api/block/listcount",
+    "FilterJson": "FilterByDivisi",
+    "MandatoryFilterItems": [ "UnitID", "DivisionID" ],
+    "FilterValidation": "Estate dan divisi harus dipilih",
+    "KeyFields": [ "BLOCKID" ]
+  },
+  {
+    "LOVID": "LOV-EMPLOYEE",
+    "LOVName": "List of Employee",
+    "LIstID": "LOV-EMPLOYEE",
+    "ApiUrl": "api/employee/list",
+    "ApiUrlCount": "api/employee/listcount",
+    "FilterJson": "FilterByDivisi",
+    "MandatoryFilterItems": [ "UnitID", "DivisionID" ],
+    "FilterValidation": "Estate dan divisi harus dipilih",
+    "KeyFields": [ "EMPID" ]
+  },
+  {
+    "LOVID": "LOV-MATERIAL",
+    "LOVName": "List of Material",
+    "ListID": "LOV-MATERIAL",
+    "ApiUrl": "api/material/list?active=true",
+    "ApiUrlCount": "api/material/listcount?active=true",
+    "FilterJson": "FilterByKeyword",
+    "MandatoryFilterItems": [ "SearchTerm" ],
+    "FilterValidation": "Keyword harus diisi",
+    "KeyFields": [ "MATERIALID" ]
+
+  }
+]

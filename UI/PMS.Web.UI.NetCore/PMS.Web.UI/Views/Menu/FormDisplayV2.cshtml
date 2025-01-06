@@ -1,0 +1,479 @@
+﻿
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(ViewBag.Menu.Description)? ViewBag.Menu.MenuName : ViewBag.Menu.Description;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string viewSource = ViewBag.ViewSource;
+}
+
+<script>
+        var recordString = '@(Html.Raw(ViewBag.DataString))';
+        recordString = recordString
+            .replace(/\n/g, "\\n")
+            .replace(/\t/g, "\\t");
+        var record = JSON.parse(recordString);
+
+    var mode = '@ViewBag.Mode',
+        mode2 = '@ViewBag.Mode',
+        useStandardDisplayFunction = true,
+        needApproval = @(ViewBag.Menu.NeedApproval?"true":"false"),
+        mainFormId = '@ViewBag.MainFormID',
+        keyFields = @Html.Raw(ViewBag.KeyFields),
+        apiHost = "@(ViewBag.ApiHost)",
+        menuId = "@(ViewBag.Menu.MenuID)",
+        reference = "@ViewBag.Reference";
+
+        if (!apiHost)
+            apiHost = _API_URL;
+
+</script>
+
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">@ViewBag.Title - @ViewBag.Mode</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body" id="divContentContainer">
+            @Html.Partial(viewSource)
+        </div>
+        <!-- /.row -->
+        <!-- /.box-body -->
+        
+        
+            <div class="col-xs-12" style="display:none" id="calloutErrorMessage">
+            </div>
+        
+        <div class="box-footer with-border" id="divButtons">
+        </div>
+
+        <div class="box-footer with-border" id="divApprovalHistory">
+            <x-tab tab-style="nav-pills" id="tabApprovalHistory">
+                <x-tab-panel caption="Approval History" id="panelApprovalHistory">
+                    <div id="tblApprovalHistory"></div>
+                </x-tab-panel>
+            </x-tab>
+        </div>
+
+        <x-modal id="mdlApprovalNote" caption="Please input the approval notes">
+            <x-modal-body>
+                <x-form>
+                    <x-form-row>
+                        <x-field-text-area id="iApprovalNote" place-holder="Approval Note" name="iApprovalNote" xs-size="12" caption="Approval Notes">
+
+                        </x-field-text-area>
+                    </x-form-row>
+                </x-form>
+
+            </x-modal-body>
+            <x-modal-footer>
+                <x-form-row>
+                    <x-form-col xs-size="12">
+                        <button id="btnContinueApproval" class="btn btn-primary" onclick="doActionApproval()">
+                            Continue
+                        </button>
+                        <button id="btnCancelApproval" class="btn" onclick="$('#mdlApprovalNote').modal('hide')">
+                            Cancel
+                        </button>
+                    </x-form-col>
+                </x-form-row>
+            </x-modal-footer>
+        </x-modal>
+    </div>
+
+
+<script>
+
+    var approvalData = {};
+    var displayInProgress = true;
+
+    var setApprovalButtons = function () {
+        var buttons = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>";    
+        urlGet = "api/workflow/getnextactions/@ViewBag.Key";
+
+        if (mode2 == "Display") {
+            $('#divButtons').html(buttons);
+            return;
+        }
+        if (mode == "Approval") {
+            $.ajax({
+                type: "get",
+                url: apiHost + urlGet,
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (responseData, textStatus, jqXHR) {
+                    var buttonApprovals = "";
+                    if (responseData) {
+                        if (Array.isArray(responseData) && responseData.length > 0) {
+                            responseData.forEach(function (data) {
+                                var action = '"doAction(\'Approval\',\'' + data.ActionTypeID + '\',\'' + data.Name + '\',' + (data.RequireApprovalNotes ? 'true':'false')  +')"';
+                                buttonApprovals += "<button id='btn" + data.ActionTypeID + "' type='button' class='btn btn-primary' onclick=" + action + ">" + data.Name + "</button>&nbsp;&nbsp;";
+                            });
+                        }
+                    }
+                    
+                    if (buttonApprovals)
+                        buttonApprovals += "&nbsp;&nbsp;";
+                    $('#divButtons').html(buttonApprovals + buttons);
+                },
+                error: function (error) {
+                    $('#divButtons').html(buttons);
+                }
+            });
+        }
+    };
+
+    var setButtons = function () {
+        var buttons = "";
+        var action = "";
+
+
+        var buttonBack = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>";
+        
+            if (mode == "New") {
+                action = '"doAction(\'New\',\'New\',\'Insert\')"';
+                buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+            }
+            else if (mode == "Edit") {
+                action = '"doAction(\'Edit\',\'Edit\',\'Update\')"';
+                buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+            }
+            else if (mode == "Delete") {
+                action = '"doAction(\'Delete\',\'Delete\',\'Delete\')"';
+                buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Delete</button>&nbsp;&nbsp;";
+            }
+            else if (mode == "Post") {
+                action = '"doAction(\'Approve\',\'Approve\',\'Approve\')"';
+                buttons = "<button id='btnPost' type='button' class='btn btn-primary' onclick=" + action + ">Approve</button>&nbsp;&nbsp;";
+            }
+            else if (mode == "Unpost") {
+                action = '"doAction(\'CancelApprove\',\'CancelApprove\',\'Cancel Approve\')"';
+                buttons = "<button id='btnUnpost' type='button' class='btn btn-primary' onclick=" + action + ">Cancel Approve</button>&nbsp;&nbsp;";
+            }
+        
+        
+
+
+        if (mode == "New" || mode == "Edit") {
+
+            if (needApproval) {
+                action = '"doAction(\'Approval\',\'SUBM\',\'Ask Approval\')"';
+                buttons += "<button id='btnAskApproval' type='button' class='btn btn-primary' onclick=" + action +">Ask Approval</button>&nbsp;&nbsp;";
+            }
+        }
+        if (mode == "Approval") {
+            return setApprovalButtons();
+        }
+        else {
+            if (buttons)
+                buttons += "&nbsp;&nbsp;";
+            $('#divButtons').html(buttons + buttonBack);
+            return true;
+        }
+    };
+
+    //Error Display Utilies
+    var backToMainListPage = function () {
+        if (reference) {
+            if (reference.toLowerCase() === "home")
+                window.location = _DEFAULT_HOMEPAGE;
+            else
+                window.location = "/Menu/Open/" + reference + "/List";
+        }
+        else
+            window.location = "/Menu/Open/" + menuId + "/List";            
+        return true;
+
+        window.location = "/Menu/Open/@(ViewBag.Menu.MenuID)/List";
+        return true;
+    };
+
+    var showError = function (errorTitle, errorMessage) {
+        var htmlError = '';
+        if (errorTitle && errorTitle != '')
+            htmlError += "<h4 id='calloutTitle'>" + errorTitle + "</h4>";
+
+
+        if (errorMessage && errorMessage != '')
+            htmlError += "<p id='calloutMessage'>" + errorMessage + "</p>";
+        if (htmlError != '') {
+            htmlError = "<div class='callout callout-danger'>" + htmlError + "</div>";
+            $('#calloutErrorMessage').html(htmlError);
+            $('#calloutErrorMessage').show();            
+            return;
+        }
+        hideError();
+    };
+    var hideError = function () {
+        $('#calloutErrorMessage').html('');
+        $('#calloutErrorMessage').hide();
+        $('#divContentContainer').waitMe('hide');
+    };
+
+
+    var displayRecord = function () {
+        //Display Functions
+        displayInProgress = true;
+        if ((mode == "Edit" || mode == "Delete")
+            && record.WFDOCTRANSNO
+            && record.WFDOCSTATUS
+            && record.WFDOCSTATUS !== "50") {
+
+            alert("This record is not allowed to be edited or deleted because it has been submitted for approval");
+            mode = "Display";
+
+        }
+
+        if (typeof checkMode !== 'undefined') {
+            if (!checkMode()) {
+                displayInProgress = false;
+                return false;
+            }
+        }
+
+        if (typeof beforeDisplay !== 'undefined') {
+            if (!beforeDisplay()) {
+                displayInProgress = false;
+                return false;
+            }
+        }
+
+
+
+        if (useStandardDisplayFunction) {
+            xFormDisplay(mainFormId, record);
+            showApprovalHistory(record.WFDOCTRANSNO);
+        }
+        if (typeof customDisplay !== 'undefined') {
+            if (!customDisplay()) {
+                displayInProgress = false;
+                return false;
+            }
+        }
+
+        setButtons();
+
+        if (typeof setSpecialPermission !== 'undefined') {
+            if (!setSpecialPermission()) {
+                displayInProgress = false;
+                return false;
+            }
+        }
+
+        if (typeof afterDisplay !== 'undefined') {
+            if (!afterDisplay()) {
+                displayInProgress = false;
+                return false;
+            }
+        }
+        displayInProgress = false;
+    //Action
+    }
+
+    
+    var doAction = function (action, actionCode, actionName, requireApprovalNotes) {
+        
+        if (typeof beforeSaveRecord !== 'undefined') {
+            if (!beforeSaveRecord())
+                return false;
+        }
+
+        var savedRecord = xFormSave('@ViewBag.MainFormID');
+
+        hideError();
+
+        if (action == "Approval") {
+            approvalData.ActionCode = actionCode;
+            approvalData.ActionName = actionName;
+            approvalData.NewRecord = (mode === "New");
+            approvalData.ApprovalNote = "";
+            approvalData.RequireApprovalNotes = requireApprovalNotes;
+            showApprovalNote();
+            return;
+        }
+        
+        if (typeof beforeSendAction !== 'undefined') {
+            savedRecord = beforeSendAction(action, savedRecord);
+            if (!savedRecord)
+                return;
+        }
+
+        if (!confirm('Anda yakin untuk melakukan ' + actionName + ' data ini?')) {
+            return;
+        }
+
+
+        doSubmitData(savedRecord, action);
+    };
+
+    var showApprovalNote = function () {
+        $('#btnContinueApproval').text(approvalData.ActionName);
+        $('#mdlApprovalNote').modal('show');
+        return;
+
+    }
+
+    var doActionApproval = function () {
+
+        hideError();
+        if (typeof beforeSaveRecord !== 'undefined') {
+            if (!beforeSaveRecord())
+                return;
+        }
+        var savedRecord = xFormSave('@ViewBag.MainFormID',record);
+
+        if (typeof beforeSendAction !== 'undefined') {
+            savedRecord = beforeSendAction("Approval", savedRecord);
+            if (!savedRecord)
+                return;
+        }
+
+        var approvalNote = $('#iApprovalNote').val();
+        if (approvalData.RequireApprovalNotes && !approvalNote) {
+            alert('This action requires the approval notes');
+            return;            
+        }
+
+        if (approvalNote) {
+            if (!confirm('Are you sure to ' + approvalData.ActionName + ' this record?')) {
+                return;
+            }
+            approvalData.ApprovalNote = approvalNote;
+        }
+
+        else {
+            if (!confirm('Are you sure to ' + approvalData.ActionName + ' this record without any comments?')) {
+                return;
+            }
+            approvalData.ApprovalNote = '';
+        }
+
+        $('#mdlApprovalNote').modal('hide');
+
+
+        var actionUrl = "";
+        if (approvalData.NewRecord)
+            actionUrl += "NewRecord=true&"
+        actionUrl += "approvalCode=" + approvalData.ActionCode + "&";
+        if (approvalData.ApprovalNote)
+            actionUrl += "approvalNotes=" + approvalData.ApprovalNote;
+
+        actionUrl = "Approval?" + actionUrl;
+        doSubmitData(savedRecord, "Approval",actionUrl);
+    }
+
+
+    var doSubmitData = function (savedRecord, action, actionUrl,actionName ) {
+
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+
+        if (!actionName)
+            actionName = action;
+        if (!actionUrl)
+            actionUrl = action;
+
+         $.ajax({
+            type: "post",                        
+            contentType: "application/x-www-form-urlencoded",
+            data: savedRecord,
+            headers: { "Authorization": authServices.getBearerToken() },
+             url: apiHost + '@(ViewBag.ApiUrl)/' + actionUrl,            
+            success: function (responseData, textStatus, jqXHR) {
+                          
+                if (!responseData) {
+                    showError("Error", "Unknown Error");                    
+                    return;
+                }
+
+                alert(actionName + "  Success");
+                if (typeof afterSendAction !== 'undefined') {
+                    if (!afterSendAction(action, savedRecord, responseData))
+                        return;
+                }
+                backToMainListPage();
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#divContentContainer').waitMe('hide');
+                var errorText = "Unknown error";
+                if (jqXHR) {
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.Message)
+                        errorText = jqXHR.responseJSON.Message;
+                    else if (jqXHR.responseText)
+                        errorText = jqXHR.responseText;
+                }
+                showError("Error", errorText);
+            }
+         });
+    }
+
+    var showApprovalHistory = function (wfDocTransNo) {
+        //$('#tabApprovalHistory_Nav').hide();
+        //$('#tabApprovalHistory').hide();
+        $('#divApprovalHistory').hide();
+
+
+        if (needApproval === true || mode === "Approval" ) {
+            if (mode != "New") {
+                var urlGet = "api/workflow/getapprovalhistories/" + wfDocTransNo;
+                $.ajax({
+                    type: "get",
+                    url: apiHost + urlGet,
+                    headers: { "Authorization": authServices.getBearerToken() },
+                    success: function (responseData, textStatus, jqXHR) {
+                        if (responseData) {
+                            var height = (responseData.length + 2) * 30;
+                            if (!height)
+                                height = 60;
+                            if (height > 300)
+                                height = 300;
+                            if (Array.isArray(responseData) && responseData.length > 0) {
+                                $('#divApprovalHistory').show();
+                                var table = new Tabulator("#tblApprovalHistory", {
+                                    data: responseData,
+                                    height: height + "px",
+                                    layout: "fitDataFill",
+                                    columns: [
+                                        { title: "Date", field: "ApprovalDateInText" },
+                                        { title: "User", field: "UserID" },
+                                        { title: "Action", field: "ActionTypeID" },
+                                        { title: "Approval Notes", field: "Notes" }
+                                    ]
+                                });
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        var table = new Tabulator("#tblApprovalHistory", {
+                            data: [],
+                            height: "60px",
+                            layout: "fitDataFill",
+                            columns: [
+                                { title: "Date", field: "ApprovalDateInText" },
+                                { title: "User", field: "UserID" },
+                                { title: "Action", field: "ActionTypeID" },
+                                { title: "Approval Notes", field: "Notes" }
+                            ]
+                        });
+                    }
+                });
+
+                
+            }
+
+        }
+    };
+
+    displayRecord();
+
+
+
+</script>
+
+
+
+
+

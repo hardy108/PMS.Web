@@ -1,0 +1,111 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+
+@{
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnly)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" });
+    }
+
+
+    bool allowEditDetail = false;
+    try
+    {
+        allowEditDetail = !readOnly && ViewBag.AllowEditDetail;
+    }
+    catch { }
+}
+
+@if (allowEditDetail)
+{
+    <x-form-col xs-size="12">
+        <x-field-data-list-block-by-user-name id="cboBlock" multiple="true" xs-size="12" ascendants="@(ascendants)">
+
+        </x-field-data-list-block-by-user-name>
+    </x-form-col>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div id="tblBlocks"></div>
+    </x-form-col>
+</x-form-row>
+
+
+
+<script>
+    var allowEditDetail = @((allowEditDetail)?"true":"false");
+    var tblBlock = null;
+    
+    var initTableBlock = function () {
+        var numberInputFormatter = function (cell, fieldName) {
+            var value = 0.00;
+            if (!isNaN(cell.getValue()))
+                value = Number(cell.getValue()).RoundNumber(2);
+
+
+            var textbox = "";
+            if (allowEditDetail) {
+                textbox = "<input type='number' value='" + value + "' style='width:100%'>";
+                textbox = $.parseHTML(textbox);
+                $(textbox).on("change", function () {
+                    var row = cell.getRow();
+                    var rowData = row.getData();
+                    var oldValue = Number(rowData[fieldName]).RoundNumber(2);
+                    var newValue = oldValue;
+                    if (!isNaN(this.value)) {
+                        newValue = Number(this.value).RoundNumber(2);
+
+                        rowData[fieldName] = newValue;
+                        row.update(rowData);
+                        this.value = newValue;
+                    };
+                    return textbox[0];
+                });
+            }
+            else {
+                return value;
+            };
+        }
+        var outputFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "OUTPUT");
+        };
+
+        var outputKonversiFormatter = function (cell, params, onRendered) {
+            return numberInputFormatter(cell, "OUTPUTKONVERSI");
+        };
+
+        var columns = [
+            { title: "Blok", field: "BLOCKID", width: 120 },
+            { title: "Tahun Tanam", field: "THNTANAM", width: 100 },
+            { title: "Luas (Ha)", field: "CURRENTPLANTED", width: 90 },
+            { title: "Juml. Kary. (HK)", field: "VALUE", width: 120, minWidth: 120 },
+            { title: "Hasil Kerja", field: "OUTPUTAREA", hozAlign: "center", width: 100, minWidth: 100, formatter: outputFormatter },
+            { title: "Satuan", field: "UOM1", hozAlign: "center", width: 100, minWidth: 100 },
+            { title: "Konversi", field: "OUTPUTKONVERSI", hozAlign: "center", formatter: outputKonversiFormatter, width: 100, minWidth: 100 },
+            { title: "Satuan Konversi", field: "UOM2", hozAlign: "center", width: 120, minWidth: 120 }
+        ];
+
+        tblBlock = new Tabulator("#tblBlocks", {
+            data: record.TUPKEEPBLOCK,
+            index: "BLOCKID",
+            layout: "fitColumns",
+            headerSort: false,
+            columns: columns
+        });
+    }
+
+    
+</script>

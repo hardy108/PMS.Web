@@ -1,0 +1,151 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNoLogin.cshtml";
+}
+
+<x-form id="frmLogin">
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <x-field-input id="username" caption="Username" place-holder="Username">
+            </x-field-input>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <x-field-password id="password" caption="Password" place-holder="Password">
+
+            </x-field-password>
+        </x-form-col>
+    </x-form-row>
+
+    <x-form-row>
+        <x-form-col xs-size="12" md-size="6">
+            <button type="button" id="btnLogin" class="btn btn-primary btn-block btn-flat pull-left" onclick="submitLogin()">Sign In</button>
+        </x-form-col>
+        <x-form-col xs-size="12" md-size="6">
+            <button type="button" class="btn btn-primary btn-block btn-flat pull-right" onclick="toggleLoginPage(false)">Forgot Password</button>
+        </x-form-col>
+    </x-form-row>
+</x-form>
+
+<x-form id="frmResetPassword" is-hidden="true">
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <x-field-input id="usernameOrEmail" caption="Username/Email Address" place-holder="Username/Email Address">
+            </x-field-input>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>
+        <x-form-col xs-size="12" md-size="6">
+            <button type="button" id="btnResetPassword" class="btn btn-primary btn-block btn-flat pull-left" onclick="resetPassword()">Reset Password</button>
+        </x-form-col>
+        <x-form-col xs-size="12" md-size="6">
+            <button type="button" class="btn btn-primary btn-block btn-flat pull-right" onclick="toggleLoginPage(true)">Login Page</button>
+        </x-form-col>
+    </x-form-row>
+</x-form>
+
+<br />
+<x-form-row is-hidden="true" id="divErrorText">
+    <x-form-col xs-size="12">
+        <div class='callout callout-danger' id="errorText">
+        </div>
+    </x-form-col>
+</x-form-row>
+
+
+
+<script>
+
+
+    var toggleLoginPage = function (loginPage) {
+        if (loginPage) {
+            $('#frmResetPassword').hide();
+            $('#frmLogin').show();
+        }
+        else {
+            $('#frmResetPassword').show();
+            $('#frmLogin').hide();
+        }
+        hideError();
+    }
+
+    var showError = function (errMessage) {
+        $("#errorText").html(errMessage);
+        $('#divErrorText').show();
+    };
+
+    var hideError = function () {
+        $("#errorText").html("");
+        $('#divErrorText').hide();
+    };
+
+    var resetPassword = function () {
+        if ($('#btnResetPassword').attr("disabled") || $('#btnResetPassword').html() != "Reset Password") {
+            alert("Harap tunggu...");
+            return;
+        }
+        var userName = $('#usernameOrEmail').val();
+        if (!userName) {
+            showError('Username atau alamat email tidak boleh kosong');
+            return false;
+        }
+
+        $('#btnResetPassword').attr("disabled", "disabled");
+        $('#btnResetPassword').html("Please wait...");
+        hideError();
+
+        $('#frmResetPassword').waitMe({
+            effect: 'ios',
+            text: 'Please wait...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        authServices.doResetPasswordRequest(userName, function (errMessage) {
+            $('#frmResetPassword').waitMe('hide');
+            showError(errMessage);
+            $('#btnResetPassword').html("Reset Password");
+            $('#btnResetPassword').removeAttr("disabled");
+        });
+    };
+
+    var submitLogin = function () {
+        if ($('#btnLogin').attr("disabled") || $('#btnLogin').html() != "Sign In") {
+            alert("Harap tunggu...");
+            return false;
+        }
+        var userName = $('#username').val();
+        if (!userName) {
+            showError('User name atau password anda salah.');
+            return false;
+        }
+
+        var password = $('#password').val();
+        var returnURL = "@ViewBag.ReturnURL";
+        $('#btnLogin').attr("disabled", "disabled");
+        $('#btnLogin').html("Please wait...");
+        hideError();
+        $('#frmLogin').waitMe({
+            effect: 'ios',
+            text: 'Please wait...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+
+        authServices.doLogin(userName, password, returnURL, function (errMessage) {
+            $('#frmLogin').waitMe('hide');
+            $('#btnLogin').html("Sign In");
+            $('#btnLogin').removeAttr("disabled");
+            showError(errMessage);
+
+        });
+
+    };
+
+    $('#frmLogin').on('keydown',function (e) {
+        var key = e.which;
+        if (key == 13) {
+            submitLogin();
+        }
+    });
+
+</script>

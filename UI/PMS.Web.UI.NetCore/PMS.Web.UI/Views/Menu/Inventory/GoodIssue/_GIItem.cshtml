@@ -1,0 +1,582 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Item";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+    string mdledit = "mdlEdit" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            @*&nbsp;&nbsp;
+                <button id="btnEditBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm('edit')">
+                    Tambah
+                </button>*@
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Tambah Material">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-material id="@(prefix)MATERIAL" caption="Material" multiple="false" xs-size="12" value-field="*" min-length-search="2">
+                </x-field-data-list-material>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="@(prefix)QTY" value="0" caption="Jumlah" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-account id="@(prefix)ACCOUNTCODE" caption="Pengguna" multiple="false" xs-size="12" min-length-search="2">
+                </x-field-data-list-account>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text-area id="@(prefix)NOTE" caption="Keterangan" xs-size="12">
+                </x-field-text-area>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="@(prefix)BLOCKID" caption="Block" multiple="false" xs-size="12" min-length-search="2">
+                </x-field-data-list-block>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Simpan
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+
+    <x-modal id="@(mdledit)" caption="Ubah Material">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-material id="@(prefix)MATERIALEDIT" read-only="true" caption="Material" multiple="false" xs-size="12" value-field="*" min-length-search="2">
+                </x-field-data-list-material>
+            </x-form-row>
+            @*<input type="text" id="@(prefix)ELEMENTEDIT" name="@(prefix)ELEMENTEDIT" />*@
+            <x-form-row>
+                <x-field-number id="@(prefix)QTYEDIT" value="0" caption="Jumlah" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-account id="@(prefix)ACCOUNTCODEEDIT" caption="Pengguna" multiple="false" xs-size="12" min-length-search="2">
+                </x-field-data-list-account>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text-area id="@(prefix)NOTEEDIT" caption="Keterangan" xs-size="12">
+                </x-field-text-area>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="@(prefix)BLOCKIDEDIT" caption="Block" multiple="false" xs-size="12" min-length-search="2">
+                </x-field-data-list-block>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdledit)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.editRows()">
+                        Simpan
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdledit)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+
+}
+
+
+<script>
+
+    var stock = {};
+    $('#@(prefix)MATERIAL').on('addvalue:flexdatalist', function (event, selectedValue) {
+        var loc = $('#LOCCODE').val();
+        var dte = $('#DATE').val();
+
+        if (!stock[selectedValue.MATERIALID]) {
+            helper.callAjaxRequestJson("api/stock/getstock?LOCCODE=" + loc + "&&MATERIALID=" + selectedValue.MATERIALID + "&&DATE=" + dte, null, "get", function (data) {
+                stock[selectedValue.MATERIALID] = { STOCK: data[0], PRICE: data[2] };
+            });
+        }
+
+    });
+
+    function updateInputToRow_custom(n, t) {
+        var u = $(n).closest("tr"), x = FooTable.getRow(u), r;
+
+        updateInputToRow(n);
+
+        
+
+
+        return t || (t = "NOTE"), x && t && (r = x.val(), r[t] = $(n).val(), x.val(r, !1)), x
+    }
+
+    var @(prefix)_ = {
+        selectedItems: {},
+        isItemExist: function (matId) {
+            if (!matId)
+                return true;
+
+            var x = this.selectedItems[matId];
+            if (x) return true;
+            return false;
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "html",
+                "name": "BUTTONEDIT",
+                "title": "",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<button type='button' class='btn btn-default footable-edit' onclick='@(prefix)_.showEditModal(this)'><span class='fooicon fooicon-pencil' aria-hidden='true'></span></button>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "MATERIALID",
+                "title": "No Material",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "MATNAME",
+                "title": "Nama Material",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "UOM",
+                "title": "Unit",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "STOCK",
+                "title": "Stock",
+                "visible": true,
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Jumlah",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "QUANTITY_INPUT",
+                "title": "Jumlah",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "' style='width: 50px'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "number",
+                "name": "PRICE",
+                "title": "Harga",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "ACCOUNTCODE",
+                "title": "Kode Pengguna",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "NOTE",
+                "title": "Keterangan",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "name": "NOTE2",
+                "title": "Keterangan",
+                "visible": false,
+            },
+            {
+                "type": "html",
+                "name": "NOTE2_INPUT",
+                "title": "Keterangan",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='text' name='NOTE2' value='" + rowdata["NOTE2"] + "' style='width: 100px'  data-bf='NOTE2' onfocusout='updateInputToRow_custom(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Block",
+                "visible": true,
+            },
+
+        ],
+
+        showForm: function (edit) {
+
+            if (!$('#UNITCODE').val()) {
+                alert("Estate belum dipilih");
+                return false;
+            }
+
+            if (!$('#LOCCODE').val()) {
+                alert("Lokasi belum dipilih");
+                return false;
+            }
+
+            $('#@(mdl)').modal('show');
+
+            return true;
+        },
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.MATERIALID) {
+                        row.MATNAME = row.MATERIAL.MATERIALNAME;
+                        row.UOM = row.MATERIAL.UOM;
+                        row.NOTE2 = row.NOTE;
+                        _this.selectedItems[row.MATERIALID] = { MATERIALID: row.MATERIALID, MATNAME: row.MATERIAL.MATERIALNAME, UOM: row.MATERIAL.UOM, STOCK: row.STOCK, JUMLAH: row.QTY, PRICE: row.PRICE, ACCOUNTCODE: row.ACCOUNTCODE, NOTE: row.NOTE, BLOCKID: row.BLOCKID };
+                    }
+                });
+            }
+
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows,
+                @*"editing": {
+                    enabled: true,
+                    addRow: function () {
+                        $('#@(mdl)').modal('show');
+                    },
+                    editRow: function (row) {
+                        var values = row.val();
+                        var material = {};
+                        $.ajax({
+                            type: 'get',
+                            url: _API_URL + "api/material/list?keyword=" + values.MATERIALID,
+                            async: false,
+                            data: null,
+                            headers: { "Authorization": authServices.getBearerToken() },
+                            success: function (data) {
+                                material = data;
+                            }
+                        });
+                        $('#@(prefix)MATERIALEDIT').val(material);
+                        $('#@(prefix)QTYEDIT').val(values.QTY);
+                        $('#@(prefix)ACCOUNTCODEEDIT').val(values.ACCOUNTCODE);
+                        $('#@(prefix)NOTEEDIT').val(values.NOTE);
+                        $('#@(prefix)BLOCKIDEDIT').val(values.BLOCKID);
+
+                        $('#@(mdledit)').modal('show');
+                    },
+                    deleteRow: function (row) {
+                        if (!confirm('Anda yakin ingin menghapus material ' + row.value.MATERIALID + '?'))
+                            row.delete();
+                    }
+                }*@
+            });
+
+            @*$('#@(prefix)MATERIAL').on('addvalue:flexdatalist', function (event, material) {
+                if (_this.isItemExist(material.MATERIALID)) {
+                    alert("Material sudah dipilih sebelumnya");
+                    return;
+                }
+
+            });*@
+
+            return;
+        },
+        rowKeys: ["MATERIALID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+        showEditModal: function (element) {
+            var $tr = $(element).closest("tr");
+            var $row = FooTable.getRow($tr);
+            var values = $row.val();
+
+            var material = {};
+            $.ajax({
+                type: 'get',
+                url: _API_URL + "api/material/list?keyword=" + values.MATERIALID,
+                async: false,
+                data: null,
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (data) {
+                    material = data;
+                }
+            });
+            $('#@(prefix)MATERIALEDIT').val(material);
+            $('#@(prefix)QTYEDIT').val(values.QTY);
+            $('#@(prefix)ACCOUNTCODEEDIT').val(values.ACCOUNTCODE);
+            $('#@(prefix)NOTEEDIT').val(values.NOTE);
+            $('#@(prefix)BLOCKIDEDIT').val(values.BLOCKID);
+            //$('#@(prefix)ELEMENTEDIT').val(element);
+
+            $('#@(mdledit)').modal('show'); 
+
+            //function (element, fieldName) {
+            //    var $tr = $(element).closest('tr');
+            //    var $row = FooTable.getRow($tr);
+            //    if (!fieldName)
+            //        fieldName = $(element).attr("data-bf");
+            //    if ($row && fieldName) {
+            //        var rowVal = $row.val();
+            //        rowVal[fieldName] = $(element).val();
+            //        $row.val(rowVal, false);
+            //    }
+            //    return $row;
+            //}
+        },
+        editRows: function (closeForm) {
+            var materials = $('#@(prefix)MATERIALEDIT').flexdatalist('value');
+            if (!materials || (Array.isArray(materials) && materials.length < 1)) {
+                alert("Material belum dipilih");
+                return;
+            }
+            var qty = $('#@(prefix)QTYEDIT').val();
+            if (!qty || (Array.isArray(qty) && qty.length < 1)) {
+                alert("Jumlah belum diisi");
+                return;
+            }
+            var accCode = $('#@(prefix)ACCOUNTCODEEDIT').flexdatalist('value');
+            if (!accCode || (Array.isArray(accCode) && accCode.length < 1)) {
+                alert("Pengguna belum dipilih");
+                return;
+            }
+            var ket = $('#@(prefix)NOTEEDIT').val();
+            @*if (!ket || (Array.isArray(ket) && ket.length < 1)) {
+                alert("Keterangan belum diisi");
+                return;
+            }*@
+            var blockId = $('#@(prefix)BLOCKIDEDIT').flexdatalist('value');
+
+            var element;             
+
+            var ft = FooTable.get('#@(tbl)');
+            
+            if (materials) {
+                if (@(prefix)_.isItemExist(materials.MATERIALID)) {
+                    ft.rows.all.forEach(function (row) {
+                        if (row.value.MATERIALID === materials.MATERIALID) {
+                            element = this;
+                            var rowVal = row.val();
+                            rowVal['QTY'] = qty;
+                            rowVal['ACCOUNTCODE'] = accCode;
+                            rowVal['NOTE'] = ket;
+                            rowVal['NOTE2'] = ket;
+                            rowVal['BLOCKID'] = blockId;
+                            row.val(rowVal, false);
+                        }
+                    });
+                }
+            }
+            
+            resetElements('@(mdledit)');
+            $('#@(mdledit)').modal('hide');
+
+            return ;
+        },
+        addRows: function (closeForm) {
+
+            var materials = $('#@(prefix)MATERIAL').flexdatalist('value');
+            if (!materials || (Array.isArray(materials) && materials.length < 1)) {
+                alert("Material belum dipilih");
+                return;
+            }
+            var qty = $('#@(prefix)QTY').val();
+            if (!qty || (Array.isArray(qty) && qty.length < 1)) {
+                alert("Jumlah belum diisi");
+                return;
+            }
+            var accCode = $('#@(prefix)ACCOUNTCODE').flexdatalist('value');
+            if (!accCode || (Array.isArray(accCode) && accCode.length < 1)) {
+                alert("Pengguna belum dipilih");
+                return;
+            }
+            var ket = $('#@(prefix)NOTE').val();
+            @*if (!ket || (Array.isArray(ket) && ket.length < 1)) {
+                alert("Keterangan belum diisi");
+                return;
+            }*@
+            var blockId = $('#@(prefix)BLOCKID').flexdatalist('value');
+
+            //get stock
+            var loc = $('#LOCCODE').val();
+            var dte = $('#DATE').val();
+            var stock = 0;
+            var price = 0;
+            $.ajax({
+                type: 'get',
+                url: _API_URL + "api/stock/getstock?LOCCODE=" + loc + "&&MATERIALID=" + materials.MATERIALID + "&&DATE=" + dte,
+                async: false,
+                data: null,
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (data) {
+                    stock = data[0];
+                    price = data[2];
+                }
+            });
+
+            var added = 0;
+            var addRow = function (material, ft) {
+
+                var newMaterial =
+                {
+                    MATERIALID: material.MATERIALID,
+                    MATNAME: material.MATERIALNAME,
+                    UOM: material.UOM,
+                    STOCK: stock,
+                    PRICE: price,
+                    QTY: qty,
+                    ACCOUNTCODE: accCode,
+                    BLOCKID: blockId,
+                    NOTE: ket,
+                    NOTE2: ket
+                };
+                newMaterial.key = @(prefix)_.getRowKey(newMaterial);
+                ft.rows.add(newMaterial, false);
+                if (material)
+                    @(prefix)_.selectedItems[material.MATERIALID] = { MATERIALID: material.MATERIALID, MATNAME: material.MATERIALNAME, UOM: material.UOM, QTY: qty, STOCK: stock, PRICE: price, ACCOUNTCODE: accCode, NOTE: ket, BLOCKID: blockId };
+
+            }
+
+            var ft = FooTable.get('#@(tbl)');
+            
+            var error = "";
+            if (materials)
+            {
+                if (@(prefix)_.isItemExist(materials.MATERIALID)) {
+                    error += "\r\n" + materials.MATERIALID;
+                }
+                else {
+                    addRow(materials, ft);
+                    added++;
+                }
+            }
+                //});
+
+                if (error)
+                    alert("Material berikut sudah ditambahkan sebelumnya" + error);
+
+            if (added)
+                ft.draw();
+            
+            resetElements('@(mdl)');
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Anda yakin ingin menghapus material?'))
+                return;
+
+            var ft = FooTable.get('#@(tbl)');
+            var deletedCount = 0;
+
+            if (ft) {
+                $('[name = "chkDelete@(prefix)"]').each(function () {
+                    if (!(this.id)) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            @(prefix)_.selectedItems[$row.val()["MATERIALID"]] = null;
+                            //Collection_.deleteRows(null, $row.val()["MATERIALID"]);
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

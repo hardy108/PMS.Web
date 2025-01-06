@@ -1,0 +1,104 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Overtime";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="DOCNO" binding-field="DOCNO" caption="No Document" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-employee id="EMPLOYEE" binding-field="EMPLOYEEID" caption="ID Karyawan" value-field="EMPID" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+        <x-field-data-list-divisi id="DIVID" binding-field="DIVID" caption="Organisasi" xs-size="12" md-size="3" read-only="true">
+        </x-field-data-list-divisi>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="DOCDATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area binding-field="REMARK" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="6">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="OT150" binding-field="OT150" caption="Lembur 150%" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+        <x-field-number id="OT200" binding-field="OT200" caption="Lembur 200%" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+        <x-field-number id="OT300" binding-field="OT300" caption="Lembur 300%" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+        <x-field-number id="OT400" binding-field="OT400" caption="Lembur 400%" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="Hutang" binding-field="DEBIT" caption="Hutang" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-activity id="ACTID" binding-field="ACTID" caption="Kegiatan" multiple="false" md-size="4" xs-size="12" value-field="ACTIVITYID" read-only="@ViewBag.ReadOnlyWhenNotInsert" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+        </x-field-data-list-activity>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-block id="LOCID" binding-field="LOCID" caption="Lokasi" multiple="false" md-size="4" xs-size="12" read-only="@ViewBag.ReadOnlyWhenNotInsert"
+                                 accendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" value-field="BLOCKID">
+        </x-field-data-list-block>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-material id="EQUIPID" binding-field="EQUIPID" caption="Material" multiple="false" md-size="4" xs-size="12" value-field="MATERIALID" read-only="@ViewBag.ReadOnlyWhenNotInsert" visible-fields="[MATERIALID,MATERIALNAME]">
+        </x-field-data-list-material>
+    </x-form-row>
+</x-form>
+
+<script>
+
+    $('#EMPLOYEE').change(function () {
+        var vehId = $('#EMPLOYEE').val();
+
+        helper.callAjaxRequestJson("api/employee/get/" + vehId, null, "get", function (data) {
+            $('#DIVID').val(data.DIVID);
+        });
+
+    });
+
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (savedRecord.REMARK == null)
+            savedRecord.REMARK = "";
+
+        return savedRecord;
+    }
+
+</script>

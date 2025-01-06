@@ -1,0 +1,80 @@
+[
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "UnitCode",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "PREMIPANENID",
+    "FieldCaption": "ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "ACTID",
+    "FieldCaption": "Activitiy Id",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "HARVESTTYPE",
+    "FieldCaption": "TYPE",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "DESCRIPTION",
+    "FieldCaption": "Description",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "UPDATEBY",
+    "FieldCaption": "Update By",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Updated",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Format": "dd MMM yyyy",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 70
+  }
+]

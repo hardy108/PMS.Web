@@ -1,0 +1,180 @@
+﻿@{
+    string tblId = "Family";
+}
+<x-form-row>
+    <div class="col-xs-12 col-md-12">
+        <div id="tbl@(tblId)"></div>
+    </div>
+</x-form-row>
+
+<x-form-row id="control@(tblId)">
+    <br />
+    <x-form-col xs-size="12" md-size="12">
+        <button type="button" class="btn btn-primary" id="btnOpenModal@(tblId)">
+            <i class="fa fa-plus-square">&nbsp;&nbsp;Tambah Anggota Keluaga</i>
+        </button>
+    </x-form-col>
+</x-form-row>
+
+
+<x-modal caption="Anggota Keluarga" id="modal@(tblId)" modal-size="Large">
+    <x-modal-body>
+        <x-form-row>
+            <x-field-input id="FAMKTPID" binding-field="FAMKTPID" caption="NIK/eKTP" xs-size="12"></x-field-input>
+        </x-form-row>
+        <x-form-row>
+            <x-field-input id="FAMFULLNAME" binding-field="FAMFULLNAME" caption="Nama Lengkap"  xs-size="12"></x-field-input>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-gender id="FAMGENDER" binding-field="FAMGENDER" caption="Jenis Kelamin"  xs-size="12"></x-field-data-list-gender>
+        </x-form-row>
+        <x-form-row>
+            <x-field-input id="FAMPLACEOFBIRTH" binding-field="FAMPLACEOFBIRTH" caption="Tempat Lahir"  xs-size="12"></x-field-input>
+        </x-form-row>
+        <x-form-row>
+            <x-field-date id="FAMBIRTHDAY" binding-field="FAMBIRTHDAY" caption="Tanggal Lahir" picker-option="DateOnly"  xs-size="12"></x-field-date>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-education id="FAMEDUCATION" binding-field="FAMEDUCATION" caption="Pendidikan"  xs-size="12"></x-field-data-list-education>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-family-relationship id="FAMRELATIONSHIP" binding-field="FAMRELATIONSHIP" caption="Hubungan Keluarga"  xs-size="12"></x-field-data-list-family-relationship>
+        </x-form-row>
+    </x-modal-body>
+    <x-modal-footer>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-primary" id="btnSave@(tblId)">
+            <i class="fa fa-floppy-o">&nbsp;Simpan</i>
+        </button>
+        <button type="button" class="btn btn-danger pull-left" id="btnDelete@(tblId)">
+            <i class="fa fa-trash-o">&nbsp;Hapus</i>
+        </button>
+    </x-modal-footer>
+</x-modal>
+
+
+<script>
+    
+    var @(tblId) = {                
+        modalId:"modal@(tblId)",
+        modalForm: $("#modal@(tblId)"),
+        tableId: "tbl@(tblId)",
+        tableObj: "",
+        controlTableId: "control@(tblId)",
+        controlTable: $("#control@(tblId)"),
+        btnOpenModalId: "btnOpenModal@(tblId)",
+        btnOpenModal: $("#btnOpenModal@(tblId)"),
+        btnSaveRowId: "btnSave@(tblId)",
+        btnSaveRow: $("#btnSave@(tblId)"),
+        btnDeleteRowId: "btnDelete@(tblId)",
+        btnDeleteRow: $("#btnDelete@(tblId)"),
+
+
+        resetModal: function(){
+            resetElements(this.modalId);
+        },
+
+        displayModal: function(data) {
+            data.FAMKTPID = data.KTPID;
+            data.FAMFULLNAME = data.FULLNAME;
+            data.FAMGENDER = data.GENDER;
+            data.FAMPLACEOFBIRTH = data.PLACEOFBIRTH;
+            data.FAMBIRTHDAY = data.BIRTHDAY;
+            data.FAMEDUCATION = data.EDUCATION;
+            data.FAMRELATIONSHIP = data.RELATIONSHIP;
+            xFormDisplay(this.modalId, data);
+        },
+        saveFromModal: function(data) {
+            data = xFormSave(this.modalId, data);
+            data.KTPID = data.FAMKTPID;
+            data.FULLNAME = data.FAMFULLNAME;
+            data.GENDER = data.FAMGENDER;
+            data.PLACEOFBIRTH = data.FAMPLACEOFBIRTH;
+            data.BIRTHDAY = data.FAMBIRTHDAY;
+            data.EDUCATION = data.FAMEDUCATION;
+            data.RELATIONSHIP = data.FAMRELATIONSHIP;
+            return data;
+        },
+        afterSaveDetailCallBack: function(data) {
+            //Custom Code
+            return true;
+        },
+        openModal: function(mode, row) {
+            var _this = @(tblId);
+            _this.resetModal();
+            _this.modalForm.modal('show');
+            if (mode == "insert") {
+                _this.btnSaveRow.show();
+                _this.btnDeleteRow.hide();
+                _this.btnSaveRow.off("click");
+                _this.btnSaveRow.on("click", function () {
+                    _this.modalForm.modal("hide");
+                    let data = _this.saveFromModal();
+                    _this.tableObj.addRow(data);
+                    _this.afterSaveDetailCallBack(data);
+                });
+            } else if (mode == "view") {
+                _this.btnSaveRow.hide();
+                _this.btnDeleteRow.hide();
+                _this.displayModal(row.getData());
+            } else if (mode == "edit") {
+                _this.btnSaveRow.show();
+                _this.btnDeleteRow.show();
+                _this.displayModal(row.getData());
+                _this.btnSaveRow.off("click");
+                _this.btnSaveRow.on("click", function () {
+                    _this.modalForm.modal("hide");
+                    let data = _this.saveFromModal(row.getData());
+                    row.update(data);
+                    _this.afterSaveDetailCallBack(data);
+                });
+                _this.btnDeleteRow.off("click");
+                _this.btnDeleteRow.on("click", function () {
+                    if (confirm("Anggota keluarga akan dihapus, lanjutkan?")) {
+                        _this.modalForm.modal("hide");
+                        row.delete();
+                        afterSaveDetailCallBack();
+                    }
+                });
+            }
+        },
+        initTable: function(readonly,data){         
+            var _this = @(tblId);            
+            var indexer = "KTPID";
+            var columns = [
+                { title: "NIK/e KTP", field: "KTPID", visible: true },
+                { title: "Nama", field: "FULLNAME" },
+                { title: "Jenis Kelamin", field: "GENDER" },
+                { title: "Tempat Lahir", field: "PLACEOFBIRTH" },
+                { title: "Tgl. Lahir", field: "BIRTHDAY" },
+                { title: "Pendidikan", field: "EDUCATION" },
+                { title: "Hubungan", field: "RELATIONSHIP" },
+            ];
+            this.tableObj = new Tabulator("#" + this.tableId, {
+                data: data,
+                index: indexer,
+                layout: "fitColumns",
+                headerSort: false,
+                columns: columns,
+                cellClick: function (e, cell) {
+                    if (readonly)
+                        _this.openModal("view", cell.getRow());
+                    else
+                        _this.openModal("edit", cell.getRow());
+                }
+            });
+
+            if (readonly) {
+                _this.controlTable.hide();
+                return;
+            }
+
+            _this.btnOpenModal.on("click", function () {
+                _this.openModal("insert", null);
+            });
+        },
+        getData: function() {
+            return this.tableObj.getData();
+        }
+    }
+</script>

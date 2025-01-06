@@ -1,0 +1,104 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Grup Absensi";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="Kode" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="NAME" binding-field="NAME" caption="Nama" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-date id="INSTART" binding-field="INSTART" caption="Batas Datang Mulai" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-date id="INEND" binding-field="INEND" caption="Batas Datang Akhir" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-date id="OUTSTART" binding-field="OUTSTART" caption="Batas Pulang Mulai" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-date id="OUTEND" binding-field="OUTEND" caption="Batas Pulang Akhir" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-date id="BREAKSTART" binding-field="BREAKSTART" caption="Istirahat Mulai" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-date id="BREAKEND" binding-field="BREAKEND" caption="Istirahat Akhir" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-date id="INTIME" binding-field="INTIME" caption="Jadwal Datang" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-date id="OUTTIME" binding-field="OUTTIME" caption="Jadwal Pulang" picker-option="TimeOnly" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-date>
+
+        <x-field-select id="CARDVALID" binding-field="CARDVALID" caption="Validasi Kartu" select-type="Boolean" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-select>
+
+        <x-field-number id="CARDQUOTA" binding-field="CARDQUOTA" caption="Kuota Kartu" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-number id="WORKHOUR" binding-field="WORKHOUR" caption="Jam Kerja" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+
+        <x-field-text id="STATUS" binding-field="STATUS" caption="Status" xs-size="12" md-size="3" read-only="true">
+        </x-field-text>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Item">
+            @Html.Partial("AttendanceGroupItem.cshtml")
+        </x-tab-panel>
+    </x-tab>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+    
+    var customDisplay = function () {
+        
+        Item_.initTable(record.MATTENDANCEGROUPITEM);
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        if (action == "New" || action == "Edit") {
+            savedRecord["MATTENDANCEGROUPITEM"] = Item_.saveRows();
+            if (savedRecord["MATTENDANCEGROUPITEM"])
+                savedRecord["MATTENDANCEGROUPITEM_COUNT"] = savedRecord["MATTENDANCEGROUPITEM"].length;
+        }
+        return savedRecord;
+    }
+</script>

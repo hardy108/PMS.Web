@@ -1,0 +1,38 @@
+﻿<aside class="main-sidebar">
+    <section class="sidebar">
+        @* BEGIN Search *@
+        @*<form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>*@
+        @* END Search *@
+        @* BEGIN Menu *@
+        <ul class="sidebar-menu" data-widget="tree" id="menuContainer">
+            
+        </ul>
+        @* END Menu *@
+    </section>
+</aside>
+
+
+<script>
+    var menu = sessionStorage.getItem("MENU");
+
+    if (!menu) {
+        $.get("/menu/Link", function (response) {
+            sessionStorage.setItem("MENU", response);
+            menu = sessionStorage.getItem("MENU");
+            $('#menuContainer').html(menu);
+        });
+    }
+    else
+        $('#menuContainer').html(menu);
+
+    
+</script>

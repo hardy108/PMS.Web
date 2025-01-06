@@ -1,0 +1,59 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblPremiPanenBasisBasic";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basis Gerdan</div>
+            <div class="panel-body">
+                <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%"></table>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Basis Dasar" read-only="true" place-holder="Basis Dasar" xs-size="12" md-size="2">
+                    </x-field-text>
+                    <x-field-number id="txtGerdanBase1" binding-field="GBASE1" caption="Tingkat 1" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanBase2" binding-field="GBASE2" caption="Tingkat 2" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanBase3" binding-field="GBASE3" caption="Tingkat 3" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Premi Lebih Basis" read-only="true" place-holder="Premi Lebih Basis" xs-size="12" md-size="2">
+                    </x-field-text>
+                    <x-field-number id="txtGerdanExceed1" binding-field="GEXCEED1" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanExceed2" binding-field="GEXCEED2" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanExceed3" binding-field="GEXCEED3" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Premi Siap Basis" read-only="true" place-holder="Premi Siap Basis" xs-size="12" md-size="2">
+                    </x-field-text>
+                    <x-field-number id="txtGerdanPremi1" binding-field="GPREMI1" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanPremi2" binding-field="GPREMI2" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtGerdanPremi3" binding-field="GPREMI3" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+
+            </div>
+        </div>
+    </x-form-col>
+</x-form-row>
+
+
+<script>
+
+</script>

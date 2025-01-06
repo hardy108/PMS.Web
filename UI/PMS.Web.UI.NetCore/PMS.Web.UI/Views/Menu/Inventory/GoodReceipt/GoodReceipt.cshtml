@@ -1,0 +1,151 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    ViewData["Title"] = "Penerimaan Barang";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblItemId = "tblItem";
+
+
+}
+
+<script>
+    var
+        dictBlocks = {};
+        dictCards = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="NO" binding-field="NO" caption="No. Penerimaan Barang" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit id="UNITCODE" binding-field="UNITCODE" caption="Unit" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2">
+        </x-field-data-list-unit>
+        <x-field-data-list-vendor id="VENDORCODE" binding-field="VENDORCODE" caption="Vendor" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2" api-url-param="TYPE=V">
+        </x-field-data-list-vendor>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="VOUCHERNO" caption="No. Voucher" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-data-list-vendor id="EXPCODE" binding-field="EXPCODE" caption="Expedisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2"  api-url-param="TYPE=E">
+        </x-field-data-list-vendor>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date id="DATE" binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-number id="EXPVALUE" binding-field="EXPVALUE" caption="Harga Expedisi" xs-size="12" md-size="3"></x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-sloc id="LOCCODE" binding-field="LOCCODE" caption="Lokasi" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="0"
+                                Ascendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" }})">
+
+        </x-field-data-list-sloc>
+        <x-field-text-area binding-field="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="5">
+        </x-field-text-area>
+    </x-form-row>
+
+
+
+    <x-form>
+        &nbsp;
+    </x-form>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Material">
+            @Html.Partial("_GRItem.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+
+
+<script>
+    @*var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }*@
+
+    var checkMode = function () {
+        //if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+        //    var allowedMode = dictAllowedMode[record.STATUS];
+        //    var allowed = false;
+        //    if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+        //        allowedMode.forEach(function (modeOk) {
+        //            if (modeOk === mode) {
+        //                allowed = true;
+        //                return;
+        //            }
+        //        });
+        //        if (!allowed) {
+        //            alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+        //            mode = allowedMode[0];
+        //            return true;
+        //        }
+
+        //    }
+        //    if (!allowed) {
+        //        alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+        //        return false;
+        //    }
+        //}
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+
+
+        dictMaterials = {};
+        if (record.TGRITEM && record.TGRITEM.length > 0) {
+            record.TGRITEM.forEach(function (value) {
+                dictMaterials[value.CODE] = value;
+            });
+        }
+
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        @(tblItemId)_Handlers.initTable(record.TGRITEM);
+        
+
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlItem');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit") {
+            savedRecord["TGRITEM"] = @(tblItemId)_Handlers.saveRows();
+            if (savedRecord["TGRITEM"])
+                savedRecord["TGRITEM_COUNT"] = savedRecord["TGRITEM"].length;
+
+
+        }
+        return savedRecord;
+    }
+
+</script>

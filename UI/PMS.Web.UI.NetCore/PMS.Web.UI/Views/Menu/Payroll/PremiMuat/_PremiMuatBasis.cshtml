@@ -1,0 +1,82 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblPremiMuatBasis";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basis Dasar</div>
+            <div class="panel-body">
+                <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%"></table>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Basis Dasar" read-only="true" place-holder="Basis Dasar" xs-size="12" md-size="2">
+                    </x-field-text>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-number id="txtBase1" binding-field="BASE1" caption="Tingkat 1" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtBase2" binding-field="BASE2" caption="Tingkat 2" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtBase3" binding-field="BASE3" caption="Tingkat 3" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtBase4" binding-field="BASE4" caption="Tingkat 4" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtBase5" binding-field="BASE5" caption="Tingkat 5" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtBase6" binding-field="BASE6" caption="Tingkat 6" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Premi Lebih Basis" read-only="true" place-holder="Premi Lebih Basis" xs-size="12" md-size="2">
+                    </x-field-text>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-number id="txtExceed1" binding-field="EXCEED1" caption="Tingkat 1" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtExceed2" binding-field="EXCEED2" caption="Tingkat 2" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtExceed3" binding-field="EXCEED3" caption="Tingkat 3" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtExceed4" binding-field="EXCEED4" caption="Tingkat 4" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtExceed5" binding-field="EXCEED5" caption="Tingkat 5" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtExceed6" binding-field="EXCEED6" caption="Tingkat 6" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Premi Siap Basis" read-only="true" place-holder="Premi Siap Basis" xs-size="12" md-size="2">
+                    </x-field-text>
+                </x-form-row>
+
+                <x-form-row>                    
+                    <x-field-number id="txtPremi1" binding-field="PREMI1" caption="Tingkat 1" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtPremi2" binding-field="PREMI2" caption="Tingkat 2" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtPremi3" binding-field="PREMI3" caption="Tingkat 3" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtPremi4" binding-field="PREMI4" caption="Tingkat 4" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtPremi5" binding-field="PREMI5" caption="Tingkat 5" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                    <x-field-number id="txtPremi6" binding-field="PREMI6" caption="Tingkat 6" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+            </div>
+        </div>
+    </x-form-col>
+</x-form-row>
+
+<script>
+
+</script>

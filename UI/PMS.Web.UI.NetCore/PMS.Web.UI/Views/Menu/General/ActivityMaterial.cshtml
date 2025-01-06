@@ -1,0 +1,194 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblMaterial";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMaterial" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnPilihMaterial" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+
+
+    <x-modal id="mdlMaterial" caption="Pilih Material">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-material id="MATERIALID" caption="Material" multiple="true" xs-size="12" value-field="*">
+                </x-field-data-list-material>
+            </x-form-row>            
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetMaterial" class="btn" onclick="resetElements('mdlMaterial')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddMaterial" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseMaterial" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseMaterial" class="btn" onclick="$('#mdlMaterial').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+<script>
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllMaterial' name='chkDeleteMaterial' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteMaterial'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "MATERIALID",
+                "title": "Kode Material",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "title": "Nama Material",
+                "name": "MATERIALNAME",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "title": "UOM",
+                "name": "UOM",
+                "visible": true
+            },
+        ],
+
+        initTable: function (rows) {
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["MATERIALID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+        selectedMaterials: [],
+
+        addRows: function (closeForm) {
+            @(tblId)_Handlers.selectedMaterials = $('#MATERIALID').flexdatalist('value');
+            if (!@(tblId)_Handlers.selectedMaterials || @(tblId)_Handlers.selectedMaterials.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+
+            @(tblId)_Handlers.selectedMaterials.forEach(function (material) {
+                var detail = material;
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                    ft.rows.add(detail, false);
+                    added++;
+                }
+            });
+
+            if (added)
+                ft.draw();
+
+            if (closeForm)
+                $('#mdlMaterial').modal('hide');
+
+        },
+        deleteRows: function () {
+            if (!confirm('Yakin akan menghapus material?'))
+                return;
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+
+                $('[name = "chkDeleteMaterial"]').each(function () {
+                    if (this.id !== 'chkAllMaterial') {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push({"MATERIALID":row.val().MATERIALID});
+            });
+            return rows;
+        },
+
+        showForm: function () {
+            $('#mdlMaterial').modal('show');
+            return true;
+        }
+    };
+
+</script>
+

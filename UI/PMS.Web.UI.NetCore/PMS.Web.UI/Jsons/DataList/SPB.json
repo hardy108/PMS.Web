@@ -1,0 +1,61 @@
+[
+  {
+    "FieldName": "SPBNO",
+    "FieldCaption": "No.SPB",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 1
+  },
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "SPBDATE",
+    "FieldCaption": "Tgl.Doc",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY",
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+
+
+  {
+    "FieldName": "STATUS",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Update",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY HH:mm",
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  }
+]

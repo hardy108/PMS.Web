@@ -1,0 +1,256 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    //Mandor1 not data Mandor1
+
+    string prefix = "RKHMandor1";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMuat" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusMuat" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMandor" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusMandor" class="btn" onclick="@(tbl)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Pilih Mandor dan Kegiatan">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-unit id="@(prefix)UNIT" binding-field="UNITID" caption="Estate" multiple="false" xs-size="12" md-size="6" value-field="UNITCODE" min-length-search="0">
+                </x-field-data-list-unit>
+                <x-field-data-list-employee id="@(prefix)MANDOR" binding-field="MANDORID" caption="Mandor" multiple="true" xs-size="12" value-field="*" 
+                                        ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = prefix + "UNIT",FieldID="UnitID" }})" min-length-search="3">
+                </x-field-data-list-employee>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-activity id="@(prefix)ACTIVITY" binding-field="ACTIVITYID" caption="Nama Pekerjaan" xs-size="12" read-only="@ViewBag.ReadOnly" min-length-search="2" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+                </x-field-data-list-activity>
+            </x-form-row>
+
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetCollect" class="btn" onclick="resetElements('mdlMandorAct')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCollect" class="btn btn-primary" onclick="@(prefix)_.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseCollect" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseCollect" class="btn" onclick="$('#mdlMandorAct').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+
+}
+
+
+<script>
+
+    var @(prefix)_ = {
+
+        selectedMandors: {},
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chk@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+                "style": {
+                    "width": "100"
+                }
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "MANDORID",
+                "title": "Kode Mandor",
+                "visible": true,
+                "style": {
+                    "width": "140"
+                }
+            },
+            {
+                "type": "text",
+                "name": "MANDORNAME",
+                "title": "Nama Mandor",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "ACTIVITYID",
+                "title": "Kode Pekerjaan",
+                "visible": true,
+                "style": {
+                    "width": "140"
+                }
+            },
+            {
+                "type": "text",
+                "name": "ACTIVITYNAME",
+                "title": "Nama Pekerjaan",
+                "visible": true
+            }
+        ],
+
+        showForm: function () {
+
+            if ($('#DIVID').flexdatalist('value') == "") {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            var unitId = $("#@(prefix)UNIT").val();
+            if (!unitId || unitId === "") {
+                var divisi = $('#DIVID').flexdatalist('value');
+                if (divisi)
+                    $("#@(prefix)UNIT").flexdatalist('value', divisi.substr(0,4));
+            }
+
+            $('#@(mdl)').modal('show');
+            return true;
+        },
+
+        initTable: function (rows) {
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.MANDORID = dictMandors[row.EMPLOYEEID].EMPID;
+                    row.MANDORNAME = dictMandors[row.EMPLOYEEID].EMPNAME;
+                });
+            }
+        },
+
+        rowKeys: ["MANDORID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(prefix)_.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(prefix)_.rowKeys);
+        },
+
+
+        addRows: function (closeForm) {
+
+            var mandors = $('#@(prefix)MANDOR').flexdatalist('value');
+            if (!mandors || (Array.isArray(mandors) && mandors.length < 1)) {
+                alert("Mandor belum dipilih");
+                return;
+            };
+
+            var activities = $('#@(prefix)ACTIVITY').flexdatalist('value');
+            if (!activities || (Array.isArray(activities) && activities.length < 1)) {
+                alert("Pekerjaan belum dipilih");
+                return;
+            };
+
+            var added = 0;
+            var newMandorAct;
+            var addRow = function (mandor, activity, ft) {
+
+                newMandorAct =
+                {
+                    MANDORID: mandor.MANDORID,
+                    MANDORNAME: mandor.MANDORID + "-" + mandor.EMPNAME,
+                    
+                };
+                newMandorAct.key = @(prefix)_.getRowKey(newMandorAct);
+                ft.rows.add(newMandorAct, false);
+                @(prefix)_.selectedMandors = newMandorAct;
+
+            }
+
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            if (isAny(mandors)) {
+                var error = "";
+                if (@(prefix)_.isRowExist(newMandorAct, ft.rows.all)) {
+                    error += "\r\n" + newMandorAct.EMPID + " - " + newMandorAct.EMPNAME;
+                }
+                else {
+                    addRow(mandors, activities, ft);
+                    added++;
+                }
+                if (error)
+                    alert("Mandor berikut sudah ditambahkan sebelumnya" + error)
+            }
+
+            if (added)
+                ft.draw();
+
+            $('#@(prefix)MANDOR').val(null);
+            $('#@(prefix)ACTIVITY').val(null);
+
+            if (closeForm)
+                $('#mdlMandorAct').modal('hide');
+            return;
+        },
+
+
+
+    };
+
+
+
+</script>

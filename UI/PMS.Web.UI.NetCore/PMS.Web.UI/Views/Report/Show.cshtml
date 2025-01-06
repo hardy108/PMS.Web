@@ -1,0 +1,129 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    Layout = null;
+}
+
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h5 class="box-title">Report Parameter</h5>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#formParameter@(ViewBag.ReportID)">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body collapse in" style="" id="formParameter@(ViewBag.ReportID)">
+        <x-form-col xs-size="12">
+
+            @Html.Partial("/Views/Filter/_FilterForm.cshtml")
+
+            <x-form-row>
+                <button type="button" class="btn btn-primary" onclick="showReport@(ViewBag.ReportID)('inline')">Show Report</button>
+                <button type="button" class="btn btn-primary" onclick="showReport@(ViewBag.ReportID)('data')">Download Data</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="resetElements('formParameter@(ViewBag.ReportID)')">Reset Parameter</button>
+            </x-form-row>
+        </x-form-col>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+<div id="@(ViewBag.Prefix)divReportContainer" style="width:100%;height:800px">
+    <iframe id="@(ViewBag.Prefix)frmReport" frameborder="0" style="width:100%;height:100%;display:none"></iframe>
+</div>
+
+<script>
+    var reportUrl = '',
+        reportParameter = '',
+        showInline = false;
+
+    var showReport@(ViewBag.ReportID) = function (format) {
+
+
+        reportUrl = _API_URL + "api/report/@(ViewBag.ReportPath)";
+        reportParameter = "?";
+
+        showInline = false;
+        switch (format) {
+            case "inline":
+                reportParameter += "&inline=true&format=html"
+                showInline = true;
+                break;
+            case "data":
+                reportParameter += "&inline=false&format=data"
+                break;
+            default:
+                reportParameter += "&inline=false&format=image"
+                break;
+
+        }
+
+        var jsonParameter = xFormSave('formParameter@(ViewBag.ReportID)');
+        if (!@(ViewBag.Prefix)checkFilter(jsonParameter)) {
+            alert("@ViewBag.FilterValidation");
+            return false;
+        }
+
+        if (jsonParameter) {
+            Object.keys(jsonParameter).forEach(function (key) {
+                var val = jsonParameter[key];
+                if (val !== null) {
+                    if (Array.isArray(val)) {
+                        if (val.length === 1)
+                            reportParameter += "&" + key + "=" + val[0];
+                        else if (val.length > 1) {
+                            var strVal = '';
+                            val.forEach(function (xVal) {
+                                strVal += xVal + ";";
+                            });
+                            strVal = strVal.substr(0, strVal.length - 1);
+                            reportParameter += "&" + key + "=" + strVal;
+                        }
+                    }
+                    else
+                        reportParameter += "&" + key + "=" + val;
+                }
+            });
+        }
+
+
+
+        if (showInline == true) {
+            $('#formParameter@(ViewBag.ReportID)').collapse("hide");
+            $('#@(ViewBag.Prefix)frmReport').attr("src", reportUrl + reportParameter);
+            $('#@(ViewBag.Prefix)frmReport').show();
+        }
+        else if (format == "data") {
+            $.ajax({
+                type: "get",
+                url: reportUrl + reportParameter,                
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (data) {
+                    var bytes = base64ToArrayBuffer(data);
+                    var blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    var link = window.URL.createObjectURL(blob);
+                    var fileName = "@(ViewBag.ReportID)";
+
+                    var a = window.document.createElement('a');
+                    a.href = link;
+                    a.download = `${fileName}.XLSX`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    
+                }
+            });
+
+            
+        }
+    };
+
+    
+</script>
+

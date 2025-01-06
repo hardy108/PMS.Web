@@ -1,0 +1,92 @@
+[
+  {
+    "FieldName": "DocTransNo",
+    "FieldCaption": "DocTransNo",
+    "FieldType": "FInteger",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": false,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "Title",
+    "FieldCaption": "Subject",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "DocOwner",
+    "FieldCaption": "Owner",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UnitID",
+    "FieldCaption": "Unit",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "DocType",
+    "FieldCaption": "Doc. Type",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "InDate",
+    "FieldCaption": "Date",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FSortAsc",
+    "Format": "dd MMM yyyy HH:mm",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DocStatusText",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "EditControllerName",
+    "FieldCaption": "EditControllerName",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": false,
+    "SortSequence": 10
+  }
+
+]

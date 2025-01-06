@@ -1,0 +1,58 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Estate",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  
+  {
+    "FieldName": "WFDOCSTATUSTEXT",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "UPDATEDBY",
+    "FieldCaption": "Last Update By",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "UPDATED_IN_TEXT",
+    "FieldCaption": "Last Update",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 60
+  }
+]

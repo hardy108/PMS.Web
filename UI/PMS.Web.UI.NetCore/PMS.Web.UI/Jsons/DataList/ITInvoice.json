@@ -1,0 +1,68 @@
+[
+  {
+    "FieldName": "REGISTERID",
+    "FieldCaption": "Register No",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "VENDORNAME",
+    "FieldCaption": "Vendor",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "INVOICENO",
+    "FieldCaption": "Invoice No.",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "AMOUNT",
+    "FieldCaption": "Amount",
+    "FieldType": "FFloat",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FSortAsc",
+    "Alignment": "FRight",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "INVOICEDATE_IN_TEXT",
+    "FieldCaption": "Invoice Date",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "WFDOCSTATUSTEXT",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 60
+  }
+]

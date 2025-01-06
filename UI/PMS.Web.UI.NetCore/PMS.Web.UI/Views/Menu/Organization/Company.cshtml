@@ -1,0 +1,63 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Perusahaan";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <input type="hidden" name="LEGALID" id="LEGALID" data-bf="LEGALID" />
+        <input type="hidden" name="ID" id="ID" data-bf="ID" />
+        <x-field-text id="CODE" binding-field="CODE" caption="Kode Perusahaan" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="NAME" binding-field="NAME" caption="Nama" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="6">
+        </x-field-text>
+        <x-field-text id="NPWP" binding-field="NPWP" caption="NPWP" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="ADDR1" binding-field="ADDR1" caption="Alamat" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="ADDR2" binding-field="ADDR2" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="ADDR3" binding-field="ADDR3" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="POSTALCODE" binding-field="POSTALCODE" caption="Kode Pos" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#ACTIVE").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

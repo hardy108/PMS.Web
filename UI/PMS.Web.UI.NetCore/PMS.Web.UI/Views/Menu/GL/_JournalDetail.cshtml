@@ -1,0 +1,464 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    string tblId = "detail", mdlId = "mdlDetail";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Detail Jurnal</div>
+            <div class="panel-body">
+                <table id="@(tblId)" class="table tble-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%">
+                </table>
+            </div>
+        </div>
+    </x-form-col>
+</x-form-row>
+<x-form-row>
+    <x-field-number caption="Total Debit" xs-size="12" md-size="4" binding-field="TOTALDEBIT" id="TOTALDEBIT" read-only="true">
+
+    </x-field-number>
+    <x-field-number caption="Total Credit" xs-size="12" md-size="4" binding-field="TOTALCREDIT" id="TOTALCREDIT" read-only="true">
+
+    </x-field-number>
+    <x-field-number caption="Selisih" xs-size="12" md-size="4" binding-field="NETCHANGE" id="NETCHANGE" read-only="true">
+
+    </x-field-number>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row id="divButtons">
+        <x-form-col xs-size="12">
+            <button id="btnAdd" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDelete" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdlId)" caption="Detail Jurnal">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-account id="DACCOUNT" caption="Account" multiple="false" xs-size="12" value-field="*" visible-fields="[CODE,NAME]">
+                </x-field-data-list-account>
+            </x-form-row>
+
+            <x-form-row>
+                <x-field-number id="DDEBIT" caption="Debit" xs-size="12" md-size="6"></x-field-number>
+                <x-field-number id="DCREDIT" caption="Credit" xs-size="12" md-size="6"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text id="DNOTE" caption="Keterangan" xs-size="12"></x-field-text>
+            </x-form-row>
+
+            <x-form-row>
+                <x-field-data-list-block id="DBLOCK" binding-field="BLOCKID" caption="Blok" xs-size="12"
+                                         ascendants="@(new List<PMS.Shared.Models.FilterAscendant>
+                        {   new PMS.Shared.Models.FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" }
+                        })" chain-to-relatives="true" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button class="btn" onclick="resetElements('@(mdlId)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-primary" onclick="@(tblId)_Handlers.addRows()">
+                        Simpan dan Tambah Baru
+                    </button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                        Simpan dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseActivity" class="btn" onclick="$('#@(mdlId)').modal('hide')">
+                        Batal
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+
+<script>
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll' name='chkDelete' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete'><span style='margin-left:5px;'><a href='#' onclick='@(tblId)_Handlers.showFormEdit(this)'><i class='fa fa-pencil'></i></a></span>";
+                },
+                "style": {
+                    "width": "5%"
+                }
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "ACCOUNTCODE",
+                "title": "No Account",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Account",
+                "name": "ACCOUNTNAME",
+                "visible": true,
+                "style": {
+                    "width": "20%"
+                }
+            },
+            {
+                "type": "number",
+                "title": "Debit",
+                "name": "DEBIT",
+                "visible": @(isReadOnlyString),
+                "style": {
+                    "width": "15%"
+                }
+            },
+             {
+                "type": "html",
+                 "name": "DEBIT_INPUT",
+                 "title": "Debit",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input style='width:100%' type='number' name='DEBITIN' value='" + rowdata["DEBIT"] + "'  data-bf='DEBIT'  onfocusout='@(tblId)_Handlers.updateDebitCredit(this,true)'>";
+                 },
+                 "style": {
+                     "width": "15%"
+                 }
+
+            },
+            {
+                "type": "number",
+                "title": "CREDIT",
+                "name": "CREDIT",
+                "visible": @(isReadOnlyString),
+                "style": {
+                    "width": "15%"
+                }
+            },
+             {
+                "type": "html",
+                 "name": "CREDIT_INPUT",
+                 "title": "Credit",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input style='width:100%' type='number' name='CREDITIN' value='" + rowdata["CREDIT"] + "'  data-bf='CREDIT'  onfocusout='@(tblId)_Handlers.updateDebitCredit(this,false)'>";
+                 },
+                 "style": {
+                     "width": "15%"
+                 }
+
+            },
+            {
+                "type": "text",
+                "name": "NOTE",
+                "title": "Keterangan",
+                "visible": @(isReadOnlyString)
+
+            },
+            {
+                "type": "html",
+                "name": "NOTE_INPUT",
+                "title": "Keterangan",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input style='width:100%' type='text' name='NOTIN' value='" + rowdata["NOTE"] + "'  data-bf='NOTE'  onfocusout='updateInputToRow(this)'>";
+                }
+
+            },
+
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true,
+                "style": {
+                    "width": "5%"
+                }
+            }
+        ],
+        showForm: function () {
+            var unitCode = $('#UNITCODE').flexdatalist('value');
+            if (!unitCode || (Array.isArray(unitCode) && unitCode.length <= 0)) {            
+                alert("Unit belum dipilih");
+                return false;
+            }
+            this.isEditRow = false;
+            this.selectedRow = null;
+            $('#@(mdlId)').modal('show');
+            return true;
+        },
+
+        showFormEdit: function (e) {
+            if (!unitCode || (Array.isArray(unitCode) && unitCode.length <= 0)) {
+                alert("Unit belum dipilih");
+                return false;
+            }
+            this.isEditRow = true;
+            var $tr = $(e).closest('tr');
+            var $row = FooTable.getRow($tr);
+            var $rowVal = $row.val();
+
+            $('#DACCOUNT').flexdatalist('value', { CODE: $rowVal.ACCOUNTCODE, NAME: $rowVal.ACCOUNTNAME});
+            $('#DBLOCK').flexdatalist('value', { BLOCKID: $rowVal.BLOCKID, CODE: $rowVal.BLOCKCODE });
+            $('#DNOTE').val($rowVal.NOTE);
+            $('#DDEBIT').val($rowVal.DEBIT);
+            $('#DCREDIT').val($rowVal.CREDIT);
+            this.selectedRow = $row;
+            $('#@(mdlId)').modal('show');
+            return true;
+        },
+        initTable: function (rows) {
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+            return;
+        },
+        rowKeys: ["SEQ"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+        selectedRow: null,
+        isEditRow: false,
+        addRows: function (closeForm) {
+
+            var account = $('#DACCOUNT').flexdatalist('value');
+            if (!account || (Array.isArray(account) && account.length<=0)) {
+                alert("Account belum dipilih");
+                return false;
+            }
+
+            if (Array.isArray(account))
+                account = account[0];
+
+            var debit = parseFloat($('#DDEBIT').val());
+            if (isNaN(debit))
+                debit = 0;
+            var credit = parseFloat($('#DCREDIT').val());
+            if (isNaN(credit))
+                credit = 0;
+
+            if (debit == 0 && credit == 0) {
+                alert("Debit/credit belum diinput");
+                return false;
+            }
+
+            if (debit != 0 && credit != 0) {
+                alert("Debit/credit hanya bisa diisi salah satu");
+                return false;
+            }
+
+            if (debit < 0 || credit < 0) {
+                alert("Debit/credit tidak bisa diisi dengan angka negatif");
+                return false;
+            }
+
+            var note = $('#DNOTE').val();
+            if (!note) {
+                alert("Keterangan belum diisi");
+                return false;
+            }
+
+            var block = $('#DBLOCK').flexdatalist('value');
+            if (!block || Array.isArray(block) && block.length <= 0)
+                block = null;
+
+            if (Array.isArray(block))
+                block = block[0];
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return false;
+            }
+
+            
+
+            if (!this.selectedRow) {
+                var detail =
+                {
+                    ACCOUNTCODE: account.CODE,
+                    ACCOUNTNAME: account.CODE + " - " + account.NAME,
+                    NOTE: note,
+                    DEBIT: debit,
+                    CREDIT: credit
+                };    
+                if (block) {
+                    detail.BLOCKID = block.BLOCKID;
+                    detail.BLOCKCODE= block.CODE;
+                }
+                else {
+                    detail.BLOCKID = null;
+                    detail.BLOCKCODE= null;
+                }
+                ft.rows.add(detail, true);
+                record.TOTALDEBIT += debit;
+                record.TOTALCREDIT += credit;
+                record.NETCHANGE = record.TOTALDEBIT - record.TOTALCREDIT;
+            }
+            else {
+                var detail = this.selectedRow.val();
+
+                var prevDebit = detail.DEBIT,
+                    prevCredit = detail.CREDIT,
+                    prevAccount = detail.ACCOUNTCODE;
+                if (prevAccount != account) {
+                    detail.ACCOUNTCODE = account.CODE;
+                    detail.ACCOUNTNAME = account.CODE + " - " + account.NAME;
+                }
+                detail.NOTE = note;
+                detail.DEBIT = debit;
+                detail.CREDIT = credit;
+                if (block) {
+                    detail.BLOCKID = block.BLOCKID;
+                    detail.BLOCKCODE= block.CODE;
+                }
+                else {
+                    detail.BLOCKID = null;
+                    detail.BLOCKCODE= null;
+                }
+                this.selectedRow.val(detail);
+                record.TOTALDEBIT = record.TOTALDEBIT - prevDebit +  debit;
+                record.TOTALCREDIT = record.TOTALCREDIT - prevCredit + credit;
+                record.NETCHANGE = record.TOTALDEBIT - record.TOTALCREDIT;
+            }
+
+
+            
+            $('#TOTALDEBIT').val(record.TOTALDEBIT);
+            $('#TOTALCREDIT').val(record.TOTALCREDIT);
+            $('#NETCHANGE').val(record.NETCHANGE);
+
+            resetElements('@(mdlId)');
+            if (closeForm)
+                $('#@(mdlId)').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Yakin akan menghapus detail jurnal?'))
+                return;
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                $('[name = "chkDelete"]').each(function () {
+                    if (!this.id) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            var debit = parseFloat($row.val()["DEBIT"]),
+                                credit = parseFloat($row.val()["CREDIT"]);
+                            if (isNaN(debit))
+                                debit = 0;
+                            if (isNaN(credit))
+                                credit = 0;
+                            $row.delete(false);
+                            deletedCount++;
+                            record.TOTALDEBIT = record.TOTALDEBIT - debit;
+                            record.TOTALCREDIT = record.TOTALCREDIT - credit;
+
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    record.NETCHANGE = record.TOTALDEBIT - record.TOTALCREDIT;
+                    $('#TOTALDEBIT').val(record.TOTALDEBIT);
+                    $('#TOTALCREDIT').val(record.TOTALCREDIT);
+                    $('#NETCHANGE').val(record.NETCHANGE);
+                    ft.draw();
+                }
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            var seq = 0;
+            $.each(ft.rows.all, function (i, row) {
+                var rowVal = row.val();
+                seq += 10;
+                rowVal.SEQ = seq;
+                rowVal.AMOUNT = rowVal.DEBIT - rowVal.CREDIT;
+                rows.push(rowVal);
+            });
+            return rows;
+        },
+
+        updateDebitCredit: function (e,isDebit) {
+            var amount = $(e).val();
+            if (!isNaN(amount))
+                amount = parseFloat(amount);
+            else
+                amount = 0;
+            if (!amount) {
+                $(e).val(amount);
+                return false;
+            }
+
+            var newDebit = 0, newCredit = 0;
+            if (isDebit)
+                newDebit = amount;
+            else
+                newCredit = amount;
+
+
+            var $tr = $(e).closest('tr');
+            var $row = FooTable.getRow($tr);
+            var $rowVal = $row.val();
+
+            var prevDebit = $rowVal.DEBIT,
+                prevCredit = $rowVal.CREDIT;
+
+            $rowVal.DEBIT = newDebit;
+            $rowVal.CREDIT = newCredit;
+            $row.val($rowVal);
+            record.TOTALDEBIT = record.TOTALDEBIT - prevDebit + newDebit;
+            record.TOTALCREDIT = record.TOTALCREDIT - prevCredit + newCredit;
+            record.NETCHANGE = record.TOTALDEBIT - record.TOTALCREDIT;
+            $('#TOTALDEBIT').val(record.TOTALDEBIT);
+            $('#TOTALCREDIT').val(record.TOTALCREDIT);
+            $('#NETCHANGE').val(record.NETCHANGE);
+        }
+    };
+</script>

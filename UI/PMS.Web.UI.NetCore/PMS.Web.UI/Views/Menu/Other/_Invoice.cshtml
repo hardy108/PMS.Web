@@ -1,0 +1,115 @@
+﻿
+@{
+
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnly = mode != "New" && mode != "Edit" && mode != "Approval";
+
+    bool onCreate = false;
+    bool onApproval = false;
+    
+    try
+    {
+        if (ViewBag.OnCreate)
+        {
+            onCreate = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnApproval)
+        {
+            onApproval = true;
+        }
+    }
+    catch { }
+
+    onCreate = onCreate && !readOnly;
+    onApproval = onApproval && !readOnly;
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="REGISTERID" binding-field="REGISTERID" caption="Register No." read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-input binding-field="CREATED_IN_TEXT" caption="Register Date" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="CREATEDBY" caption="Registered By" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="WFDOCSTATUSTEXT" caption="Status" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-department id="DEPTID" caption="Departemen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DEPTID" min-length-search="0">
+        </x-field-data-list-department>
+        <x-field-select id="INVOICETYPE" caption="Invoice Type" xs-size="12" md-size="3" binding-field="INVOICETYPE" read-only="@(!onCreate)">
+            <option value="SAP">SAP</option>
+            <option value="INFRA">Network & Infrastructure</option>
+            <option value="OTH">Other</option>
+        </x-field-select>    
+        <x-form-col md-size="3" xs-size="12">
+            <x-field-file property-name="INVOICEFILE" caption="Invoice File" read-only="@(!onCreate)" binding-field="INVOICEFILE">
+            </x-field-file>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="VENDORNAME" binding-field="VENDORNAME" caption="Vendor" read-only="@(!onCreate)" place-holder="Vendor" xs-size="12" md-size="4">
+        </x-field-text>
+        <x-field-text id="INVOICENO" binding-field="INVOICENO" caption="Invoice No." read-only="@(!onCreate)" place-holder="Invoice No" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-number id="AMOUNT" binding-field="AMOUNT" caption="Invoice Amount" read-only="@(!onCreate)" place-holder="Invoice Amount" xs-size="12" md-size="2">
+        </x-field-number>
+        <x-field-date id="INVOICEDATE" picker-option="DateOnly" xs-size="12" md-size="2" caption="Invoice Date" date-format="dd-MMM-yyyy" binding-field="INVOICEDATE" read-only="@(!onCreate)">
+        </x-field-date>
+        <x-field-date id="DUEDATE" picker-option="DateOnly" xs-size="12" md-size="2" caption="Invoice Due Date" date-format="dd-MMM-yyyy" binding-field="DUEDATE" read-only="@(!onCreate)">
+        </x-field-date>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text-area id="NOTES" caption="Notes" xs-size="12" read-only="@(!onCreate)" binding-field="NOTES" rows="6">
+        </x-field-text-area>
+    </x-form-row>
+
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {        
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

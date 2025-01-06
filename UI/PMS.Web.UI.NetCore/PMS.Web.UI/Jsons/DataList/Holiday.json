@@ -1,0 +1,79 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "Id",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": false,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Kode Unit",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DTDATE_IN_TEXT",
+    "FieldCaption": "Tanggal",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "DAYS_IN_TEXT",
+    "FieldCaption": "Hari",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "REMARK",
+    "FieldCaption": "Keterangan",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "STATUS",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "UPDATED_IN_TEXT",
+    "FieldCaption": "Last Update",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 60
+  }
+]

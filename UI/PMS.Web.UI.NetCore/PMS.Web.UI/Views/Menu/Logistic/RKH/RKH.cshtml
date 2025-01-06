@@ -1,0 +1,209 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    ViewData["Title"] = "RKH";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblDetailId = "tblRkhDetail";
+    string tblMaterialId = "tblRkhMaterial";
+    string tblHerbisidaId = "tblRkhHerbisida";
+    string tblTaksasiId = "tblRkhTaksasi";
+    string tblActualId = "tblRkhActual";
+
+}
+
+<script>
+    var dictActivities = {},
+        dictMandors = {},
+        dictBlocks = {},
+        dictMaterials = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        
+        <x-field-text id="ID" binding-field="ID" caption="No. RKH" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-select binding-field="PAYMENTTYPE" caption="Tipe RKH" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="TIPE RKH" xs-size="12" md-size="3">
+            <option value="0" selected="selected">Harian</option>
+            <option value="1">Kontanan</option>
+            <option value="2">Borongan</option>
+        </x-field-select>
+        <x-field-text binding-field="STATUS" caption="Status RKH" read-only="true" place-holder="Status RKH" xs-size="12" md-size="3">
+
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="DATE" caption="Tgl. RKH" read-only="true" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-date binding-field="ACTDATE" caption="Tgl. Apel Pagi" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text binding-field="NOTE" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="8">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        &nbsp;
+    </x-form-row>
+
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Rencana Kegiatan">
+            @Html.Partial("_RKHDetail.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Rencana Material">
+            @Html.Partial("_RKHMaterial.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Taksasi Panen">
+            @Html.Partial("_RKHTaksasi.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Hasil Kerja">
+            @Html.Partial("_RKHHasilKerja.cshtml")
+        </x-tab-panel>
+
+
+        <x-tab-panel caption="Aktual Kegiatan">
+            @Html.Partial("_RKHActual.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        dictActivities = {};
+        if (record.VRKHACTIVITYREF && record.VRKHACTIVITYREF.length > 0) {
+            record.VRKHACTIVITYREF.forEach(function (value) {
+                dictActivities[value.ACTID] = value;
+            });
+        }
+
+        dictMaterials = {};
+        if (record.VRKHMATERIALREF && record.VRKHMATERIALREF.length > 0) {
+            record.VRKHMATERIALREF.forEach(function (value) {
+                dictMaterials[value.MATID] = value;
+            });
+        }
+
+        dictMandors = {};
+        if (record.VRKHMANDORREF && record.VRKHMANDORREF.length > 0) {
+            record.VRKHMANDORREF.forEach(function (value) {
+                dictMandors[value.SPVID] = value;
+            });
+        }
+
+        dictBlocks = {};
+        if (record.VRKHBLOCKREF && record.VRKHBLOCKREF.length > 0) {
+            record.VRKHBLOCKREF.forEach(function (value) {
+                dictBlocks[value.BLOCKID] = value;
+            });
+        }
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        @(tblDetailId)_Handlers.initTable(record.TRKHDETAIL);
+        @(tblMaterialId)_Handlers.initTable(record.TRKHMATERIAL);
+        @(tblTaksasiId)_Handlers.initTable(record.TRKHTAKSASI)
+        if (record.TRKHESTPANEN)
+            xFormDisplay('frmEstPanen', record.TRKHESTPANEN);
+        @(tblHerbisidaId)_Handlers.initTable(record.TRKHHERBISIDA)
+        if (record.TRKHHASILKERJA)
+            xFormDisplay('frmHasilKerja', record.TRKHHASILKERJA);
+        @(tblActualId)_Handlers.initTable(record.TRKHACTUAL)
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlActivity');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit") {
+            savedRecord["TRKHDETAIL"] = @(tblDetailId)_Handlers.saveRows();
+            if (savedRecord["TRKHDETAIL"])
+                savedRecord["TRKHDETAIL_COUNT"] = savedRecord["TRKHDETAIL"].length;
+
+            savedRecord["TRKHMATERIAL"] = @(tblMaterialId)_Handlers.saveRows();
+            if (savedRecord["TRKHMATERIAL"])
+                savedRecord["TRKHMATERIAL_COUNT"] = savedRecord["TRKHMATERIAL"].length;
+
+            savedRecord["TRKHACTUAL"] = @(tblActualId)_Handlers.saveRows();
+            if (savedRecord["TRKHACTUAL"])
+                savedRecord["TRKHACTUAL_COUNT"] = savedRecord["TRKHACTUAL"].length;
+
+            savedRecord["TRKHTAKSASI"] = @(tblTaksasiId)_Handlers.saveRows();
+            if (savedRecord["TRKHTAKSASI"])
+                savedRecord["TRKHTAKSASI_COUNT"] = savedRecord["TRKHTAKSASI"].length;
+
+            savedRecord["TRKHHERBISIDA"] = @(tblHerbisidaId)_Handlers.saveRows();
+            if (savedRecord["TRKHHERBISIDA"])
+                savedRecord["TRKHHERBISIDA_COUNT"] = savedRecord["TRKHHERBISIDA"].length;
+        }
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

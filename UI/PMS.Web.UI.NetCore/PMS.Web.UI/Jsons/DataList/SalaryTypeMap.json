@@ -1,0 +1,80 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": false,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "UNITID",
+    "FieldCaption": "Estate",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "TYPEID",
+    "FieldCaption": "Type",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "FREQ",
+    "FieldCaption": "Frekuensi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "GOL",
+    "FieldCaption": "Jabatan",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "AMOUNT",
+    "FieldCaption": "Jumlah",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  //{
+  //  "FieldName": "DATE",
+  //  "FieldCaption": "Tanggal",
+  //  "FieldType": "FDate",
+  //  "IsKey": false,
+  //  "ForSearch": false,
+  //  "Sort": "FNoSort",
+  //  "Format": "dd MMM yyyy",
+  //  "Alignment": "FCenter",
+  //  "Visible": true,
+  //  "SortSequence": 40
+  //}
+]

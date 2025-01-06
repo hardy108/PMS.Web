@@ -1,0 +1,91 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "Id",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": false,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UNITID",
+    "FieldCaption": "Kode Unit",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "TYPEID",
+    "FieldCaption": "Tipe Kendaraan",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "CODE",
+    "FieldCaption": "Kode SAP",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "NO",
+    "FieldCaption": "No. Polisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "NAME",
+    "FieldCaption": "Nama",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "ACTIVE",
+    "FieldCaption": "Aktif",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 100
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Last Update",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Format": "dd-MMM-yyyy HH:mm:ss",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 110
+  }
+]

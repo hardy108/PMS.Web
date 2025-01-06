@@ -1,0 +1,231 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Approval - Adjust HK";
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnlyWhenNotInsert = false;
+    try
+    {
+        readOnlyWhenNotInsert = ViewBag.ReadOnlyWhenNotInsert;
+    }
+    catch { }
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnlyWhenNotInsert)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" });
+    }
+
+
+    bool allowApproveDetail = false;
+    try
+    {
+        allowApproveDetail = (ViewBag.Mode == "Approval");
+    }
+    catch { }
+
+    bool allowEditDetail = false;
+    //try
+    //{
+    //    allowEditDetail = !readOnly && ViewBag.allowEditDetail;
+    //}
+    //catch { }
+
+
+
+
+}
+
+<script>
+        var mode = "@(mode)";
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="ID" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="true" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>        
+        <x-field-date id="DATE" binding-field="DATE" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    @*<x-form-row>
+        <x-field-text id="PAYMENTDOCNO" binding-field="PAYMENTDOCNO" caption="No Dokumen Payroll" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-date id="STARTDATE" binding-field="STARTDATE" caption="Periode" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-date id="ENDDATE" binding-field="ENDDATE" caption="&nbsp;" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>*@
+
+    <x-tab-panel caption="Details">
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <div id="tblDetails"></div>
+            </x-form-col>
+        </x-form-row>        
+    </x-tab-panel>
+</x-form>
+
+
+
+
+
+<script>
+    var allowApproveDetail = @(allowApproveDetail?"true":"false");
+    var readOnly =  @(readOnly?"true":"false");
+    var allowEditDetail =  @(allowEditDetail?"true":"false");
+    var tblDetails;
+
+    
+    var formatterApproval = function (cell, params, onRendered) {
+        var rowData = cell.getRow().getData();
+
+
+        if (rowData.REJECTED || !allowApproveDetail)
+            return tickCrossTabulator(cell, params, onRendered);
+
+        var attr = "";
+        if (rowData.NEWAPPROVED)
+            attr += " checked";
+
+        var checkbox = "<input type='checkbox'" + attr + " />";
+        checkbox = $.parseHTML(checkbox);
+
+        $(checkbox).on("change", function () {
+            if (!allowApproveDetail)
+                return;
+            var rowX = cell.getRow();
+            var rowDataX = rowX.getData();
+
+            if (rowDataX.NEWAPPROVED != this.checked) {
+                if (this.checked) {
+                    rowDataX.PREVREJECTIONREASON = rowDataX.REJECTIONREASON;
+                    rowDataX.REJECTIONREASON = "";
+                }
+                else
+                    rowDataX.REJECTIONREASON = !rowDataX.PREVREJECTIONREASON ? "" : rowDataX.PREVREJECTIONREASON;
+                rowDataX.REJECTIONREASON = rowDataX.REJECTIONREASON + " ";
+                rowDataX.NEWAPPROVED = this.checked;
+                rowX.update(rowDataX);
+            }
+        });
+        return checkbox[0];
+    };
+
+    var formatterRejectionReason = function (cell, params, onRendered) {
+
+        var rowData = cell.getRow().getData();
+        var cellValue = cell.getValue();
+        if (cellValue === null)
+            cellValue = "";
+
+        if (!allowApproveDetail || rowData.REJECTED || rowData.NEWAPPROVED)
+            return cellValue;
+
+        var textbox = "<input type='text' value='" + cellValue + "' style='width:100%'>";
+        textbox = $.parseHTML(textbox);
+        $(textbox).on("change", function () {
+            var rowX = cell.getRow();
+            var rowDataX = rowX.getData();
+            if (rowDataX.APPROVED && allowApproveDetail) {
+                rowDataX.REJECTIONREASON = $(this).val();
+                rowX.update(rowDataX);
+            }
+        });
+        return textbox[0];
+
+    };
+   
+    var initTableDetails = function () {
+
+       
+        var showProcessResult = @(mode == "Approval" ? "false" : "true");
+        
+
+        var columns = [
+            //{ formatter: "responsiveCollapse", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false },
+            {
+                formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false,
+                cellClick: function (e, cell) {                    
+                    cell.getRow().toggleSelect();
+                },
+                visible: allowEditDetail,
+                responsive: 0
+            },            
+            { title: "Approve", field: "NEWAPPROVED", hozAlign: "center", formatter: formatterApproval },
+            { title: "NIK", field: "EMPID", width: 110, minWidth: 110},
+            { title: "Nama Karyawan", field: "EMPNAME", width: 150, minWidth: 150},
+            { title: "Jabatan", field: "EMPPOSITION", width: 150, minWidth: 150 },            
+            { title: "HK", field: "HK", width: 90, minWidth: 90 },
+            { title: "Adj. HK", field: "ADJUSTEDHK", width: 90, minWidth: 90 },
+            { title: "Note", field: "NOTE", width: 150, minWidth: 150 },            
+            { title: "No. Buku Panen", field: "HARVESTCODE", width: 150, minWidth: 150 },
+            { title: "Tgl. Panen", field: "HARVESTDATETEXT", width: 150, minWidth: 150 },
+            { title: "Status Proses", field: "PROCESSRESULT", width: 150, minWidth: 150,visible:showProcessResult }
+            //{ title: "Alasan Penolakan", field: "REJECTIONREASON", formatter:formatterRejectionReason}
+        ];
+
+        tblDetails = new Tabulator("#tblDetails", {
+            data: record.TPAYMENTWFADJUSTHKDETAIL,
+            index: "EMPID",
+            layout: "fitDataStretch",
+            headerSort: true,            
+            movableColumns: true,
+            minHeight: 300,
+            //responsiveLayout: "collapse",
+            placeholder: "No Data Available",
+            initialSort: [             //set the initial sort order of the data
+                { column: "EMPID", dir: "asc" },
+            ],
+            columns: columns
+        });
+    }
+    
+    var customDisplay = function () {
+        initTableDetails();
+        return true;
+    };
+
+
+    var beforeSendAction = function (action, savedRecord) {
+        var errorTitle = mode + ' - ' + '@ViewBag.Title';
+    /* Specific Code Here - End*/
+
+
+            
+        var data = tblDetails.getData();
+        if (data && Array.isArray(data) && data.length > 0) {
+            data.forEach(element => {
+                element.APPROVED = element.NEWAPPROVED;
+            });
+        }
+        savedRecord.TPAYMENTWFADJUSTHKDETAIL = data;
+        savedRecord.TPAYMENTWFADJUSTHKDETAIL_COUNT = data.length;
+
+        return savedRecord;
+    };
+
+
+    
+    
+
+   
+</script>
+
+

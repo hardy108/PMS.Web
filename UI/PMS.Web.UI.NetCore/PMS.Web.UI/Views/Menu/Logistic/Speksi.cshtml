@@ -1,0 +1,108 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Inspeksi Panen";
+    Layout = null ;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. ID Inspeksi" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+
+        <x-field-data-list-block id="BLOCKID" binding-field="BLOCKID" caption="Blok" multiple="false" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly"
+            Ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }})" value-field="BLOCKID">
+        </x-field-data-list-block>
+
+        <x-field-text binding-field="STATUS" caption="Status Inspeksi Panen" read-only="true" place-holder="Status Speksi Panen" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="TGLSPEKSI" caption="Tanggal Inspeksi" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+        <x-field-data-list-employee id="EMPLOYEEID" binding-field="EMPLOYEEID" caption="Pemanen" value-field="EMPID" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+
+        <x-field-data-list-employee id="MANDORID" binding-field="MANDORID" caption="Mandor" xs-size="12" md-size="3" api-url-param="STATUS=A&Mandor1=true&MandorTanam=true&MandorNonTanam=true" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2">
+        </x-field-data-list-employee>
+
+        <x-field-number id="LUASSPEKSI" binding-field="LUASSPEKSI" read-only="@ViewBag.ReadOnly" value="0" caption="Luas Inspeksi" xs-size="12" md-size="3"></x-field-number>
+
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="TGLPANEN" caption="Tanggal Panen" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+        @*<x-field-date binding-field="TGLKUTIP" caption="Tanggal Kutip" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>*@
+
+        <x-field-select id="HANCATERTINGGAL" binding-field="HANCATERTINGGAL" caption="Hanca Tertinggal/Tidak Dipanen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly"  select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="TBSTDKPANEN" binding-field="TBSTDKPANEN" read-only="@ViewBag.ReadOnly" value="0" caption="Buah Masak Tidak Di Panen" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="TBSTDKBAWA" binding-field="TBSTDKBAWA" read-only="@ViewBag.ReadOnly" value="0" caption="Buah Tidak Di Bawa Ke TPH" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="BRDTDKKUTIP" binding-field="BRDTDKKUTIP" read-only="@ViewBag.ReadOnly" value="0" caption="Brondolan Tidak Di Kutip" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="BRDTDKBERSIH" binding-field="BRDTDKBERSIH" read-only="@ViewBag.ReadOnly" value="0" caption="Brondolan Dikutip Tidak Bersih" xs-size="12" md-size="3"></x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="BUNGAMTH" binding-field="BUNGAMTH" read-only="@ViewBag.ReadOnly" value="0" caption="Bunga Matahari" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="PELEPAHTDKSUSUN" binding-field="PELEPAHTDKSUSUN" read-only="@ViewBag.ReadOnly" value="0" caption="Pelepah Tidak Disusun" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="PELEPAHTDKMEPET" binding-field="PELEPAHTDKMEPET" read-only="@ViewBag.ReadOnly" value="0" caption="Pelepah Dipotong Tidak Mepet/Sengkleh" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-number id="PELEPAHTDKSESUAI" binding-field="PELEPAHTDKSESUAI" read-only="@ViewBag.ReadOnly" value="0" caption="Songgo Pelepah Tidak Sesuai Umur" xs-size="12" md-size="3"></x-field-number>
+    </x-form-row>
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        //var empId = $("#EMPID").val();
+        //$("#EMPLOYEE").val(empId);
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        //var emp = [];
+        //$('#EMPLOYEE').on('change', function () {
+        //    emp = $('#EMPLOYEE').flexdatalist('value');
+        //    var employeeId = emp.EMPID;
+        //    var pin = emp.PINID;
+        //    var unitId = emp.UNITCODE;
+        //    $("#EMPID").val(employeeId);
+        //    $("#PIN").val(pin);
+        //    $("#UNITID").val(unitId);
+        //});
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+</script>

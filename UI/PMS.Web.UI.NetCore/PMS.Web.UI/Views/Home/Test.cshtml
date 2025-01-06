@@ -1,0 +1,110 @@
+﻿@using Microsoft.Extensions.Options
+@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@inject IOptions<AppSetting> Settings
+@{
+    HtmlJsonFormatter htmlJsonFormatter = new HtmlJsonFormatter { Id = "TEST" };
+    string tblID = "tblDetail";
+    string tblEditorPrefix = "inputFor_" + tblID + "_";
+}
+
+
+
+<script>
+    var @(tblID)_isRowValid = function (row) {
+        return true;
+    }
+
+    var additionalLoVActivity = function (selectedData) {
+
+    }
+
+</script>
+
+
+
+    <x-form-row>
+        <x-field-date picker-option="TimeOnly" lg-size="2" caption="Date Time" value="2010-01-31 16:00:01" date-format="yyyy" time-format="HH:mm"></x-field-date>
+        <x-field-date picker-option="DateOnly" lg-size="2" caption="Date Time Readonly" value="2010-01-31 16:00:01" read-only="true" date-format="MMM yyyy" time-format="HH"></x-field-date>
+    </x-form-row>
+
+
+    @*Date Range Example - Start *@
+    <x-form-row>
+        <x-form-col xs-size="12" md-size="6">
+            <x-form-row no-gutters="true">
+                <x-field-date id="startDate" picker-option="DateOnly" xs-size="6" caption="Date Time" value="2010-01-31 16:00:01" date-format="dd-MMM-yyyy" time-format="HH:mm"></x-field-date>
+                <x-field-date id="endDate" picker-option="DateOnly" xs-size="6" caption="&nbsp" value="2010-01-31 16:00:01" date-format="dd-MMM-yyyy" time-format="HH:mm"></x-field-date>
+            </x-form-row>
+        </x-form-col>
+        <script>helper.initDateRange2('startDate', 'endDate', 'DD-MMM-YYYY')</script>
+    </x-form-row>
+    @*Date Range Example - End *@
+
+    @*Text Area Example - Start *@
+    <x-form-row>
+        <x-field-text-area xs-size="12" md-size="6" read-only="true" caption="Test Text Area" place-holder="Test Area">Helloo Jakarta</x-field-text-area>
+        <x-field-text-area xs-size="12" md-size="6" read-only="false" caption="Test Text Area" place-holder="Test Area">Helloo Jakarta</x-field-text-area>
+    </x-form-row>
+    @*Text Area Example - End *@
+
+    @{
+        var decendants = new List<string>();
+        decendants.Add("Divisi");
+
+        var ascendants = new List<string>();
+        ascendants.Add("Estate");
+
+        var ascendantFields = new List<string>();
+        ascendantFields.Add("UnitID");
+    }
+
+    <x-form-row>
+        <x-field-lov lov-type="Activity" binding-field="ACTID" xs-size="12" md-size="3">
+
+        </x-field-lov>
+
+        <x-field-lov lov-type="Block" binding-field="BLOCKID" xs-size="12" md-size="3" source-field-value="BLOCKID" source-field-text="CODE">
+
+        </x-field-lov>
+
+        <x-field-lov lov-type="Material" binding-field="MATERIALID" xs-size="12" md-size="3" source-field-texts="@(new List<string> { "MATERIALID","MATERIALNAME"})">
+
+        </x-field-lov>
+
+        <x-field-lov lov-type="Employee" binding-field="EMPID" xs-size="12" md-size="3" multiple="true">
+
+        </x-field-lov>
+    </x-form-row>
+   
+
+    <x-form-row>
+        <x-field-data-list id="estate" caption="Estate" xs-size="12" md-size="3" min-length-search="3" api-url="api/login/getunits" binding-field="UnitID" multiple="true" text-fields="{UNITCODE}-{NAME}" value-field="UNITCODE" search-by-word="true" search-contain="true" search-fields="[UNITCODE,NAME,ALIAS]" visible-fields="[UNITCODE,NAME]">
+        </x-field-data-list>
+        <x-field-data-list id="divisi" caption="Divisi" xs-size="12" md-size="3" 
+            min-length-search="3" api-url="api/divisi/list" binding-field="DivisionID" 
+            multiple="true" text-fields="{FULLNAME}" value-field="DIVID" search-by-word="true" search-contain="true" 
+            search-fields="[DIVID,FULLNAME]" visible-fields="[DIVID,FULLNAME]" 
+            ascendants="@(new List<FilterAscendant> { new FilterAscendant{ ElementID="estate",FieldID="UnitID"}})"
+            chain-to-relatives="true">
+        </x-field-data-list>
+    </x-form-row>
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Panel Heading</div>
+                <div class="panel-body">Panel Content</div>
+            </div>
+        </x-form-col>
+        
+    </x-form-row>
+
+    
+
+
+<script>
+    var xEvent = function (Id, eventName) {
+
+    };
+</script>
+

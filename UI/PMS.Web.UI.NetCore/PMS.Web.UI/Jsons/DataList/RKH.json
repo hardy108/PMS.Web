@@ -1,0 +1,80 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 1
+  },
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "DATE_IN_TEXT",
+    "FieldCaption": "Tgl. RKH",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY",
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "ACTDATE_IN_TEXT",
+    "FieldCaption": "Tgl. Apel Pagi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "PAYMENTTYPE_IN_TEXT",
+    "FieldCaption": "Tipe",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "STATUS_IN_TEXT",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "UPDATED_IN_TEXT",
+    "FieldCaption": "Update",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  }
+]

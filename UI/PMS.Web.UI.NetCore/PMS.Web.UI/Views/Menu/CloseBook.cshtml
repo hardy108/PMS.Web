@@ -1,0 +1,57 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Tutup Tahun";
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form>
+    <x-form-row>
+        <x-field-select id="cboUnit"  caption="Estate" read-only="false" place-holder="UNITID" xs-size="12" md-size="2" api-url="api/login/getunitsforselect">
+        </x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="txtYear" caption="Tahun" place-holder="Year" xs-size="12" md-size="2" >
+        </x-field-text>
+        <x-field-select id="cboAccount" caption="RE Account" read-only="false" place-holder="Account" xs-size="12" md-size="4" api-url="api/Account/listforselect">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<input type="button" name="btnProses" value="Process" onclick="ProcessClose()" />
+
+<script src="~/js/plugins/jquery.blockUI.js"></script>
+<script>
+
+    function ProcessClose() {
+
+        if (isNaN($('#txtYear').val())) {
+            alert('Tahun Hanya Angka')
+            return;
+        }
+
+        if ($('#txtYear').val() == "") {
+            alert('Tahun Tidak Boleh Kosong')
+            return;
+        }
+        param = {
+            unitCode: $('#cboUnit').val(),
+            year: $('#txtYear').val(),
+            accountCode: $('#cboAccount').val()
+        };
+
+        var account = $('#cboAccount').select2('data');
+
+        $.blockUI({ message: '<h4> Process Closing Account ' + account[0].text + '</h4>' });
+
+        helper.callAjaxRequestJson("api/Account/closeyear", param, 'get',
+            function () {$.unblockUI(alert('Process Success'));},
+            function (error) { $.unblockUI(alert(error.responseJSON.Message)); }
+            );
+        };
+
+
+   
+</script>

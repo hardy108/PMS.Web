@@ -1,0 +1,64 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Lokasi Penyimpanan";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="CODE" binding-field="CODE" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="6">
+        </x-field-text>
+
+        <x-field-data-list-divisi-by-user-name id="LOCID" caption="Divisi" xs-size="12" md-size="6" read-only="@ViewBag.ReadOnly" binding-field="LOCID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="NAME" binding-field="NAME" caption="Nama" xs-size="12" md-size="6">
+        </x-field-text>
+
+        <x-field-select id="CSPO" binding-field="CSPO" caption="CSPO" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#ACTIVE").val("true").trigger("change");
+            $("#CSPO").val("false").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

@@ -1,0 +1,35 @@
+[
+  {
+    "FieldName": "ACTIVITYID",
+    "FieldCaption": "Activity ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "ACTIVITYNAME",
+    "FieldCaption": "Activity Name",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "UOM1",
+    "FieldCaption": "UoM",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  }
+]

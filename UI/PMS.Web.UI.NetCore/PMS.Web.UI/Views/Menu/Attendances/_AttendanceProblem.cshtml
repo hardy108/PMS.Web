@@ -1,0 +1,544 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Kehadiran Bermasalah";
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnlyWhenNotInsert = false;
+    try
+    {
+        readOnlyWhenNotInsert = ViewBag.ReadOnlyWhenNotInsert;
+    }
+    catch { }
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnlyWhenNotInsert)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" });
+    }
+
+
+    bool allowApproveDetail = false;
+    try
+    {
+        allowApproveDetail = (ViewBag.Mode == "Approval");
+    }
+    catch { }
+
+    bool allowEditDetail = false;
+    try
+    {
+        allowEditDetail = !readOnly && ViewBag.allowEditDetail;
+    }
+    catch { }
+
+
+
+
+}
+
+<script>
+        var mode = "@(mode)";
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. Dokumen" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-date id="DATE" binding-field="DATE" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-form-col md-size="4" xs-size="12">
+            <x-field-file property-name="View" caption="Lampiran" read-only="@(readOnly)" binding-field="ATTACHMENTFILEID">
+            </x-field-file>
+        </x-form-col>
+    </x-form-row>
+
+    <x-tab-panel caption="Details">
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <div id="tblDetails"></div>
+            </x-form-col>
+        </x-form-row>        
+    </x-tab-panel>
+</x-form>
+
+<x-modal id="mdlDetail" caption="Detail">
+    <x-modal-body>
+        <input type="hidden" id="LINENO" data-bf="LINENO" />
+        <input type="hidden" id="APPROVED" data-bf="APPROVED" />
+        <input type="hidden" id="NEWAPPROVED" data-bf="NEWAPPROVED" />
+        <input type="hidden" id="REASONTEXT" data-bf="REASONTEXT" />
+        <x-form-row>
+            <x-field-data-list-employee caption="Karyawan" id="EMPID" binding-field="EMPID" xs-size="12" read-only="@(!allowEditDetail)" chain-to-relatives="@(allowEditDetail)"
+                                        ascendants="@(!allowEditDetail? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITCODE",FieldID = "UnitID"}})"
+                                        is-unit-mandatory="true">
+            </x-field-data-list-employee>
+        </x-form-row>
+        <input type="hidden" id="EMPNAME" data-bf="EMPNAME" />
+        <x-form-row>
+            <x-field-input id="EMPPOSITION" binding-field="EMPPOSITION" read-only="true" caption="Jabatan" xs-size="12"></x-field-input>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-absence-reason id="REASONID" binding-field="REASONID" caption="Alasan" xs-size="12" xl-size="12"></x-field-data-list-absence-reason>
+        </x-form-row>
+        <x-form-row id="rowReasonText" is-hidden="true">
+            <x-field-input id="MANUALREASONTEXT" binding-field="MANUALREASONTEXT" read-only="false" caption="Notes" xs-size="12"></x-field-input>
+        </x-form-row>
+        <input type="hidden" id="FAILEDFINGER" data-bf="FAILEDFINGER" />
+
+        <x-form-row id="rowFingerTime">
+            <x-field-date caption="Tgl. Finger" binding-field="FINGERDATE" picker-option="DateOnly" date-format="DD-MMM-YYYY" xs-size="8">
+
+            </x-field-date>
+            <x-field-date caption="Jam. Finger" binding-field="FINGERTIME" picker-option="TimeOnly" xs-size="4">
+
+            </x-field-date>
+        </x-form-row>
+    </x-modal-body>
+
+    <x-modal-footer>
+        <button id="btnSaveDetail" class="btn btn-primary" onclick="saveDetailToRow()">Save</button>
+        <button id="btnCancelDetail" class="btn btn-default" onclick="closeDetail()">Cancel</button>
+    </x-modal-footer>
+</x-modal>
+
+
+<x-modal id="mdlAlasanPenolakan" caption="Alasan Penolakan">
+    <x-modal-body>   
+        <x-form-row>
+            <x-field-text-area id="REJECTIONREASON" no-caption="true" xs-size="12"></x-field-text-area>
+        </x-form-row>
+    </x-modal-body>
+
+    <x-modal-footer>
+        <button id="btnSaveAlasanPenolakan" class="btn btn-primary" onclick="saveAlasanPenolakan()">Continue Reject</button>
+        <button id="btnCancelAlasanPenolakan" class="btn btn-default" onclick="closeAlasanPenolakan()">Cancel</button>
+    </x-modal-footer>
+</x-modal>
+
+
+
+
+<script>
+    var allowApproveDetail = @(allowApproveDetail?"true":"false");
+    var readOnly =  @(readOnly?"true":"false");
+    var allowEditDetail =  @(allowEditDetail?"true":"false");
+    var tblDetails;
+
+    
+    
+   
+    var initTableDetails = function () {
+
+        var formatterApproval = function (cell, params, onRendered) {
+            var rowData = cell.getRow().getData();
+            if (!rowData.APPROVED || !allowApproveDetail)
+                return tickCrossTabulator(cell, params, onRendered);
+
+            var attr = "";
+            if (cell.getValue())
+                attr += " checked";
+
+            var checkbox = "<input type='checkbox'" + attr + " />";
+            checkbox = $.parseHTML(checkbox);
+
+            $(checkbox).on("change", function () {
+                var rowX = cell.getRow();
+                var rowDataX = rowX.getData();
+                if (rowDataX.APPROVED && allowApproveDetail) {
+                    var currReason = rowDataX.REJECTIONREASON;
+                    rowDataX.REJECTIONREASON = rowDataX.REJECTIONREASON + " ";
+                    rowDataX.NEWAPPROVED = !rowDataX.NEWAPPROVED;
+                    rowX.update(rowDataX);
+
+                    rowDataX.NEWAPPROVED = this.checked;
+                    if (this.checked) {
+                        rowDataX.PREVREJECTIONREASON = currReason;
+                        rowDataX.REJECTIONREASON = "";
+                    }
+                    else
+                        rowDataX.REJECTIONREASON = !rowDataX.PREVREJECTIONREASON ? "" : rowDataX.PREVREJECTIONREASON;
+                    rowX.update(rowDataX);
+                    
+                }
+            });
+            return checkbox[0];
+        };
+
+        var formatterRejectionReason = function (cell, params, onRendered) {
+            
+            var rowData = cell.getRow().getData();
+            var cellValue = cell.getValue();
+            if (cellValue === null) {
+                cellValue = "";
+                cell.setValue(cellValue);
+            }
+            if (!rowData.APPROVED || !allowApproveDetail || rowData.NEWAPPROVED)
+                return cellValue;
+            
+            var textbox = "<input type='text' value='" + cellValue + "' style='width:100%'>";
+            textbox = $.parseHTML(textbox);
+            $(textbox).on("change", function () {
+                var rowX = cell.getRow();
+                var rowDataX = rowX.getData();
+                if (rowDataX.APPROVED && allowApproveDetail) {
+                    rowDataX.REJECTIONREASON = $(this).val();                    
+                    rowX.update(rowDataX);
+                }
+            });
+            return textbox[0];
+           
+        };
+
+        //var formatterApproval2 = function (cell, params, onRendered) {
+        //    var attr = "";
+        //    var rowData = cell.getRow().getData();
+        //    if (!rowData.APPROVED || !allowApproveDetail)
+        //        attr = " disabled";
+        //    if (rowData.NEWAPPROVED)
+        //        attr += " cheched";
+
+        //    var text = "";
+        //    if (!rowData.APPROVED)
+        //        text = "Rejected By " + rowData.REJECTEDBY
+        //    else {
+        //        if (rowData.APPROVED)
+        //            text = "Approved";
+        //        else
+        //            text = "Rejected";
+        //    }
+
+
+        //    hmtl = "<label class='el-checkbox el-checkbox-sm'><span class='margin-r'>" +  text  + "</span><input type='checkbox' name='check' " + attr + " on><span class='el-checkbox-style  pull-right'></span></label>"
+        //    var button = "";
+        //    if (rowData.NEWAPPROVED)
+        //        button = "<button class='btn btn-primary btn-block btn-xs' onclick='toggleApprovalRow(" + rowData.LINENO + ",this)'>Reject</button>";
+        //    else
+        //        button = "<button class='btn btn-primary btn-block btn-xs' onclick='toggleApprovalRow(" + rowData.LINENO + ")'>Approve</button>";
+        //    button = $.parseHTML(button);
+        //    return button[0];
+        //};
+
+        //var formatterStatus = function (cell, params, onRendered) {
+        //    var rowData = cell.getRow().getData();
+        //    if (!rowData.APPROVED)
+        //        return "Rejected By " + rowData.REJECTEDBY;
+        //    if (rowData.NEWAPPROVED)
+        //        return "Approved";
+        //    else
+        //        return "Rejected";
+        //}
+
+        //var formatterIsApproved = function (cell, params, onRendered) {
+        //    var rowData = cell.getRow().getData();
+        //    if (rowData) {                
+        //        var attr = "";                
+        //        if (!rowData.APPROVED || !allowApproveDetail)
+        //            attr += " disabled";
+        //        if (rowData.NEWAPPROVED)
+        //            attr += " checked";
+        //        var checkbox = "<input type='checkbox'" + attr + " class='new-approved' data-line-no='" + rowData.LINENO + "'/>";
+        //        checkbox = $.parseHTML(checkbox);
+        //        return checkbox[0];
+        //    }
+        //};
+
+        
+
+        //var formatterRejectionReason = function (cell, params, onRendered) {
+        //    var rowData = cell.getRow().getData();
+            
+        //    var textbox = "";            
+        //    var lineNo = rowData.LINENO;
+        //    var cellValue = rowData.REJECTIONREASON;
+        //    if (!cellValue)
+        //        cellValue = "";
+        //    var disabled = "";
+        //    if (rowData.NEWAPPROVED)
+        //        disabled = "disabled";
+        //    if (allowApproveDetail && rowData.APPROVED) {
+        //        textbox = "<input type='text' id='txtRejectReason" + lineNo + "' value='" + cellValue + "' style='width:100%' class='rejection-reason' data-line-no='" + lineNo + "'" + disabled + ">";
+        //        textbox = $.parseHTML(textbox);
+        //        return textbox[0];
+        //    } else {
+        //        textbox = cell.getValue();
+        //        return textbox;
+        //    }
+        //};
+
+        var rowClick = function (e, cell) {
+            if (allowEditDetail) {
+                showRow(cell.getRow().getData());
+            }
+        };
+        
+
+        var columns = [
+            //{ formatter: "responsiveCollapse", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false },
+            {
+                formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false,
+                cellClick: function (e, cell) {                    
+                    cell.getRow().toggleSelect();
+                },
+                visible: allowEditDetail,
+                responsive: 0
+            },            
+            
+            { title: "NIK", field: "EMPID", width: 110, minWidth: 110, cellClick: rowClick},
+            { title: "Nama Karyawan", field: "EMPNAME", width: 150, minWidth: 150, cellClick: rowClick},
+            { title: "Jabatan", field: "EMPPOSITION", width: 150, minWidth: 150, cellClick: rowClick},
+            { title: "Alasan", field: "REASONTEXT", width: 150, minWidth: 150, cellClick: rowClick},
+            { title: "Tgl. Finger", field: "FINGERDATE", hozAlign: "center", width: 100, minWidth: 100, cellClick: rowClick},
+            { title: "Jam Finger", field: "FINGERTIME", hozAlign: "center",  width: 100, minWidth: 100, cellClick: rowClick },
+            { title: "Approve", field:"NEWAPPROVED", hozAlign: "center", formatter: formatterApproval},            
+            { title: "Alasan Penolakan", field: "REJECTIONREASON", formatter:formatterRejectionReason}
+        ];
+
+        tblDetails = new Tabulator("#tblDetails", {
+            data: record.TATTENDANCEPROBLEMEMPLOYEE,
+            index: "LINENO",
+            layout: "fitDataStretch",
+            headerSort: true,            
+            movableColumns: true,
+            minHeight: 300,
+            //responsiveLayout: "collapse",
+            placeholder: "No Data Available",
+            initialSort: [             //set the initial sort order of the data
+                { column: "LINENO", dir: "asc" },
+            ],
+            columns: columns,
+            footerElement: (allowEditDetail ? "<div id='divFooter'></div>" : null),
+            dataLoaded: function (data) {
+                if (allowEditDetail) {
+                    var btn = "<button id='btnAddRow' class='btn btn-primary' onclick='showRow()'>Tambah</button>&nbsp;&nbsp;<button id='btnDeleteRow' class='btn btn-primary' onclick='deleteRows()'>Hapus</button>";
+                    $('#divFooter').html(btn);
+                }
+            }
+        });
+    }
+    
+    var customDisplay = function () {
+        initTableDetails();
+        return true;
+    };
+
+
+    var beforeSendAction = function (action, savedRecord) {
+        var errorTitle = mode + ' - ' + '@ViewBag.Title';
+    /* Specific Code Here - End*/
+
+
+            
+        var data = tblDetails.getData();
+        if (data && Array.isArray(data) && data.length > 0) {
+            data.forEach(element => {
+                element.APPROVED = element.NEWAPPROVED;
+            });
+        }
+        savedRecord.TATTENDANCEPROBLEMEMPLOYEE = data;
+        savedRecord.TATTENDANCEPROBLEMEMPLOYEE_COUNT = data.length;
+
+        return savedRecord;
+    };
+
+
+    
+    var prepareDetailFormCallback = function () {
+        $('#REASONID').on('addvalue:flexdatalist', function (event, selectedValue) {
+            
+            if (selectedValue.ID == "OT") {    
+                $('#rowReasonText').show();
+                $('#REASONTEXT').val($('#MANUALREASONTEXT').val());
+            }
+            else {                
+                $('#rowReasonText').hide();
+                $('#REASONTEXT').val(selectedValue.TEXT);
+            }
+
+            $('#FAILEDFINGER').val(selectedValue.FAILEDFINGER);
+            //if (selectedValue.FAILEDFINGER) {
+
+            //    $('#rowFingerTime').show();
+            //}
+            //else {
+            //    $('#rowFingerTime').hide();
+            //}
+        });
+
+        $('#REASONID').on('after:flexdatalist.remove', function (event, x, data) {            
+            $('#rowReasonText').hide();
+            //$('#rowFingerTime').hide();
+        });
+
+        $('#EMPID').on('addvalue:flexdatalist', function (event, selectedValue) {
+            $('#EMPNAME').val(selectedValue.EMPNAME);
+            $('#EMPPOSITION').val(selectedValue.POSITIONNAME);
+        });
+        $('#EMPID').on('after:flexdatalist.remove', function (event, x, data) {
+            $('#EMPNAME').val(null);
+            $('#EMPPOSITION').val(null);
+        });
+    }
+
+
+    var showRow = function (rowData) {
+        if (allowEditDetail) {
+            if (!$('#UNITCODE').val()) {
+                alert("Silakan pilih estate sebelum input detail");
+                return false;
+            }
+        }
+
+        resetElements('mdlDetail');
+        //$('#rowFingerTime').hide();
+        $('#rowReasonText').hide();
+        prepareDetailFormCallback();
+        if (rowData == null) //New Row
+            $('#APPROVED').val(true);
+        else
+            xFormDisplay('mdlDetail', rowData); //Show Existing Row
+        $('#mdlDetail').modal('show');
+    }
+
+    var activeLineNo = 0;
+    var activeButton = null;
+
+    
+
+    
+    var saveAlasanPenolakan = function () {
+        var row = tblDetails.getRow(activeLineNo);
+        var rowData = row.getData();
+        if (rowData) {
+            if (!$('#REJECTIONREASON').val()) {
+                alert("Alasan penolakan wajib diisi");
+                return;
+            }
+            rowData.NEWAPPROVED = false;
+            rowData.REJECTIONREASON = $('#REJECTIONREASON').val();
+            tblDetails.updateRow(activeLineNo, rowData);
+            $(activeButton).html("Approve");
+            //row.update({ NEWAPPROVED: false, REJECTIONREASON: $('#REJECTIONREASON').val() });
+            
+        }
+        $('#mdlAlasanPenolakan').modal('hide');
+    }
+
+    var closeAlasanPenolakan = function () {
+        $('#mdlAlasanPenolakan').modal('hide');
+    }
+    
+
+
+
+    var saveDetailToRow = function () {
+        var rowData = xFormSave('mdlDetail');
+        if (rowData.FAILEDFINGER === "true" || rowData.FAILEDFINGER === true)
+            rowData.FAILEDFINGER = true;
+        else
+            rowData.FAILEDFINGER = false;
+
+        if (rowData.NEWAPPROVED === "true" || rowData.NEWAPPROVED === true )
+            rowData.NEWAPPROVED = true;
+        else
+            rowData.NEWAPPROVED = false;
+
+        if (!rowData.EMPID || !rowData.EMPNAME ) {
+            alert("NIK belum diinput");
+            return;
+        }
+
+        if (!rowData.REASONID) {
+            alert("Alasan belum diinput");
+            return;
+        }
+
+        if (rowData.REASONID == "OT") {
+            if  (!rowData.MANUALREASONTEXT) {
+                alert("Alasan belum diinput");
+                return;
+            }
+            rowData.REASONTEXT = rowData.MANUALREASONTEXT;
+        } 
+
+        if (!rowData.REASONID || !rowData.REASONTEXT) {
+            alert("Alasan belum diinput");
+            return;
+        }
+
+        if (!rowData.FINGERDATE) {
+            alert("Tanggal finger belum diinput");
+            return;
+        }
+
+        if (rowData.FAILEDFINGER) {
+            if (!rowData.FINGERTIME) {
+                alert("Tanggal/Jam finger belum diinput");
+                return;
+            }
+        }
+        
+
+        if (!rowData.LINENO) {
+            var tableData = tblDetails.getData();
+            if (!tableData || tableData.length<=0)
+                rowData.LINENO = 1;
+            else {
+                var maxLineNoElement = maxElement(tblDetails.getData(), "LINENO");
+                if (!maxLineNoElement)
+                    rowData.LINENO = 1;
+                else
+                    rowData.LINENO = maxLineNoElement.LINENO + 1;
+            }
+            //New Row
+            rowData.APPROVED = true;
+            rowData.NEWAPPROVED = true;
+            tblDetails.addRow(rowData);
+        }
+        else {
+            //Update Row
+            var row = tblDetails.getRow(rowData.LINENO);
+            if (row) {
+                row.update(rowData);
+            }
+                
+        }
+        $('#mdlDetail').modal('hide');
+    }
+
+    var closeDetail =  function() {
+        $('#mdlDetail').modal('hide');
+    }
+
+    var deleteRows = function () {
+        var selectedData = tblDetails.getSelectedData();
+        if (!selectedData || !Array.isArray(selectedData) || selectedData.length <= 0) {
+            alert("Pilih data detail yang akan dihapus");
+            return;
+        }
+        selectedData.forEach(function (data) {
+            tblDetails.deleteRow(data.LINENO);
+        });
+    }
+
+    
+</script>
+
+

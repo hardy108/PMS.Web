@@ -1,0 +1,55 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 2
+    },
+    {
+      "Id": "DivisionId",
+      "Caption": "Divisi",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "MDSize": 2,
+      "Ascendants": [
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        }
+      ]
+    },
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Tanggal",
+      "Caption2": "&nbsp;",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    },
+    {
+      "Id": "Type",
+      "Caption": "Tipe Pegawai",
+      "Type": "selectoptions", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "OptionItems": [
+        {
+          "Id": "1",
+          "Text": "SKU"
+        },
+        {
+          "Id": "2",
+          "Text": "BHL"
+        }
+      ],
+      "MDSize": 2
+    },
+    {
+      "Id": "PaymentType",
+      "Caption": "Panen Kontanan",
+      "Type": "boolean", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 2
+    }
+  ]
+
+]

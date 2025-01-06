@@ -1,0 +1,70 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "TPH";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="TPHID" binding-field="TPHID" caption="TPHID" read-only="true" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-unit id="UNITID" binding-field="UNITID" caption="Unit" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-unit>
+
+        <x-field-data-list-divisi id="DIVID" binding-field="DIVID" caption="Divisi" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-divisi>
+
+        <x-field-data-list-block id="BLOCKID" binding-field="BLOCKID" caption="Block" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-block>
+
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="CODE" binding-field="CODE" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-select id="ISRSPO" binding-field="ISRSPO" caption="CSPO" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" select-type="Boolean">
+        </x-field-select>
+
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" select-type="Boolean">
+        </x-field-select>
+
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+    
+    var customDisplay = function () {
+        
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

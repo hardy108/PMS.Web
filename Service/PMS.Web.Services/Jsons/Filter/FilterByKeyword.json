@@ -1,0 +1,14 @@
+[
+  [
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean      
+      "XSSize": 12
+    }
+
+  ]
+  
+]
+
+

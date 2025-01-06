@@ -1,0 +1,112 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Family";
+    string tbl = "tbl" + prefix;
+    string editorForm = tbl + "_editorBody";
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+<div id="@(editorForm)" style="display:none">
+    <x-form-row>
+        <x-field-input id="FAMKTPID" binding-field="KTPID" caption="NIK/eKTP"></x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-input id="FAMFULLNAME" binding-field="FULLNAME" caption="Nama Lengkap"></x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-gender id="FAMGENDER" binding-field="GENDER" caption="Jenis Kelamin"></x-field-data-list-gender>
+    </x-form-row>
+    <x-form-row>
+        <x-field-input id="FAMPLACEOFBIRTH" binding-field="PLACEOFBIRTH" caption="Tempat Lahir"></x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date id="FAMBIRTHDAY" binding-field="BIRTHDAY" caption="Tanggal Lahir" picker-option="DateOnly"></x-field-date>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-education id="FAMEDUCATION" binding-field="EDUCATION" caption="Pendidikan"></x-field-data-list-education>
+    </x-form-row>
+    <x-form-row>
+        <x-field-input id="FAMRELATIONSHIP" binding-field="RELATIONSHIP" caption="Hubungan Keluarga"></x-field-input>
+    </x-form-row>
+</div>
+
+<script>
+
+    var @(prefix)_ = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "KTPID",
+                "title": "NIK",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "FULLNAME",
+                "title": "Nama Lengkap",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "GENDER",
+                "title": "Jenis Kelamin",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "PLACEOFBIRTH",
+                "title": "Tempat Lahir",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BIRTHDAY",
+                "title": "Tgl. Lahir",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EDUCATION",
+                "title": "Pendidikan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "RELATIONSHIP",
+                "title": "Hub. Keluarga",
+                "visible": true
+            }
+
+        ],
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+            var editingEnabled = !(@(isReadOnlyString));
+            initFooTableEdit("@(tbl)", "Data Keluarga", editingEnabled, editingEnabled, editingEnabled, rows, _this.columns, ["KTPID"]);
+        }
+    };
+</script>
+

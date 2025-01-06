@@ -1,0 +1,171 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    ViewData["Title"] = "SPB";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblDetailId = "tblSPBDetail";
+    string tblKartuTimbang = "tblSPBKartuTimbang";
+ 
+
+}
+
+<script>
+    var
+        dictBlocks = {};
+        dictCards = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="NOSPB" binding-field="SPBNO" caption="No. SPB" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-divisi-by-user-name id="DIVID" binding-field="DIVID" caption="Divisi" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-text binding-field="SPBNODHS" caption="No. SPB DHS" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="SPBDATE" caption="Tgl. SPB" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-number id="TOTALSPB" binding-field="TOTALSPB" caption="Janjang" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-Mill id="MILLCODE" binding-field="MILLCODE" caption="Mill" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-Mill>
+        <x-field-number id="TOTALTIMBANG" binding-field="TOTALTIMBANG" caption="KG" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="VEHICLENO" caption="No.Pol Truck" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text-area binding-field="REMARK" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="5">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="DRIVERNAME" caption="Pengemudi" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="OPERATORNAME" caption="Operator Timbang" read-only="@ViewBag.ReadOnly" place-holder="" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+
+    <x-form>
+        &nbsp;
+    </x-form>
+
+
+    <x-tab tab-style="nav-pills">
+            <x-tab-panel caption="SPB">
+                @Html.Partial("_SPBDetail.cshtml")
+            </x-tab-panel>
+
+            <x-tab-panel caption="Rencana Material">
+                @Html.Partial("_SPBKartuTimbang.cshtml")
+            </x-tab-panel>
+
+        </x-tab>
+</x-form>
+
+
+
+<script>
+    @*var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }*@
+
+    var checkMode = function () {
+        //if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+        //    var allowedMode = dictAllowedMode[record.STATUS];
+        //    var allowed = false;
+        //    if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+        //        allowedMode.forEach(function (modeOk) {
+        //            if (modeOk === mode) {
+        //                allowed = true;
+        //                return;
+        //            }
+        //        });
+        //        if (!allowed) {
+        //            alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+        //            mode = allowedMode[0];
+        //            return true;
+        //        }
+
+        //    }
+        //    if (!allowed) {
+        //        alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+        //        return false;
+        //    }
+        //}
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+ 
+
+        dictCards = {};
+        if (record.TKARTUTIMBANG && record.TKARTUTIMBANG.length > 0) {
+            record.TKARTUTIMBANG.forEach(function (value) {
+                dictCards[value.SRNO] = value;
+            });
+        }
+
+        dictBlocks = {};
+        if (record.TSPBDETAIL && record.TSPBDETAIL.length > 0) {
+            record.TSPBDETAIL.forEach(function (value) {
+                dictBlocks[value.BLOCKID] = value;
+            });
+        }
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        @(tblDetailId)_Handlers.initTable(record.TSPBDETAIL);
+        @(tblKartuTimbang)_Handlers.initTable(record.TKARTUTIMBANG);
+
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlDetail');
+        resetElements('mdlKartu');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit") {
+            savedRecord["TSPBDETAIL"] = @(tblDetailId)_Handlers.saveRows();
+            if (savedRecord["TSPBDETAIL"])
+                savedRecord["TSPBDETAIL_COUNT"] = savedRecord["TSPBDETAIL"].length;
+
+            savedRecord["TKARTUTIMBANG"] = @(tblKartuTimbang)_Handlers.saveRows();
+            if (savedRecord["TKARTUTIMBANG"])
+                savedRecord["TKARTUTIMBANG_COUNT"] = savedRecord["TKARTUTIMBANG"].length;
+
+        }
+        return savedRecord;
+    }
+
+</script>

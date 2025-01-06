@@ -1,0 +1,506 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblLoadingCollect";
+    string tblLoadingEmployeeId = "tblLoadingEmployee";
+    string tblLoadingBlockId = "tblLoadingBlock";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMuat" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusMuat" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMuat" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusMuat" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlCollect" caption="Pilih Karyawan dan Blok">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-select id="DATATYPE" caption="Tipe Data" read-only="@ViewBag.ReadOnly" place-holder="DATATYPE" xs-size="12" md-size="4">
+                    <option value="2" selected="selected">Karyawan</option>
+                    <option value="0">Karyawan & Blok</option>
+                    <option value="1">Blok</option>
+                </x-field-select>
+
+            </x-form-row>
+
+            <x-form-row>
+                <x-field-data-list-employee id="EMPLOYEEID" binding-field="EMPLOYEEID" caption="Karyawan" multiple="true" xs-size="12" value-field="*"
+                                            ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = "DIVID",FieldID="DivisionID" }})" min-length-search="3">
+                </x-field-data-list-employee>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="BLOCKID" binding-field="BLOCKID" caption="Blok" multiple="true" xs-size="12"
+                                         ascendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" chain-to-relatives="true" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetCollect" class="btn" onclick="resetElements('mdlCollect')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCollect" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseCollect" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseCollect" class="btn" onclick="$('#mdlCollect').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    $('#DATATYPE').change(function () {
+        if ($('#DATATYPE').val() != "") {
+            if ($('#DATATYPE').val() == "0") {
+                $('#BLOCKID').flexdatalist('disabled', false);
+                $('#EMPLOYEEID').flexdatalist('disabled', false);
+            }
+            if ($('#DATATYPE').val() == "1") {
+                $('#BLOCKID').flexdatalist('disabled', false);
+                $('#EMPLOYEEID').flexdatalist('disabled', true);
+            }
+            if ($('#DATATYPE').val() == "2") {
+                $('#EMPLOYEEID').flexdatalist('disabled', false);
+                $('#BLOCKID').flexdatalist('disabled', true);
+            }
+        }
+    });
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllCollect' name='chkDeleteCollect' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteCollect'>";
+                }
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "ID Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPCODE",
+                "title": "Kode Karyawan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Nama Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "COLLPOINT",
+                "visible": @(isReadOnlyString),
+                "title": "No TPH"
+            },
+            {
+                "type": "html",
+                "name": "COLLPOINT_INPUT",
+                "title": "No TPH",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='text' name='COLLPOINT' value='" + rowdata["COLLPOINT"] + "'  data-bf='COLLPOINT' onfocusout='updateInputToRow(this)'>";
+                }
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "visible": @(isReadOnlyString),
+                "title": "Jumlah"
+
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Jumlah",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                }
+            },
+            {
+                "type": "number",
+                "name": "QTYKG",
+                "title": "Berat (Kg)",
+                "visible": true
+            }
+        ],
+
+        showForm: function () {
+            if ($('#DIVID').flexdatalist('value')=="") {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            if ($('#SPBDATATYPE').val() != "") {
+                if ($('#SPBDATATYPE').val() == 0) {
+                    $("#DATATYPE").val("0").trigger("change");
+                    $('#DATATYPE').prop('disabled', false);
+                }
+                if ($('#SPBDATATYPE').val() == 1) {
+                    $('#BLOCKID').flexdatalist('disabled', true);
+                    $("#DATATYPE").val("2").trigger("change");
+                    $('#DATATYPE').prop('disabled', true);
+                }
+            }
+
+            $('#mdlCollect').modal('show');
+            return true;
+        },
+
+        initTable: function (rows) {
+
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.EMPLOYEEID = dictEmployees[row.EMPLOYEEID].EMPID;
+                    row.EMPCODE = dictEmployees[row.EMPLOYEEID].EMPCODE;
+                    row.EMPNAME = dictEmployees[row.EMPLOYEEID].EMPNAME;
+                    row.BLOCKID = dictBlocks[row.BLOCKID].BLOCKID;
+                });
+            }
+
+                if ($('#SPBDATATYPE').val() == 1 )
+                {
+                    $("#@(tblId)").footable({
+                        "columns": @(tblId)_Handlers.columns
+                    });
+                }
+                else {
+                    $("#@(tblId)").footable({
+                        "columns": @(tblId)_Handlers.columns,
+                        "rows": rows
+                    });
+                }
+
+
+        },
+        rowKeys: ["EMPLOYEEID","BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedCollects: [],
+        selectedEmployees: [],
+        selectedBlocks:[],
+
+        addRows: function (closeForm) {
+
+            if ($('#DATATYPE').val() == "0") {
+                @(tblId)_Handlers.selectedEmployees = $('#EMPLOYEEID').flexdatalist('value');
+                if (!@(tblId)_Handlers.selectedEmployees || !@(tblId)_Handlers.selectedEmployees.length) {
+                    alert("Karyawan belum dipilih");
+                    return false;
+                }
+
+                @(tblId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+                if (!@(tblId)_Handlers.selectedBlocks || !@(tblId)_Handlers.selectedBlocks.length) {
+                    alert("Blok belum dipilih");
+                    return false;
+                }
+
+            @(tblLoadingEmployeeId)_Handlers.selectedEmployees = $('#EMPLOYEEID').flexdatalist('value');
+            @(tblLoadingBlockId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+            }
+
+            else if ($('#DATATYPE').val() == "1" ) {
+                @(tblId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+                if (!@(tblId)_Handlers.selectedBlocks || !(@(tblId)_Handlers.selectedBlocks.length)) {
+                    alert("Blok belum dipilih");
+                    return false;
+                }
+            @(tblLoadingBlockId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+            @(tblLoadingBlockId)_Handlers.addRows();
+
+            }
+
+            else if ($('#DATATYPE').val() == "2" ) {
+                @(tblId)_Handlers.selectedEmployees = $('#EMPLOYEEID').flexdatalist('value');
+                if (!@(tblId)_Handlers.selectedEmployees || !@(tblId)_Handlers.selectedEmployees.length) {
+                    alert("Karyawan belum dipilih");
+                    return false;
+                }
+            @(tblLoadingEmployeeId)_Handlers.selectedEmployees = $('#EMPLOYEEID').flexdatalist('value');
+            @(tblLoadingEmployeeId)_Handlers.addRows();
+            }
+
+            else if ($('#DATATYPE').val() === null) {
+                alert("Pilih Salah Satu Jenis Data");
+                return false;
+            }
+
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            if ($('#DATATYPE').val() == "0") {
+
+                var added = 0;
+            @(tblId)_Handlers.selectedEmployees.forEach(function (employee) {
+                    @(tblId)_Handlers.selectedBlocks.forEach(function (block) {
+                        var detail =
+                        {
+                            EMPLOYEEID: employee.EMPID,
+                            EMPCODE: employee.EMPCODE,
+                            EMPNAME: employee.EMPCODE + ' - ' + employee.EMPNAME,
+                            BLOCKID: block.BLOCKID,
+                            COLLPOINT: "-",
+                            QTY: 0
+                        };
+
+                        detail.key = @(tblId)_Handlers.getRowKey(detail);
+                        if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                            ft.rows.add(detail, false);
+                            added++;
+                        }
+
+                    });
+                });
+
+
+                if (added) {
+                ft.draw();
+                }
+                @(tblLoadingEmployeeId)_Handlers.addRows();
+                @(tblLoadingBlockId)_Handlers.addRows();
+
+            }
+            if (closeForm)
+                $('#mdlCollect').modal('hide');
+            return;
+
+        },
+
+        deleteRows: function (rows) {
+            if(!rows)
+            {
+                if (!confirm('Jika data detail dihapus, semua data yang berhubungan akan dihapus.\r\nYakin akan menghapus detail muat?'))
+                    return;
+            }
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0,
+                arraydeletedEmployees = [],
+                arraydeletedBlocks = [],
+                arraydeletedAll=[];
+
+            if (ft) {
+
+                $('[name = "chkDeleteCollect"]').each(function () {
+                    if (this.id !== 'chkAllCollect') {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            $row.delete(false);
+                            deletedCount++;
+                            arraydeletedEmployees.push($row.val()["EMPLOYEEID"]);
+                            arraydeletedBlocks.push($row.val()["BLOCKID"]);
+                        }
+                    }
+                });
+
+
+
+                //Delete Collects From List Block & Employee
+                if (rows) {
+
+                    if (rows.length > 0 && Array.isArray(rows)) {
+
+                        $.each(rows, function (i, data) {
+                            $.each(ft.rows.all, function (i, row) {
+                                //Block
+                                if (data.BLOCKID !== undefined) {
+                                    if (data.BLOCKID == row.value.BLOCKID) {
+                                        arraydeletedAll.push({ BLOCKID: row.value.BLOCKID, EMPLOYEEID: row.value.EMPLOYEEID});
+                                    }
+                                }
+                                //Employee
+                                if (data.EMPLOYEEID !== undefined) {
+                                    if (data.EMPLOYEEID == row.value.EMPLOYEEID) {
+                                        arraydeletedAll.push({ BLOCKID: row.value.BLOCKID, EMPLOYEEID: row.value.EMPLOYEEID });
+                                    }
+                                }
+
+                            });
+                        });
+
+                        //Proses Delete
+                        $.each(arraydeletedAll, function (d, del) {
+                            ft.rows.all.forEach(function (i, row) {
+                                if (i.value.EMPLOYEEID == del.EMPLOYEEID && i.value.BLOCKID == del.BLOCKID) {
+                                    arraydeletedEmployees.push(i.value.EMPLOYEEID);
+                                    arraydeletedBlocks.push(i.value.BLOCKID);
+                                    i.delete(false);
+                                    deletedCount++;
+                                    }
+                                });
+                        });
+
+
+                    }
+                };
+
+                if (deletedCount) {
+                    ft.draw();
+
+                    var newDeletedEmployees = [];
+                    arraydeletedEmployees.forEach(function (item) {
+                        var employeeId = item;
+                        var deletedMemployee = true;
+                        $.each(ft.rows.all, function (i, row) {
+                            if (row.val()["EMPLOYEEID"] == employeeId) {
+                                deletedMemployee = false;
+                                return;
+                                }
+                            });
+                        if (deletedMemployee) {
+                            newDeletedEmployees.push({ EMPLOYEEID: employeeId });
+                        }
+                    });
+
+                    @(tblLoadingEmployeeId)_Handlers.deleteRows(newDeletedEmployees);
+
+
+                    var newDeletedBlocks = [];
+                    arraydeletedBlocks.forEach(function (item) {
+                        var blockId = item;
+                        var deletedBlock = true;
+                        $.each(ft.rows.all, function (i, row) {
+                            if (row.val()["BLOCKID"] == blockId) {
+                                deletedBlock = false;
+                                return;
+                                }
+                            });
+                        if (deletedBlock) {
+                            newDeletedBlocks.push({ BLOCKID: blockId });
+                        }
+                    });
+
+                    @(tblLoadingBlockId)_Handlers.deleteRows(newDeletedBlocks);
+
+                    }
+
+            }
+        },
+
+        saveRows: function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+
+                if (row.val()["QTY"] == 0 ) {
+                    alert("KARYAWAN " + row.val()["EMPNAME"] + " BLOK " + row.val()["BLOCKID"] + " TPH " + row.val()["COLLPOINT"] + " Tidak Boleh QTY = 0")
+                    return null;
+                }
+
+                if (row.val()["QTY"] > 0)
+                    rows.push(row.val());
+            });
+            return rows;
+        },
+        ReadOnly: function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+            ft.columns.get('COLLPOINT').visible = true;
+            ft.columns.get('COLLPOINT_INPUT').visible = false;
+            ft.columns.get('QTY').visible = true;
+            ft.columns.get('QTY_INPUT').visible = false;
+        },
+        EditOnly: function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+            ft.columns.get('COLLPOINT').visible = true;
+            ft.columns.get('COLLPOINT_INPUT').visible = false;
+            ft.columns.get('QTY').visible = true;
+            ft.columns.get('QTY_INPUT').visible = false;
+        }
+    };
+
+
+
+</script>

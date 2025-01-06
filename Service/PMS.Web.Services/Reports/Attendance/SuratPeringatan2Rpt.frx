@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/17/2020 16:22:16" ReportInfo.Modified="02/26/2020 14:54:53" ReportInfo.CreatorVersion="2020.1.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqULvGFykoY70YkPWC433o5tI+rnjzNr0acomhxfoeNWm5UESES6wfI9SFEQk9SY8iguEbxqwHoz1VuPK0/Imi4hZUCfqrBAAgo2jGGXwG+HxYDGbmnbRF5o2+cgTwI6x/SqF8LnuEYEi9KnAXZ4xxB2u4nSVH4ClnWNs+KebuC8Ugt35KQppKvJcQmOHYfwcM8IeztYH90o4dun5dteK58w==">
+      <TableDataSource Name="Table" Alias="Data_SuratPeringatan" DataType="System.Int32" Enabled="true" SelectCommand="Exec rpt_SuratPeringatan @Id">
+        <Column Name="TGLSP" DataType="System.DateTime" Format="Date"/>
+        <Column Name="HARITGLSP" DataType="System.String"/>
+        <Column Name="BULANTGLSP" DataType="System.String"/>
+        <Column Name="NOSP" DataType="System.String"/>
+        <Column Name="EMPID" DataType="System.String"/>
+        <Column Name="EMPNAME" DataType="System.String"/>
+        <Column Name="POSITIONNAME" DataType="System.String"/>
+        <Column Name="ALAMAT" DataType="System.String"/>
+        <Column Name="HARITGLAWALM" DataType="System.String"/>
+        <Column Name="TGLAWALM" DataType="System.DateTime"/>
+        <Column Name="TGLAKHIRM" DataType="System.DateTime"/>
+        <Column Name="HARITGLAKHIRM" DataType="System.String"/>
+        <Column Name="NOSP1" DataType="System.String"/>
+        <Column Name="TGLSP1" DataType="System.DateTime"/>
+        <Column Name="BULANTGLSP1" DataType="System.String"/>
+        <Column Name="NOSP2" DataType="System.String"/>
+        <Column Name="TGLSP2" DataType="System.DateTime"/>
+        <Column Name="BULANTGLSP2" DataType="System.String"/>
+        <Column Name="UNITMGR" DataType="System.String"/>
+        <Column Name="TGLPANGGILAN" DataType="System.DateTime"/>
+        <Column Name="TGLPHK" DataType="System.DateTime"/>
+        <Column Name="HARIPANGGILAN" DataType="System.String"/>
+        <Column Name="TEMPATPANGGILAN" DataType="System.String"/>
+        <Column Name="COMPANYNAME" DataType="System.String"/>
+        <Column Name="YEAR" DataType="System.String"/>
+        <Column Name="KABUPATEN" DataType="System.String"/>
+        <Column Name="PERIHAL" DataType="System.String"/>
+        <Column Name="TYPESP" DataType="System.String"/>
+        <Column Name="BULANPANGGILAN" DataType="System.String"/>
+        <CommandParameter Name="Id" DataType="22" Expression="[Id]"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="Id" DataType="System.String" Expression="Id"/>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="18.9"/>
+    <DataBand Name="Data1" Top="22.9" Width="718.2" Height="982.8" DataSource="Table" KeepTogether="true">
+      <TextObject Name="Text36" Top="803.25" Width="28.35" Height="18.9" Text="Cc.&#13;&#10;&#13;&#10;" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text6" Left="28.35" Top="803.25" Width="689.85" Height="18.9" Border.Lines="Top" Border.Color="Transparent" Border.Width="1.5" Text="1.  Yth.Bapak Kepala Dinas Tenaga Kerja Kabupaten  [Data_SuratPeringatan.KABUPATEN]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text34" Top="661.5" Width="132.3" Height="18.9" Text="Hormat kami,&#13;&#10;&#13;&#10;" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text4" Top="689.85" Width="378" Height="18.9" Text="[Data_SuratPeringatan.COMPANYNAME]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text33" Top="614.25" Width="718.2" Height="18.9" Text="Demikian surat ini kami sampaikan sebagai pemberitahuan. Atas perhatiannya kami ucapkan terima kasih.&#13;&#10;&#13;&#10;" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text8" Top="463.05" Width="94.5" Height="18.9" Text="Hari / Tanggal" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text9" Top="491.4" Width="94.5" Height="18.9" Text="Pukul" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text10" Top="519.75" Width="94.5" Height="18.9" Text="Tempat" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text11" Left="94.5" Top="463.05" Width="302.4" Height="18.9" Text=": [Data_SuratPeringatan.HARIPANGGILAN] / [Day([Data_SuratPeringatan.TGLPANGGILAN])] [Data_SuratPeringatan.BULANPANGGILAN] [Year([Data_SuratPeringatan.TGLPANGGILAN])]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text12" Left="94.5" Top="491.4" Width="302.4" Height="18.9" Text=": 08:00 - 17:00" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text13" Left="94.5" Top="519.75" Width="302.4" Height="18.9" Text=": [Data_SuratPeringatan.TEMPATPANGGILAN]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text35" Left="5.67" Top="784.35" Width="217.35" Height="9.45" Border.Lines="Top" Border.Width="1.5" Text="&#13;&#10;&#13;&#10;" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text7" Left="28.35" Top="831.6" Width="689.85" Height="18.9" Border.Lines="Top" Border.Color="Transparent" Border.Width="1.5" Text="2.  Head HC &amp; CS /  Head Operation Business Partner Dept di HO Jakarta" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text37" Left="28.35" Top="859.95" Width="689.85" Height="18.9" Border.Lines="Top" Border.Color="Transparent" Border.Width="1.5" Text="3.  File" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text31" Top="207.9" Width="510.3" Height="18.9" Text="[Data_SuratPeringatan.ALAMAT]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text32" Top="264.6" Width="132.3" Height="18.9" Text="Dengan hormat,&#13;&#10;&#13;&#10;" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text5" Top="292.95" Width="718.2" Height="151.2" Text="Menunjuk pada Surat Panggilan I (Pertama) [Data_SuratPeringatan.NOSP1] tertanggal [Day([Data_SuratPeringatan.TGLSP1])] [Data_SuratPeringatan.BULANTGLSP1] [Year([Data_SuratPeringatan.TGLSP1])] yang telah disampaikan kepada Saudara, sampai dengan saat ini berdasarkan data yang ada pada Human Capital-Corporate Service (&quot;HC-CS&quot;) saudara masih tetap tidak hadir tanpa keterangan (mangkir) di lokasi kerja [Data_SuratPeringatan.COMPANYNAME] terhitung sejak hari [Data_SuratPeringatan.HARITGLAWALM], tanggal [Day([Data_SuratPeringatan.TGLAWALM])] bulan [Month([Data_SuratPeringatan.TGLAWALM])] tahun [Year([Data_SuratPeringatan.TGLAWALM])] ([Data_SuratPeringatan.TGLAWALM]) sampai dengan hari [Data_SuratPeringatan.HARITGLAKHIRM], tanggal [Day([Data_SuratPeringatan.TGLAKHIRM])] bulan [Month([Data_SuratPeringatan.TGLAKHIRM])] tahun [Year([Data_SuratPeringatan.TGLAKHIRM])] ([Data_SuratPeringatan.TGLAKHIRM]), maka melalui surat ini kami memanggil saudara untuk kedua kalinya agar data menghadap [Data_SuratPeringatan.TEMPATPANGGILAN] [Data_SuratPeringatan.COMPANYNAME] untuk memberikan klarifikasi dan mempertanggungjawabkan ketidakhadiran saudara dengan membawa serta keterangan tertulis dengan bukti yang sah pada :" HorzAlign="Justify" Font="Arial Narrow, 12pt">
+        <Formats>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <CustomFormat Format="dd-MM-yyyy"/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <CustomFormat Format="dd-MM-yyyy"/>
+          <CustomFormat Format="dd-MM-yyyy"/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <CustomFormat Format="dd-MM-yyyy"/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+        </Formats>
+      </TextObject>
+      <TextObject Name="Text28" Top="122.85" Width="132.3" Height="18.9" Text="Kepada" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text29" Top="151.2" Width="510.3" Height="18.9" Text="Yth. Sdr. [Data_SuratPeringatan.EMPNAME]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text30" Top="179.55" Width="510.3" Height="18.9" Text="[Data_SuratPeringatan.POSITIONNAME] - [Data_SuratPeringatan.COMPANYNAME]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text26" Top="75.6" Width="66.15" Height="18.9" Text="Perihal" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text2" Left="66.15" Top="75.6" Width="396.9" Height="18.9" Text=": [Data_SuratPeringatan.PERIHAL]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text25" Top="47.25" Width="66.15" Height="18.9" Text="Lampiran" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text27" Left="66.15" Top="47.25" Width="160.65" Height="18.9" Text=": -" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text3" Left="519.75" Width="198.45" Height="18.9" Text="[Data_SuratPeringatan.KABUPATEN], [Day([Data_SuratPeringatan.TGLSP])] [Data_SuratPeringatan.BULANTGLSP] [Year([Data_SuratPeringatan.TGLSP])]" HorzAlign="Right" Font="Arial Narrow, 12pt">
+        <Formats>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+          <GeneralFormat/>
+        </Formats>
+      </TextObject>
+      <TextObject Name="Text24" Top="18.9" Width="66.15" Height="18.9" Text="Nomor" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text1" Left="66.15" Top="18.9" Width="160.65" Height="18.9" Text=": [Data_SuratPeringatan.NOSP]" Font="Arial Narrow, 12pt"/>
+      <TextObject Name="Text14" Left="94.5" Top="548.1" Width="302.4" Height="18.9" Text="  [Data_SuratPeringatan.COMPANYNAME]" Font="Arial Narrow, 12pt"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="1009.7" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>

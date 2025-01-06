@@ -1,0 +1,68 @@
+[
+  {
+    "FieldName": "TPHID",
+    "FieldCaption": "Id",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "UNITID",
+    "FieldCaption": "Unit",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "BLOCKID",
+    "FieldCaption": "Block",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "CODE",
+    "FieldCaption": "Code",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "ISRSPO",
+    "FieldCaption": "ISRSPO",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  }
+]

@@ -1,0 +1,80 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Perjalanan Dinas";
+    Layout = null ;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="IDTRAVEL" binding-field="IDTRAVEL" caption="No. ID Travel" read-only="true" place-holder="Auto Number" xs-size="12" md-size="4">
+        </x-field-text>
+
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+
+        <x-field-text binding-field="STATUS" caption="Status Perjalanan Dinas" read-only="true" place-holder="Status Perjalanan Dinas" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-employee id="EMPLOYEEID" binding-field="EMPLOYEEID" caption="Karyawan" value-field="EMPID" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+
+        <x-field-date binding-field="STARTDATE" caption="Tanggal Mulai Dinas" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+        <x-field-date binding-field="ENDDATE" caption="Tanggal Akhir Dinas" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="NOTE" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="4">
+        </x-field-text>
+
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        //var empId = $("#EMPID").val();
+        //$("#EMPLOYEE").val(empId);
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        //var emp = [];
+        //$('#EMPLOYEE').on('change', function () {
+        //    emp = $('#EMPLOYEE').flexdatalist('value');
+        //    var employeeId = emp.EMPID;
+        //    var pin = emp.PINID;
+        //    var unitId = emp.UNITCODE;
+        //    $("#EMPID").val(employeeId);
+        //    $("#PIN").val(pin);
+        //    $("#UNITID").val(unitId);
+        //});
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+</script>

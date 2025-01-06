@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "Id": "Type",
+      "Caption": "Tipe Laporan",
+      "Type": "selectoptions", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "OptionItems": [
+        {
+          "Id": "TBM",
+          "Text": "Immature Cost"
+        },
+        {
+          "Id": "TM",
+          "Text": "Mature Cost"
+        },
+        {
+          "Id": "HV",
+          "Text": "Harvesting Cost"
+        }
+      ],
+      "MDSize": 6
+    },
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 6
+    }
+  ],
+  [
+    {
+      "Id": "DivisionId",
+      "Caption": "Divisi",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "MDSize": 6,
+      "Ascendants": [
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        }
+      ]
+    },
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Tanggal",
+      "Caption2": "&nbsp;",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 6
+    }
+  ]
+]

@@ -1,0 +1,160 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Premi Panen";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string tblPremiPanenBlockId = "tblPremiPanenBlock";
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<script>
+    var dictBlocks = {},
+        readonly = @(isReadOnlyString);
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text binding-field="PREMIPANENID" id="PREMIPANENID" caption="ID PREMI PANEN" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Estate" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Estate" xs-size="12" md-size="3" value-field="UNITCODE">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-text binding-field="STATUS" id="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="BASISGROUP" binding-field="BASISGROUP" caption="Grup Basis" read-only="@ViewBag.ReadOnly" place-holder="Grup Basis" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-data-list-activity id="ACTID" binding-field="ACTID" xs-size="12" md-size="3" caption="Jenis Panen" read-only="@ViewBag.ReadOnlyWhenNotInsert" chain-to-relatives="true" api-url-param="HV=true" min-length-search="0">
+        </x-field-data-list-activity>
+        <input type="hidden" id="HARVESTTYPE" name="HARVESTTYPE" data-bf="HARVESTTYPE">
+
+        <x-field-data-list-employee-type-harvest id="EMPLOYEETYPE" binding-field="EMPLOYEETYPE" min-length-search="0" caption="Tipe Kary." multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="1" value-field="ID" visible-fields="[ID]">
+        </x-field-data-list-employee-type-harvest>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="DESCRIPTION" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="5">
+        </x-field-text>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Blok">
+            @Html.Partial("_PremiPanenBlock.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Dasar">
+            @Html.Partial("_PremiPanenBasisBasic.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Dengan Gerdan">
+            @Html.Partial("_PremiPanenBasisWithGerdan.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Gerdan">
+            @Html.Partial("_PremiPanenBasisGerdan.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Jumat & Gerdan">
+            @Html.Partial("_PremiPanenBasisJumatDanGerdan.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Pokok Tinggi">
+            @Html.Partial("_PremiPanenBasisPokokTinggi.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Basis Ha">
+            @Html.Partial("_PremiPanenBasisHa.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Kehadiran">
+            @Html.Partial("_PremiPanenKehadiran.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Borong">
+            @Html.Partial("_PremiPanenBorong.cshtml")
+        </x-tab-panel>
+
+    </x-tab>
+</x-form>
+
+<script>
+
+    $('#ACTIVITYID').on('addvalue:flexdatalist', function (event, selectedValue) {
+        $('#HARVESTTYPE').val(selectedValue.HVTYPE);
+        return;
+    });
+
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var beforeDisplay = function () {
+
+        dictBlocks = {};
+        if (record.MPREMIPANENBLOCK && record.MPREMIPANENBLOCK.length > 0) {
+            record.MPREMIPANENBLOCK.forEach(function (value) {
+                dictBlocks[value.BLOCKID] = value;
+            });
+        }
+
+        return true;
+    };
+
+    var customDisplay = function () {
+        @(tblPremiPanenBlockId)_Handlers.initTable(record.MPREMIPANENBLOCK);
+        return true;
+    };
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlBlock');
+        return true;
+    };
+
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        savedRecord["MPREMIPANENBLOCK"] = @(tblPremiPanenBlockId)_Handlers.saveRows();
+        if (savedRecord["MPREMIPANENBLOCK"])
+            savedRecord["MPREMIPANENBLOCK_COUNT"] = savedRecord["MPREMIPANENBLOCK"].length;
+        savedRecord.HARVESTTYPE = $('#HARVESTTYPE').val();
+        savedRecord.EMPLOYEETYPE = $('#EMPLOYEETYPE').val();
+        return savedRecord;
+    };
+
+</script>

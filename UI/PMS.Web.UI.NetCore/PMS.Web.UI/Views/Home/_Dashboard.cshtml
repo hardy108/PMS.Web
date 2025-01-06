@@ -1,0 +1,235 @@
+﻿@using PMS.Web.UI.Code
+
+<div class="row">
+    <div class="col-md-3">
+        @Html.Raw(new HtmlAjaxInputSelectEstate { Caption = "Location", Id = "cboAuthorizedEstates", WithInitScript=true})
+    </div>
+    <div class="col-md-2">
+        @Html.Raw(new HtmlInputDateTimePicker { Caption = "As of Date:", Id = "AsOffDate", Value = DateTime.Today, PickerOption = HtmlInputDateTimePickerOption.DateOnly,WithInitScript=true })
+    </div>
+</div>
+<div class="row">
+    <section class="col-lg-12 connectedSortable ui-sortable">
+
+        <div class="box box-solid bg-light-blue">
+            <div class="box-header with-border ui-sortable-handle" style="cursor: move;">
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="" style="margin-right: 5px;" data-original-title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+
+                <h3 class="box-title">
+                    Year-To-Date
+                </h3>
+            </div>
+            <div class="box-body" style="">
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-aqua">
+                        <a href="#" class="small-box-footer">Janjang Panen</a>
+                        <div class="inner">
+                            <h3 id="YtdJanjangPanen">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-green">
+                        <a href="#" class="small-box-footer">Janjang Kirim</a>
+                        <div class="inner">
+                            <h3 id="YtdJanjangKirim">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-red">
+                        <a href="#" class="small-box-footer">Janjang Restan</a>
+                        <div class="inner">
+                            <h3 id="YtdJanjangRestan">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-orange">
+                        <a href="#" class="small-box-footer">Janjang Terima</a>
+                        <div class="inner">
+                            <h3 id="YtdJjgTerima">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-yellow">
+                        <a href="#" class="small-box-footer">Tonase Mill</a>
+                        <div class="inner">
+                            <h3 id="YtdTonTerima">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-maroon">
+                        <a href="#" class="small-box-footer">Jumlah Blok Panen</a>
+                        <div class="inner">
+                            <h3 id="BlockCount">--</h3>
+                            <p>s.d. Bulan Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.box-body-->
+
+        </div>
+    </section>
+</div>
+
+<div class="row">
+    <section class="col-lg-12 connectedSortable ui-sortable">
+
+        <div class="box box-solid bg-light-blue">
+            <div class="box-header with-border ui-sortable-handle" style="cursor: move;">
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="" style="margin-right: 5px;" data-original-title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+
+                <h3 class="box-title">
+                    Month To Date
+                </h3>
+            </div>
+            <div class="box-body" style="">
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-aqua">
+                        <a href="#" class="small-box-footer">Janjang Panen</a>
+                        <div class="inner">
+                            <h3 id="MtdJanjangPanen">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-green">
+                        <a href="#" class="small-box-footer">Janjang Kirim</a>
+                        <div class="inner">
+                            <h3 id="MtdJanjangKirim">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-red">
+                        <a href="#" class="small-box-footer">Janjang Restan</a>
+                        <div class="inner">
+                            <h3 id="MtdJanjangRestan">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-orange">
+                        <a href="#" class="small-box-footer">Janjang Terima</a>
+                        <div class="inner">
+                            <h3 id="MtdJjgTerima">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-yellow">
+                        <a href="#" class="small-box-footer">Tonase Mill</a>
+                        <div class="inner">
+                            <h3 id="MtdTonTerima">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+                <div class="col-lg-2 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-maroon">
+                        <a href="#" class="small-box-footer">Jumlah Blok Panen</a>
+                        <div class="inner">
+                            <h3 id="BlockCount">--</h3>
+                            <p>s.d. Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.box-body-->
+
+        </div>
+    </section>
+</div>
+
+
+<script>
+    var loadSummaryData = function (estateCode, endDate) {
+        if (estateCode && endDate) {
+            $.ajax({
+                type: "get",
+                headers: { "Authorization": authServices.getBearerToken() },
+                url: _API_URL + "api/dashboard/getsummarydata?estateCode=" + estateCode + "&endDate=" + endDate,
+                success: function (responseData, textStatus, jqXHR) {
+                    if (responseData) {
+                        helper.displayData(responseData, "");
+                    }
+                }
+
+            });
+        }
+    };
+
+
+    
+
+    var refreshCurrentPage = function () {
+
+        var estateCode = $("#cboAuthorizedEstates").val();        
+        var asOffDate = $("#AsOffDate").val();        
+        loadSummaryData(estateCode, asOffDate);
+    };
+
+    $('#cboAuthorizedEstates').on("change", function () { refreshCurrentPage(); });
+    $('#AsOffDate').on("dp.change", function () { refreshCurrentPage(); });
+    refreshCurrentPage();
+
+</script>

@@ -1,0 +1,278 @@
+﻿@using PMS.Web.UI.Code
+@{ 
+
+    string jsonId = "doket";
+    HtmlJsonFormatter jsonFormatter = new HtmlJsonFormatter { Id = jsonId };
+    string displayFunction = jsonFormatter.JsFunctionDisplayName + "(data)";
+
+    HtmlModal modal = new HtmlModal
+    {
+        Id = "frmDoketDetail",
+        UsingGridSystem = true,
+        Caption = "Doket Detail",
+        BodyHtmlInputs =
+        {
+            new HtmlFormRow
+            {
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Doket ID", ReadOnly = true,Id="txtDoketId",BindingField = "DOK_ID",JsonFormatter = jsonFormatter}
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize = 4,
+                        HtmlInput = new HtmlInputDateReadOnly{Caption = "Tgl. Panen", ReadOnly=true,Id="txtTglPanen",BindingField="DOK_TGLPANEN" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputTimeReadOnly{Caption = "Jam Catat", ReadOnly=true,Id="txtJamCatat",BindingField="DOK_JAMCATAT" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputText{Caption = "Status", ReadOnly = true,Id="txtDoketStatus",BindingField = "DOK_STATUS_TEXT",JsonFormatter = jsonFormatter}
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputText{Caption = "Divisi", ReadOnly=true,Id="txtDivisi",BindingField="DOK_DIVID" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputText{Caption = "Blok", ReadOnly=true,Id="txtBlok",BindingField="DOK_BLOCKID" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "TPH", ReadOnly=true,Id="txtTPH",BindingField="DOK_TPHCODE" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputText{Caption = "Longitude", ReadOnly=true,Id="txtLongitude",BindingField="DOK_LG" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputText{Caption = "Latitude", ReadOnly=true,Id="txtLatitute",BindingField="DOK_LT" ,JsonFormatter = jsonFormatter }
+                    }
+
+
+                }
+            },
+            
+            new HtmlFormRow
+            {
+                Id = "rowPemanen",
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Pemanen", ReadOnly=true,Id="txtPemanen",BindingField="DOK_PEMANEN" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=8,
+                        HtmlInput = new HtmlInputText{Caption = "Nama Pemanen", ReadOnly=true,Id="txtPemanenName",BindingField="DOK_PEMANENNAME" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                Id = "rowPembrondol",
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Pemberondol", ReadOnly=true,Id="txtPembrondol",BindingField="DOK_PEMBRONDOL" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=8,
+                        HtmlInput = new HtmlInputText{Caption = "Nama Pemberondol", ReadOnly=true,Id="txtPembrondolName",BindingField="DOK_PEMBRONDOLNAME" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                Id = "rowMandor",
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Mandor", ReadOnly=true,Id="txtMandor",BindingField="DOK_MANDORID" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=8,
+                        HtmlInput = new HtmlInputText{Caption = "Nama Mandor", ReadOnly=true,Id="txtMandorName",BindingField="DOK_MANDORNAME" ,JsonFormatter = jsonFormatter }
+                    }
+                    
+                }
+            },
+            new HtmlFormRow
+            {
+                Id = "rowKerani",
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Kerani", ReadOnly=true,Id="txtKerani",BindingField="DOK_KERANIID" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=8,
+                        HtmlInput = new HtmlInputText{Caption = "Nama Kerani", ReadOnly=true,Id="txtKeraniName",BindingField="DOK_KERANINAME" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                Id = "rowChecker",
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=4,
+                        HtmlInput = new HtmlInputText{Caption = "Checker", ReadOnly=true,Id="txtChecker",BindingField="DOK_CHECKERID" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=8,
+                        HtmlInput = new HtmlInputText{Caption = "Nama Checker", ReadOnly=true,Id="txtCheckerName",BindingField="DOK_CHECKERNAME" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputNumber{Caption = "Normal", ReadOnly=true,Id="txtNormal",BindingField="DOK_NORMAL" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputNumber{Caption = "Abnormal", ReadOnly=true,Id="txtAbnormal",BindingField="DOK_ABNORMAL" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=3,
+                        HtmlInput = new HtmlInputNumber{Caption = "Total Janjang", ReadOnly=true,Id="txtTotalTBS",BindingField="DOK_TOTALTBS" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=5,
+                        HtmlInput = new HtmlInputNumber{Caption = "Brondol", ReadOnly=true,Id="txtBrondol",BindingField="DOK_BRONDOLAN" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                HtmlInputs =
+                {
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputNumber{Caption = "Busuk", ReadOnly=true,Id="txtBusuk",BindingField="DOK_BUSUK" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputNumber{Caption = "Mentah", ReadOnly=true,Id="txtMentah",BindingField="DOK_MENTAH" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=3,
+                        HtmlInput = new HtmlInputNumber{Caption = "Tangkai Panjang", ReadOnly=true,Id="txtTangkaiPanjang",BindingField="DOK_TGKPANJANG" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=2,
+                        HtmlInput = new HtmlInputNumber{Caption = "Partheno", ReadOnly=true,Id="txtPartheno",BindingField="DOK_PARTHENO" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=3,
+                        HtmlInput = new HtmlInputNumber{Caption = "Hama", ReadOnly=true,Id="txtHama",BindingField="DOK_HAMA" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            },
+            new HtmlFormRow
+            {
+                HtmlInputs =
+                {
+                    
+                    new HtmlFormColumn
+                    {
+                        LGSize=6,
+                        HtmlInput = new HtmlInputText{Caption = "Brondolan tidak dialas", ReadOnly=true,Id="txtPenalti1",BindingField="DOK_PINALTI1" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=6,
+                        HtmlInput = new HtmlInputText{Caption = "Brondolan tidak ditumpuk di Ember", ReadOnly=true,Id="txtPenalti2",BindingField="DOK_PINALTI2" ,JsonFormatter = jsonFormatter }
+                    },
+                    new HtmlFormColumn
+                    {
+                        LGSize=6,
+                        HtmlInput = new HtmlInputText{Caption = "Buah tidak disusun di TPH", ReadOnly=true,Id="txtPenalti3",BindingField="DOK_PINALTI3" ,JsonFormatter = jsonFormatter }
+                    }
+                }
+            }
+
+}
+    };
+
+}
+
+@Html.Raw(modal)
+@Html.Raw(jsonFormatter)
+
+<script>
+    var displayDoketDetail = function (data) {        
+        @displayFunction;
+        if (data.DOK_PEMANEN)
+            $('#rowPemanen').show();
+        else
+            $('#rowPemanen').hide();
+
+        if (data.DOK_PEMBRONDOL)
+            $('#rowPembrondol').show();
+        else
+            $('#rowPembrondol').hide();
+
+        if (data.DOK_MANDORID)
+            $('#rowMandor').show();
+        else
+            $('#rowMandor').hide();
+
+        if (data.DOK_KERANIID)
+            $('#rowKerani').show();
+        else
+            $('#rowKerani').hide();
+
+        if (data.DOK_CHECKERID)
+            $('#rowChecker').show();
+        else
+            $('#rowChecker').hide();
+
+    }
+</script>

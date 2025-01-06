@@ -1,0 +1,62 @@
+[
+  [
+    {
+      "Id": "Type",
+      "Caption": "Tipe Laporan",
+      "Type": "selectoptions", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "OptionItems": [
+        {
+          "Id": "1",
+          "Text": "Surat Peringatan 1"
+        },
+        {
+          "Id": "2",
+          "Text": "Surat Peringatan 2"
+        },
+        {
+          "Id": "3",
+          "Text": "Surat Peringatan 3"
+        }
+      ],
+      "MDSize": 4
+    },
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 4
+    },
+    {
+      "Id": "StartDate",
+      "Caption": "Tanggal Surat Peringatan",
+      "Type": "date", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ],
+  [
+    {
+      "Id": "Id",
+      "Caption": "No.Surat Peringatan",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/suratperingatan/listforselect?RecordStatus=A",
+      "MDSize": 12,
+      "Ascendants": [
+        {
+          "ElementID": "Type",
+          "FieldID": "Type"
+        },
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        },
+        {
+          "ElementID": "StartDate",
+          "FieldID": "StartDate"
+        }
+      ]
+    }
+   
+  ]
+
+]

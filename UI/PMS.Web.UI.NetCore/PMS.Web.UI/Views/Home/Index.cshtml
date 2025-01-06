@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_LayoutNoLogin.cshtml";
+}
+<script src="~/js/bundles.min.js"></script>
+<script src="~/Scripts/bundles.min.js"></script>
+<script>
+    authServices.kickIfNotLoggin("/Home/Index2");
+</script>
+
+@*<script>
+        if (!authServices.getToken()) {
+            authServices.clearAuthData();
+            window.location = _LOGIN_PAGE;
+        }
+
+        //Validadate Token Expiration To Server & Get Menu
+        $.ajax({
+            type: "get",
+            url: _API_URL + 'token/checktokenstatus',
+            headers: { "Authorization": authServices.getBearerToken() },
+
+            success: function (responseData, textStatus, jqXHR) {
+                authServices.setToken(responseData);
+                window.location = "/Home/Index2";
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                localStorage.removeItem(_TOKEN_KEY);
+                window.location = _LOGIN_PAGE;
+            }
+        });
+    </script>*@
+Please wait......

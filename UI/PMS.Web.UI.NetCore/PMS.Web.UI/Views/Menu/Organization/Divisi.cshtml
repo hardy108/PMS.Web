@@ -1,0 +1,73 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Divisi";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-data-list-unit id="UNITCODE" binding-field="UNITCODE" caption="Unit" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-unit>
+        <input type="hidden" data-bf="DIVID" name="DIVID" id="DIVID" />
+        <input type="hidden" data-bf="ID" name="ID" id="ID" />
+        <input type="hidden" data-bf="TYPE" name="TYPE" id="TYPE" value="DIV" />
+        <x-field-text id="CODE" binding-field="CODE" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="NAME" binding-field="NAME" caption="Nama" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="DIVASISTEN" binding-field="DIVASISTEN" caption="Asisten" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="DIVASKEP" binding-field="DIVASKEP" caption="Asisten Kepala" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" read-only="@@ViewBag.ReadOnly" xs-size="12" md-size="3" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+    
+    var customDisplay = function () {
+
+        $('#CODE').on('change', function () {
+            var DIVID = $('#UNITCODE').val() + '-' + $('#CODE').val();
+
+            $("#DIVID").val(DIVID);
+            $("#ID").val(DIVID);
+        });
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

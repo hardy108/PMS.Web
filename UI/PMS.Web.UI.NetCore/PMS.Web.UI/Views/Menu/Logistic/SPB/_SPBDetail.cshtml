@@ -1,0 +1,328 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblDetailId = "tblSPBDetail";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblDetailId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihDetail" class="btn btn-primary pull-left" onclick="@(tblDetailId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusDetail" class="btn" onclick="@(tblDetailId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlDetail" caption="Pilih Karyawan">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-block id="BLOCKID" binding-field="BLOCKID" caption="Blok" multiple="true" md-size="6" xs-size="12"
+                                         accendants="@(new List<FilterAscendant>
+                    {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                    })" value-field="BLOCKID">
+                </x-field-data-list-block>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text id="PLANTINGYEAR" caption="Tahun Tanam" place-holder="" xs-size="12" md-size="4" read-only="true">
+                </x-field-text>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text id="PLANTINGMONTH" caption="Bulan Tanam" place-holder="" xs-size="12" md-size="4" read-only="true">
+                </x-field-text>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="FRUITCOUNT" binding-field="FRUITCOUNT" caption="Jumlah Janjang" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="ESTIMATEDFRUITBUNCH" binding-field="ESTIMATEDFRUITBUNCH" caption="Taksasi Kirim Janjang (Kg)" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="ESTIMATEDFRUITPIECES" binding-field="ESTIMATEDFRUITPIECES" caption="Taksasi Kirim Brondolan" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="TIMESEND" binding-field="TIMESEND" caption="Jam Kirim" xs-size="12" md-size="3" picker-option="TimeOnly">
+                </x-field-date>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail" class="btn" onclick="resetElements('mdlDetail')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddDetail" class="btn btn-primary" onclick="@(tblDetailId)_Handlers.addRows(true)">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseDetail" class="btn btn-primary" onclick="@(tblDetailId)_Handlers.addRows(true,true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseDetail" class="btn" onclick="$('#mdlDetail').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+
+
+<script>
+    var @(tblDetailId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllDetail' name='chkDeleteDetail' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteDetail'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "SPBNO",
+                "name": "SPBNO",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Block",
+                "name": "BLOCKID",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "PLANTINGYEAR",
+                "title": "Tahun Tanam",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "PLANTINGMONTH",
+                "title": "Bulan Tanam",
+                "visible": true
+            },
+            
+            {
+                "type": "number",
+                "title": "Jumlah Janjang",
+                "name": "FRUITCOUNT",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "FRUITCOUNT_INPUT",
+                "title": "Jumlah Janjang",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='FRUITCOUNT' value='" + rowdata["FRUITCOUNT"] + "'  data-bf='FRUITCOUNT' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "number",
+                "title": "Taksasi Kirim Janjang (Kg)",
+                 "name": "ESTIMATEDFRUITBUNCH",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "ESTIMATEDFRUITBUNCH_INPUT",
+                "title": "Taksasi Kirim Janjang (Kg)",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='ESTIMATEDFRUITBUNCH' value='" + rowdata["ESTIMATEDFRUITBUNCH"] + "'  data-bf='ESTIMATEDFRUITBUNCH' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+             {
+                "type": "number",
+                "title": "Taksasi Kirim Brondolan",
+                 "name": "ESTIMATEDFRUITPIECES",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "ESTIMATEDFRUITPIECES_INPUT",
+                "title": "Taksasi Kirim Brondolan",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='ESTIMATEDFRUITPIECES' value='" + rowdata["ESTIMATEDFRUITPIECES"] + "'  data-bf='ESTIMATEDFRUITPIECES' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "title": "Jam Kirim",
+                "name": "TIMESEND",
+                "visible": true
+            },
+
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.SPBNO = dictBlocks[row.BLOCKID].SPBNO;
+                    row.BLOCKID = dictBlocks[row.BLOCKID].BLOCKID;
+                    row.PLANTINGMONTH = dictBlocks[row.BLOCKID].PLANTINGMONTH;
+                    row.PLANTINGYEAR = dictBlocks[row.BLOCKID].PLANTINGYEAR;
+                    row.TIMESEND = dictBlocks[row.BLOCKID].TIMESEND;
+                    
+
+                });
+            }
+            $("#@(tblDetailId)").footable({
+                "columns": @(tblDetailId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["BLOCKID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblDetailId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblDetailId)_Handlers.rowKeys);
+        },
+ 
+        selectedBlocks: [],
+
+        addRows: function (fromBlock,closeForm) {
+            var qty = 0;
+            if (fromBlock) {
+                @(tblDetailId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+              
+                blockid = $('#BLOCKID').val();
+                tahun = $('#PLANTINGYEAR').val();
+                bulan = $('#PLANTINGMONTH').val();
+                jumlahjanjang = $('#FRUITCOUNT').val();
+                kirimjanjang = $('#ESTIMATEDFRUITBUNCH').val();
+                kirimbrondol = $('#ESTIMATEDFRUITPIECES').val();
+                waktukirim = $('#TIMESEND').val();
+            }
+
+            if (!@(tblDetailId)_Handlers.selectedBlocks || @(tblDetailId)_Handlers.selectedBlocks.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblDetailId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+
+            @(tblDetailId)_Handlers.selectedBlocks.forEach(function (block) {
+  
+                var detail = {
+                            BLOCKID: blockid,
+                            PLANTINGYEAR: tahun,
+                            PLANTINGMONTH: bulan,
+                            FRUITCOUNT: jumlahjanjang,
+                            ESTIMATEDFRUITBUNCH: kirimjanjang,
+                            ESTIMATEDFRUITPIECES: kirimbrondol,
+                            TIMESEND: waktukirim
+
+
+                };
+
+                    detail.key = @(tblDetailId)_Handlers.getRowKey(detail);
+                    if (!@(tblDetailId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+            });
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlDetail').modal('hide');
+        },
+        showForm: function () {
+
+            if (!$('#DIVID').flexdatalist('value')) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            $('#mdlDetail').modal('show');
+            return true;
+        },
+        deleteRows: function (activities) {
+
+            var ft = FooTable.get('#@(tblDetailId)');
+            var deletedCount = 0;
+            if (ft) {
+                    if (!confirm('Yakin akan menghapus detail SPB?'))
+                        return;
+                    $('[name = "chkDeleteDetail"]').each(function () {
+                        if (this.id !== 'chkAllDetail') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblDetailId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["FRUITCOUNT"] > 0)
+                    rows.push(row.val());
+
+            });
+            return rows;
+        },
+    };
+
+    $('#BLOCKID').change(function () {
+        var blockId = $('#BLOCKID').val();
+
+        helper.callAjaxRequestJson("api/block/get/" + blockId, null, "get", function (data) {
+            $('#PLANTINGYEAR').val(data.THNTANAM);
+            $('#PLANTINGMONTH').val(data.BLNTANAM);
+        });
+
+    });
+</script>

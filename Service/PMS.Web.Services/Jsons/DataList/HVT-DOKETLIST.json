@@ -1,0 +1,92 @@
+[
+  {
+    "FieldName": "DOK_ID",
+    "FieldCaption": "ID Doket",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_TGLPANEN",
+    "FieldCaption": "Tanggal Panen",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Format": "dd MMM yyyy",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_JAMCATAT",
+    "FieldCaption": "Jam Catat",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Format": "HH:mm:ss",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_BLOCKID",
+    "FieldCaption": "Blok",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_TPHCODE",
+    "FieldCaption": "Kode TPH",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_KERANIID",
+    "FieldCaption": "NIK Kerani",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "DOK_ISRSPO",
+    "FieldCaption": "RSPO",
+    "FieldType": "FBool",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  }
+]

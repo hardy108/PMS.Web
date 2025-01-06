@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "Id": "Id",
+      "Caption": "Estate",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 8
+    },
+    {
+      "Id": "StartDate",
+      "Caption": "Bulan",
+      "Type": "month", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+
+]

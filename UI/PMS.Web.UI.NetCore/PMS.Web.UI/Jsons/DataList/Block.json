@@ -1,0 +1,91 @@
+[
+  {
+    "FieldName": "BLOCKID",
+    "FieldCaption": "Id Block",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": false,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Unit",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 1
+  },
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 2
+  },
+  {
+    "FieldName": "CODE",
+    "FieldCaption": "Blok",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 3
+  },
+  {
+    "FieldName": "THNTANAM",
+    "FieldCaption": "Tahun Tanam",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 4
+  },
+  {
+    "FieldName": "BLNTANAM",
+    "FieldCaption": "Bulan Tanam",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 5
+  },
+  {
+    "FieldName": "ACTIVE",
+    "FieldCaption": "Aktif",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 6
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Last Update",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Format": "dd-MMM-yyyy HH:mm:ss",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 7
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "UNITCODE": "1021",
+    "ALIAS": "BLNE",
+    "DBTYPE": "PMS", //PMS, FingerPrint,WB,Workflow,FileStorage,Audit
+    "SERVER": "10.99.16.89",
+    "DBNAME": "PMS",
+    "DBUSER": "qgk48/MHUHc7Sou/PjXC/w==",
+    "DBPASSWORD": "+8xw5giVJyO1kCbTmHEwTw=="
+  },
+  {
+    "UNITCODE": "7051",
+    "ALIAS": "EHPM",
+    "DBTYPE": "WB", //PMS, FingerPrint,WB,Workflow,FileStorage,Audit
+    "SERVER": "10.10.22.128",
+    "DBNAME": "WB",
+    "DBUSER": "qgk48/MHUHc7Sou/PjXC/w==",
+    "DBPASSWORD": "+8xw5giVJyO1kCbTmHEwTw=="
+  }
+]

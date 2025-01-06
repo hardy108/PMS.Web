@@ -1,0 +1,244 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblUpkeepEmployee";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            &nbsp;&nbsp;
+            <button id="btnHapusBlockTop" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            &nbsp;&nbsp;
+            <button id="btnHapusBlockTop" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<script>
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllEmployee' name='chkDeleteEmployee' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteEmployee'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "UPKEEPCODE",
+                "title": "No BKM",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "Kode Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "title": "Nama Karyawan",
+                "name": "EMPNAME",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPTYPE",
+                "title": "Tipe Karyawan",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "title": "Price",
+                "name": "RATE",
+                "visible": true,
+            },
+            {
+                "type": "number",
+                "title": "Jumlah TK (HK)",
+                "name": "VALUE",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "VALUE_INPUT",
+                "title": "Jumlah TK (HK)",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='VALUE' value='" + rowdata["VALUE"] + "'  data-bf='VALUE'  onfocusout='updateInputToRow(this)'>";
+                },
+
+            },
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.EMPNAME = dictEmployees[row.EMPLOYEEID].EMPLOYEE.EMPNAME;
+                    row.EMPTYPE = dictEmployees[row.EMPLOYEEID].EMPLOYEE.EMPTYPE;
+                });
+            }
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["EMPLOYEEID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+        length: function () {
+            var ft = FooTable.get('#@(tblId)');
+            return ft.rows.all.length;
+        },
+        selectedActivities: [],
+        selectedEmployees: [],
+        addRows: function () {
+
+            var upkeepcode = $('#UPKEEPCODE').val();
+            @(tblId)_Handlers.selectedEmployees = $('#EMPLOYEEID').flexdatalist('value');
+            @*if (!@(tblId)_Handlers.selectedEmployees || !@(tblId)_Handlers.selectedEmployees.length && @(ViewBag.MainFormID) === 'Form_UPKEEPBORONGAN') {
+                alert("Karyawan belum dipilih");
+                return false;
+            }*@
+
+            var price = 0;
+            var mainFormId = @(ViewBag.MainFormID).id;
+            if (mainFormId === "Form_UPKEEPBORONGAN") {
+                var act = $('#ITEM').flexdatalist('value');
+                price = act.PRICE;
+            }
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            } else {
+                if (ft.rows.all.length !== 0) {
+                    var del = true;
+                    ft.rows.all.forEach(function (row) {
+                        //row.ft.$tr
+                        del = true;
+                        @(tblId)_Handlers.selectedEmployees.forEach(function (emp) {
+                            if (emp.EMPID === row.value.key) {
+                                del = false;
+                            }
+                        });
+
+                        if (del) {
+                            row.delete(false);
+                        }
+                    });
+                    if (del) {
+                        ft.draw();
+                    }
+                }
+
+            }
+
+            var added = 0;
+
+            @(tblId)_Handlers.selectedEmployees.forEach(function (employee) {
+                var detail = {
+                    UPKEEPCODE: upkeepcode,
+                    EMPLOYEEID: employee.EMPID,
+                    EMPNAME: employee.EMPNAME,
+                    EMPTYPE: employee.EMPTYPE,
+                    RATE: price,
+                };
+
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                   ft.rows.add(detail, false);
+                   added++;
+                }
+            });
+
+            if (added)
+                ft.draw();
+
+        },
+
+        deleteRows: function () {
+            if (!confirm('Yakin akan menghapus detail karyawan?'))
+                return;
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                $('[name = "chkDeleteEmployee"]').each(function () {
+                    if (this.id !== 'chkAllEmployee') {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            $row.delete(false);
+                            deletedCount++;
+                            //deletedRows.push($row);
+                        }
+
+                    }
+                });
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["VALUE"] == 0 && mode == "New") {
+                    alert("Jumlah Hk belum dipilih");
+                    exit;
+                    return false;
+                } else {
+                    rows.push(row.val());
+                }
+            });
+            return rows;
+        },
+    };
+</script>

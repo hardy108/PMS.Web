@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/04/2020 14:10:13" ReportInfo.Modified="02/10/2020 17:52:14" ReportInfo.CreatorVersion="2020.1.0.0">
+  <Styles Name="Blue">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Fill.Color="LightSkyBlue" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Fill.Color="LightSkyBlue" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="AliceBlue" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqULvGFykoY70YkPWC433o5tI+rnjzNr0acomhxfoeNWm5UESES6wfI9SFEQk9SY8iguEbxqwHoz1VuPK0/Imi4hZUCfqrBAAgo2jGGXwG+HxYDGbmnbRF5o2+cgTwI6x/SqF8LnuEYEi9KnAXZ4xxB2u4nSVH4ClnWNs+KebuC8Ugt35KQppKvJcQmOHYfwcMqu1L78dW+aACw+nFWaN5Fw==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="exec rpt_EmployeeSummary @Id">
+        <Column Name="RegionId" DataType="System.String"/>
+        <Column Name="RegionName" DataType="System.String"/>
+        <Column Name="AreaId" DataType="System.String"/>
+        <Column Name="AreaName" DataType="System.String"/>
+        <Column Name="UnitId" DataType="System.String"/>
+        <Column Name="UnitInitial" DataType="System.String"/>
+        <Column Name="UnitName" DataType="System.String"/>
+        <Column Name="PositionId" DataType="System.String"/>
+        <Column Name="PositionName" DataType="System.String"/>
+        <Column Name="Standard" DataType="System.Int16"/>
+        <Column Name="BHL_SEX_L" DataType="System.Int32"/>
+        <Column Name="BHL_SEX_P" DataType="System.Int32"/>
+        <Column Name="SKUH_SEX_L" DataType="System.Int32"/>
+        <Column Name="SKUH_SEX_P" DataType="System.Int32"/>
+        <Column Name="SKUB_SEX_L" DataType="System.Int32"/>
+        <Column Name="SKUB_SEX_P" DataType="System.Int32"/>
+        <CommandParameter Name="Id" DataType="22" Expression="[Id]"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="Id" DataType="System.String"/>
+    <Total Name="ByUnit_Sum_Standard" Expression="[Table.Standard]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_Standard" Expression="[Table.Standard]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_Standard" Expression="[Table.Standard]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_Standard" Expression="[Table.Standard]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_BHL_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_BHL_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_BHL_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_BHL_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_BHL_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_BHL_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_BHL_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_BHL_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_SKUH_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_SKUH_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_SKUH_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_SKUH_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_SKUH_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_SKUH_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_SKUH_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_SKUH_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_SKUB_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_SKUB_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_SKUB_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_SKUB_SEX_L" Expression="[Table.BHL_SEX_L]" Evaluator="Data1"/>
+    <Total Name="ByUnit_Sum_SKUB_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="ByArea_Sum_SKUB_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="ByRegion_Sum_SKUB_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1" PrintOn="GroupFooter3"/>
+    <Total Name="Total_Sum_SKUB_SEX_P" Expression="[Table.BHL_SEX_P]" Evaluator="Data1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" LeftMargin="5" TopMargin="5" RightMargin="5" BottomMargin="5" Guides="0,94.5,189,283.5,567,661.5,699.3,737.1,774.9,812.7,850.5,888.3,926.1,963.9,1001.7,1077.3,1075.41,-9.45" Watermark.Font="Arial, 60pt">
+    <PageHeaderBand Name="PageHeader1" Width="1084.86" Height="89.25" Guides="32.45,89.15,51.35,70.25,51.45,70.35,89.25,0,28.35">
+      <TextObject Name="Text3" Top="32.45" Width="94.5" Height="56.7" Border.Lines="All" Fill.Color="LightSkyBlue" Text="REGION" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text7" Left="94.5" Top="32.45" Width="94.5" Height="56.7" Border.Lines="All" Fill.Color="LightSkyBlue" Text="AREA" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text11" Left="189" Top="32.45" Width="94.5" Height="56.7" Border.Lines="All" Fill.Color="LightSkyBlue" Text="UNIT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text17" Left="283.5" Top="32.45" Width="283.5" Height="56.7" Border.Lines="All" Fill.Color="LightSkyBlue" Text="POSITION" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text19" Left="567" Top="51.35" Width="94.5" Height="37.8" Border.Lines="All" Fill.Color="LightSkyBlue" Text="STD." HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text37" Left="661.5" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="L" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text38" Left="699.3" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="P" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text39" Left="737.1" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TOT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text40" Left="774.9" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="L" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text41" Left="812.7" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="P" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text42" Left="850.5" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TOT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text43" Left="888.3" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="L" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text44" Left="926.1" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="P" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text45" Left="963.9" Top="70.25" Width="37.8" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TOT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text46" Left="661.5" Top="51.45" Width="113.4" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="BHL" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text47" Left="774.9" Top="51.45" Width="113.4" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="SKUH" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text48" Left="888.3" Top="51.45" Width="113.4" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="SKUB" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text49" Left="1001.7" Top="51.45" Width="75.6" Height="37.8" Border.Lines="All" Fill.Color="LightSkyBlue" Text="TOTAL" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text50" Left="567" Top="32.45" Width="510.3" Height="18.9" Border.Lines="All" Fill.Color="LightSkyBlue" Text="JUMLAH KARYAWAN" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text1" Width="1075.41" Height="28.35" Border.Lines="All" Text="SUMMARY KARYAWAN" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold" Style="Title"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="93.25" Width="1084.86" Height="18.9" Guides="0,18.9" Condition="[Table.RegionId]">
+      <TextObject Name="Text32" Width="567" Height="18.9" Text="[Table.RegionName]" Font="Arial Narrow, 9pt, style=Bold"/>
+      <TextObject Name="Text84" Left="567" Width="94.5" Height="18.9" Text="[ByRegion_Sum_Standard]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text85" Left="661.5" Width="37.8" Height="18.9" Text="[ByRegion_Sum_BHL_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text86" Left="699.3" Width="37.8" Height="18.9" Text="[ByRegion_Sum_BHL_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text87" Left="737.1" Width="37.8" Height="18.9" Text="[[ByRegion_Sum_BHL_SEX_L]+[ByRegion_Sum_BHL_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text88" Left="774.9" Width="37.8" Height="18.9" Text="[ByRegion_Sum_SKUH_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text89" Left="812.7" Width="37.8" Height="18.9" Text="[ByRegion_Sum_SKUH_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text90" Left="850.5" Width="37.8" Height="18.9" Text="[[ByRegion_Sum_SKUH_SEX_L] + [ByRegion_Sum_SKUH_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text91" Left="888.3" Width="37.8" Height="18.9" Text="[ByRegion_Sum_SKUB_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text92" Left="926.1" Width="37.8" Height="18.9" Text="[ByRegion_Sum_SKUB_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text93" Left="963.9" Width="37.8" Height="18.9" Text="[[ByRegion_Sum_SKUB_SEX_L]+[ByRegion_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text94" Left="1001.7" Width="75.6" Height="18.9" Text="[[ByRegion_Sum_BHL_SEX_L]+[ByRegion_Sum_BHL_SEX_P]+[ByRegion_Sum_SKUH_SEX_L]+[ByRegion_Sum_SKUH_SEX_P]+[ByRegion_Sum_SKUB_SEX_L]+[ByRegion_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <GroupHeaderBand Name="GroupHeader2" Top="116.15" Width="1084.86" Height="18.9" Guides="0,18.9" Condition="[Table.AreaId]">
+        <TextObject Name="Text33" Left="94.5" Width="472.5" Height="18.9" Text="[Table.AreaName]" Font="Arial Narrow, 9pt, style=Bold"/>
+        <TextObject Name="Text73" Left="567" Width="94.5" Height="18.9" Text="[ByArea_Sum_Standard]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text74" Left="661.5" Width="37.8" Height="18.9" Text="[ByArea_Sum_BHL_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text75" Left="699.3" Width="37.8" Height="18.9" Text="[ByArea_Sum_BHL_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text76" Left="737.1" Width="37.8" Height="18.9" Text="[[ByArea_Sum_BHL_SEX_L]+[ByArea_Sum_BHL_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text77" Left="774.9" Width="37.8" Height="18.9" Text="[ByArea_Sum_SKUH_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text78" Left="812.7" Width="37.8" Height="18.9" Text="[ByArea_Sum_SKUH_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text79" Left="850.5" Width="37.8" Height="18.9" Text="[[ByArea_Sum_SKUH_SEX_L] + [ByArea_Sum_SKUH_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text80" Left="888.3" Width="37.8" Height="18.9" Text="[ByArea_Sum_SKUB_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text81" Left="926.1" Width="37.8" Height="18.9" Text="[ByArea_Sum_SKUB_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text82" Left="963.9" Width="37.8" Height="18.9" Text="[[ByArea_Sum_SKUB_SEX_L]+[ByArea_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <TextObject Name="Text83" Left="1001.7" Width="75.6" Height="18.9" Text="[[ByArea_Sum_BHL_SEX_L]+[ByArea_Sum_BHL_SEX_P]+[ByArea_Sum_SKUH_SEX_L]+[ByArea_Sum_SKUH_SEX_P]+[ByArea_Sum_SKUB_SEX_L]+[ByArea_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+        <GroupHeaderBand Name="GroupHeader3" Top="139.05" Width="1084.86" Height="19.8" Guides="0,18.9" Condition="[Table.UnitId]">
+          <TextObject Name="Text34" Left="189" Width="378" Height="18.9" Text="[Table.UnitName]" Font="Arial Narrow, 9pt, style=Bold"/>
+          <TextObject Name="Text62" Left="567" Width="94.5" Height="18.9" Text="[ByUnit_Sum_Standard]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text63" Left="661.5" Width="37.8" Height="18.9" Text="[ByUnit_Sum_BHL_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text64" Left="699.3" Width="37.8" Height="18.9" Text="[ByUnit_Sum_BHL_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text65" Left="737.1" Width="37.8" Height="18.9" Text="[[ByUnit_Sum_BHL_SEX_L]+[ByUnit_Sum_BHL_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text66" Left="774.9" Width="37.8" Height="18.9" Text="[ByUnit_Sum_SKUH_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text67" Left="812.7" Width="37.8" Height="18.9" Text="[ByUnit_Sum_SKUH_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text68" Left="850.5" Width="37.8" Height="18.9" Text="[[ByUnit_Sum_SKUH_SEX_L] + [ByUnit_Sum_SKUH_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text69" Left="888.3" Width="37.8" Height="18.9" Text="[ByUnit_Sum_SKUB_SEX_L]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text70" Left="926.1" Width="37.8" Height="18.9" Text="[ByUnit_Sum_SKUB_SEX_P]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text71" Left="963.9" Width="37.8" Height="18.9" Text="[[ByUnit_Sum_SKUB_SEX_L]+[ByUnit_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <TextObject Name="Text72" Left="1001.7" Width="75.6" Height="18.9" Text="[[ByUnit_Sum_BHL_SEX_L]+[ByUnit_Sum_BHL_SEX_P]+[ByUnit_Sum_SKUH_SEX_L]+[ByUnit_Sum_SKUH_SEX_P]+[ByUnit_Sum_SKUB_SEX_L]+[ByUnit_Sum_SKUB_SEX_P]]" ProcessAt="GroupFinished" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+          <DataBand Name="Data1" Top="162.85" Width="1084.86" Height="18.9" EvenStyle="EvenRows" Guides="0,18.9" DataSource="Table">
+            <TextObject Name="Text12" Left="283.5" Width="283.5" Height="18.9" Text="[Table.PositionName]" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text51" Left="567" Width="94.5" Height="18.9" Text="[Table.Standard]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text52" Left="661.5" Width="37.8" Height="18.9" Text="[Table.BHL_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text53" Left="699.3" Width="37.8" Height="18.9" Text="[Table.BHL_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text54" Left="737.1" Width="37.8" Height="18.9" Text="[[Table.BHL_SEX_L]+[Table.BHL_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text55" Left="774.9" Width="37.8" Height="18.9" Text="[Table.SKUH_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text56" Left="812.7" Width="37.8" Height="18.9" Text="[Table.SKUH_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text57" Left="850.5" Width="37.8" Height="18.9" Text="[[Table.SKUH_SEX_L] + [Table.SKUH_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text58" Left="888.3" Width="37.8" Height="18.9" Text="[Table.SKUB_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text59" Left="926.1" Width="37.8" Height="18.9" Text="[Table.SKUB_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text60" Left="963.9" Width="37.8" Height="18.9" Text="[[Table.SKUB_SEX_L]+[Table.SKUB_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+            <TextObject Name="Text61" Left="1001.7" Width="75.6" Height="18.9" Text="[[Table.BHL_SEX_L]+[Table.BHL_SEX_P]+[Table.SKUH_SEX_L]+[Table.SKUH_SEX_P]+[Table.SKUB_SEX_L]+[Table.SKUB_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt"/>
+          </DataBand>
+          <GroupFooterBand Name="GroupFooter1" Top="185.75" Width="1084.86" Height="9.45"/>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter2" Top="199.2" Width="1084.86" Height="9.45"/>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter3" Top="212.65" Width="1084.86" Height="9.45"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="226.1" Width="1084.86" Height="18.9" Guides="0,18.9">
+      <TextObject Name="Text95" Width="567" Height="18.9" Text="TOTAL" Font="Arial Narrow, 9pt, style=Bold"/>
+      <TextObject Name="Text96" Left="567" Width="94.5" Height="18.9" Text="[Total_Sum_Standard]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text97" Left="661.5" Width="37.8" Height="18.9" Text="[Total_Sum_BHL_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text98" Left="699.3" Width="37.8" Height="18.9" Text="[Total_Sum_BHL_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text99" Left="737.1" Width="37.8" Height="18.9" Text="[[Total_Sum_BHL_SEX_L]+[Total_Sum_BHL_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text100" Left="774.9" Width="37.8" Height="18.9" Text="[Total_Sum_SKUH_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text101" Left="812.7" Width="37.8" Height="18.9" Text="[Total_Sum_SKUH_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text102" Left="850.5" Width="37.8" Height="18.9" Text="[[Total_Sum_SKUH_SEX_L]+[Total_Sum_SKUH_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text103" Left="888.3" Width="37.8" Height="18.9" Text="[Total_Sum_SKUB_SEX_L]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text104" Left="926.1" Width="37.8" Height="18.9" Text="[Total_Sum_SKUB_SEX_P]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text105" Left="963.9" Width="37.8" Height="18.9" Text="[[Total_Sum_SKUB_SEX_L]+[Total_Sum_SKUB_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text106" Left="1001.7" Width="75.6" Height="18.9" Text="[[Total_Sum_BHL_SEX_L]+[Total_Sum_BHL_SEX_P]+[Total_Sum_SKUH_SEX_L]+[Total_Sum_SKUH_SEX_P]+[Total_Sum_SKUB_SEX_L]+[Total_Sum_SKUB_SEX_P]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="249" Width="1084.86" Height="18.9" Guides="0,18.9">
+      <TextObject Name="Text2" Left="963.9" Width="113.4" Height="18.9" Text="[PageN] of [TotalPages#]" HorzAlign="Right" Font="Arial Narrow, 8pt, style=Bold"/>
+      <TextObject Name="Text4" Left="-9.45" Width="292.95" Height="18.9" Text="[Date]" Format="Custom" Format.Format="dd-MMM-yyyy HH:mm:ss" Font="Arial Narrow, 8pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

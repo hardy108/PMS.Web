@@ -1,0 +1,95 @@
+﻿@{
+    Layout = null;
+}
+
+<style>
+    #map {
+        height: 100%;
+    }
+</style>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAagu8V23g017RqcjNl56iOQU6qbWKK5g" async></script>
+<div id="map" style="height:500px">
+
+</div>
+
+<script>
+
+    
+
+    var showTrackingPointsById = function (Id) {
+        var apiUrl = "api/em-tracking/points?Id=" + Id;
+
+
+        showProgressWaiting();
+        helper.callAjaxRequestJson(apiUrl, null, "get", function (data) {
+            if (data && data.Coordinates && Array.isArray(data.Coordinates) && data.Coordinates.length>0) {
+                dispayPoints(data);
+            }
+            else {
+                showError("No tracking data found");
+            }
+            
+            hideProgressWaiting();
+        }, function (error) {
+            showError(parseJSONError(error));
+            hideProgressWaiting();
+        });
+    }
+
+    var dispayPoints = function (points) {
+
+        // Creating map options
+        var map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: points.Coordinates[0][0], lng: points.Coordinates[0][1] },
+            zoom: 15,
+        });
+
+        var bounds = new google.maps.LatLngBounds();
+
+        var lines = [];
+        for (var i = 0; i < points.Coordinates.length; i++)
+        {
+            var location = { lat: points.Coordinates[i][0], lng: points.Coordinates[i][1] };
+            new google.maps.Marker({
+                position: location,
+                label: (i+1).toString(),
+                map: map,
+            });
+
+            lines.push(location);
+            bounds.extend(location)
+        }
+
+        const polyline = new google.maps.Polyline({
+            path: lines,
+            geodesic: true,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+        });
+
+        polyline.setMap(map);
+        map.fitBounds(bounds);
+    }
+
+    
+    var beforeDisplay = function () {
+        useStandardDisplayFunction = false;
+        return true;
+    }
+    
+
+    var customDisplay = function () {
+        $('#divApprovalHistory').hide();
+        var Id = "@(ViewBag.Key)";
+        showTrackingPointsById(Id);
+        
+        return true;
+    }
+    
+
+
+</script>
+

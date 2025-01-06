@@ -1,0 +1,80 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 1
+  },
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "EMPLOYEEID",
+    "FieldCaption": "Karyawan",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "DATE",
+    "FieldCaption": "Tanggal",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY",
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "HK",
+    "FieldCaption": "HK",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "ABSENTCODE",
+    "FieldCaption": "Kode Absen",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "STATUS",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 0
+  }
+]

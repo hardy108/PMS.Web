@@ -1,0 +1,98 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Hari Libur";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <input type="hidden" name="ID" id="ID" data-bf="ID" />
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITCODE" min-length-search="2">
+        </x-field-data-list-unit-by-user-name>
+
+        <x-field-date binding-field="DTDATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+        <x-field-select id="DAYTYPE" binding-field="DAYTYPE" caption="Hari" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Single">
+            <option value="HOLIDAY">Hari Besar</option>
+            <option value="SUNDAY">Hari Minggu</option>
+        </x-field-select>
+
+        <input type="hidden" name="HOLIDAY" id="HOLIDAY" data-bf="HOLIDAY" />
+        <input type="hidden" name="SUNDAY" id="SUNDAY" data-bf="SUNDAY" />
+
+        <x-field-text binding-field="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text-area binding-field="REMARK" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#HOLIDAY").val("true").trigger("change");
+            //$("#SUNDAY").val("false").trigger("change");
+            $("#ACTIVE").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

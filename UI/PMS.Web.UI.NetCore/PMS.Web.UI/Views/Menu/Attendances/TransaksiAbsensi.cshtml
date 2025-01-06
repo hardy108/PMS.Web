@@ -1,0 +1,94 @@
+﻿@using PMS.Web.UI.Code
+@*@using PMS.Shared.Models*@
+@{
+    ViewData["Title"] = "Attendance";
+    Layout = null ;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-data-list-employee id="EMPLOYEE" binding-field="EMPLOYEE" caption="Karyawan" value-field="*" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+        <input type="hidden" name="ID" id="ID" data-bf="ID" />
+        <input type="hidden" name="EMPID" id="EMPID" data-bf="EMPID" />
+        <input type="hidden" name="UNITID" id="UNITID" data-bf="UNITID" />
+        <input type="hidden" name="PIN" id="PIN" data-bf="PIN" />
+        <x-field-date binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-date binding-field="CHECKIN" caption="Jam Masuk" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateTime" time-format="HH:mm">
+        </x-field-date>
+        <x-field-date binding-field="CHECKOUT" caption="Jam Keluar" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateTime" time-format="HH:mm">
+        </x-field-date>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list id="ATTSTATUS" binding-field="ATTSTATUS" caption="Status" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" min-length-search="0"
+                           api-url="api/absenttype/list" text-fields="{ABSENTCODE} - {ABSENTDESCRIPTION}" search-fields="[ABSENTCODE,ABSENTDESCRIPTION]" value-field="ABSENTCODE" visible-fields="[ABSENTCODE,ABSENTDESCRIPTION]">
+        </x-field-data-list>
+        <x-field-select id="CARDIN" binding-field="CARDIN" caption="Kartu Masuk" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Single">
+            <option value=""> </option>
+            <option value="UPK">Perawatan</option>
+            <option value="HVT">Panen</option>
+        </x-field-select>
+        <x-field-select id="CARDOUT" binding-field="CARDOUT" caption="Kartu Keluar" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Single">
+            <option value=""> </option>
+            <option value="UPK">Perawatan</option>
+            <option value="HVT">Panen</option>
+        </x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="HKPAID" binding-field="HKPAID" caption="HK" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="OT150" binding-field="OT150" caption="Lembur 150%" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="OT200" binding-field="OT200" caption="Lembur 200%" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="OT300" binding-field="OT300" caption="Lembur 300%" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="OT400" binding-field="OT400" caption="Lembur 400%" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        var empId = $("#EMPID").val();
+        $("#EMPLOYEE").val(empId);
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        var emp = [];
+        $('#EMPLOYEE').on('change', function () {
+            emp = $('#EMPLOYEE').flexdatalist('value');
+            var employeeId = emp.EMPID;
+            var pin = emp.PINID;
+            var unitId = emp.UNITCODE;
+            $("#EMPID").val(employeeId);
+            $("#PIN").val(pin);
+            $("#UNITID").val(unitId);
+        });
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+</script>

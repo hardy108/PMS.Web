@@ -1,0 +1,33 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 2
+    },
+    {
+      "Id": "Id",
+      "Caption": "Karyawan",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/employee/listforselect?RecordStatus=A",
+      "MDSize": 6,
+      "Ascendants": [
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        }
+      ]
+    },
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Tanggal",
+      "Caption2": "&nbsp;",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+
+]

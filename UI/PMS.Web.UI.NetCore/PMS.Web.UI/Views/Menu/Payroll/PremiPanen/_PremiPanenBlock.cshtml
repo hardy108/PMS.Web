@@ -1,0 +1,240 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblPremiPanenBlock";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+@if (!(ViewBag.ReadOnly))
+{
+<x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihBlock" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusBlock" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="width:30%" data-paging-size="6"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihBlock" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusBlock" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlBlock" caption="Pilih Blok">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-block id="BLOCKID" binding-field="BLOCKID" caption="Blok" multiple="true" xs-size="12"
+                                         ascendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" }
+
+                        })" chain-to-relatives="false" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetBlock" class="btn" onclick="resetElements('mdlBlock')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddBlock" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseBlock" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseBlock" class="btn" onclick="$('#mdlBlock').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+<script>
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllBlock' name='chkDeleteBlock' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteBlock'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "PREMIPANENID",
+                "title": "PREMI PANEN ID",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "DIVID",
+                "title": "DIVISI",
+                "visible": true,
+                "breakpoints": "xs"
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "BLOK",
+                "visible": true,
+                "breakpoints": "xs"
+            }
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.DIVID = dictBlocks[row.BLOCKID].BLOCKID.substr(0, 6);
+                    row.BLOCKID = dictBlocks[row.BLOCKID].BLOCKID;
+                });
+            }
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedBlocks: [],
+
+        addRows: function (closeForm) {
+
+            @(tblId)_Handlers.selectedBlocks = $('#BLOCKID').flexdatalist('value');
+            if (!@(tblId)_Handlers.selectedBlocks || !@(tblId)_Handlers.selectedBlocks.length) {
+                alert("Blok belum dipilih");
+                return false;
+            }
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+            @(tblId)_Handlers.selectedBlocks.forEach(function (block) {
+                var detail = {
+                    DIVID: block.DIVID,
+                    BLOCKID: block.BLOCKID
+                };
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                    ft.rows.add(detail, false);
+                    added++;
+                }
+            });
+
+            if (added)
+                ft.draw();
+
+            if (closeForm)
+                $('#mdlBlock').modal('hide');
+            return;
+
+        },
+
+        showForm: function () {
+            if ($('#UNITCODE').flexdatalist('value') == "") {
+                alert("Estate belum dipilih");
+                return false;
+            }
+            $('#mdlBlock').modal('show');
+            return true;
+        },
+
+        deleteRows: function (deletedBlocks) {
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                if (deletedBlocks) {
+                    if (deletedBlocks.length > 0 && Array.isArray(deletedBlocks)) {
+                        $.each(deletedBlocks, function (d, blk) {
+                            $.each(ft.rows.all, function (i, row) {
+                                if (row.val()["BLOCKID"] === blk.BLOCKID) {
+                                    row.delete(false);
+                                    deletedCount++;
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Yakin akan menghapus detail Block?'))
+                        return;
+                    $('[name = "chkDeleteBlock"]').each(function () {
+                        if (this.id !== 'chkAllBlock') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                    rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

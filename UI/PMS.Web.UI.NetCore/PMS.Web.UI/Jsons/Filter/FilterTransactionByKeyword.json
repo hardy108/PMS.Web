@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Date",
+      "Caption2": "&nbsp",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    },
+
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 5
+    },
+    {
+      "Id": "RecordStatus",
+      "Caption": "Status",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/reference/transactionstatus",
+      "MDSize": 3
+    }
+
+  ]
+  
+]
+
+

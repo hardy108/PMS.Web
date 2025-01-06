@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Projects\PMS\PMS.Web\Deployment\PMS.Web.Deployment.X64\Service</_PublishTargetUrl>
+    <History>True|2022-09-06T02:37:36.6989197Z;True|2022-06-28T10:00:04.5980425+07:00;True|2022-06-21T13:34:36.5183571+07:00;True|2022-06-16T16:19:48.0862611+07:00;True|2022-06-03T17:06:45.6834287+07:00;True|2022-06-03T17:00:30.4326654+07:00;</History>
+  </PropertyGroup>
+</Project>

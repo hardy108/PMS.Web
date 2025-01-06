@@ -1,0 +1,128 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "RKH1";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string RKHHeader1Id = "KHHeader1";
+    string RKHMandor1Id = "RKHMandor1";
+    string RKHBlock1Id = "RKHBlock1";
+    string RKHEmployee1Id = "RKHEmployee1";
+    string RKHMaterial1Id = "RKHMaterial1";
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<script>
+    var dictMandors = {},
+        dictBlocks = {},
+        dictEmployees = {},
+        dictMaterials = {},
+        readonly = @(isReadOnlyString);
+</script>
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-date binding-field="RKH_DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="@strToday">
+        </x-field-date>
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="RKH_DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-text binding-field="RKH_CODE" caption="No. BKP" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text binding-field="STATUS" caption="Status BKP" read-only="true" place-holder="Status" xs-size="12" md-size="1">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="RKH_ACTDATE" caption="Tgl. Apel Pagi" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="@strToday">
+        </x-field-date>
+        <x-field-text binding-field="NOTE" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="8">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row is-hidden="@((ViewBag.Mode!="Unpost"))">
+        <x-field-text-area binding-field="CANCELEDCOMMENT" caption="Alasan Pembatalan" read-only="@ViewBag.ReadOnly" place-holder="Alasan Pembatalan" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+    <x-tab tab-style="nav-pills">
+
+        <x-tab-panel caption="Mandor">
+            @Html.Partial("_RKHMandor1.cshtml")
+        </x-tab-panel>
+
+    </x-tab>
+</x-form>
+
+<script>
+    var mode = "@(mode)";
+
+    var dictAllowedMode = {
+        "A": ["Display", "Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var beforeDisplay = function () {
+
+        dictEmployees = {};
+        if (record.RKHMANDOR1 && record.RKHMANDOR1.length > 0) {
+            record.RKHMANDOR1.forEach(function (value) {
+                dictMandors[value.MANDORID] = value;
+            });
+        }
+
+        return true;
+    };
+
+    var customDisplay = function () {
+        @(RKHMandor1Id)_.initTable(record.RKHMANDOR1);
+        return true;
+    };
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlMandorAct');
+        return true;
+    };
+
+    var beforeSendAction = function (action, savedRecord) {
+        if (action == "New" || action == "Edit") {
+            savedRecord["RKHMANDOR1"] = _Mandor1_.saveRows();
+            if (savedRecord["RKHMANDOR1"])
+                savedRecord["RKHMANDOR1_COUNT"] = savedRecord["RKHMANDOR1"].length;
+        }
+        return savedRecord;
+    }
+
+</script>

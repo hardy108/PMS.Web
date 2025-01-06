@@ -1,0 +1,78 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Premi Mapping";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="Id" read-only="true" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-unit id="UNITID" binding-field="UNITID" caption="Unit" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-unit>
+
+        <x-field-data-list id="TYPEID" binding-field="TYPEID" caption="Jenis Premi" xs-size="12" md-size="3" read-only="@isReadonlyWhenNotInsert" min-length-search="0"
+                           api-url="api/salarytype/list" text-fields="{ID} - {NAME}" search-fields="[ID,NAME]" value-field="ID" visible-fields="[ID,NAME]">
+        </x-field-data-list>
+
+        <x-field-data-list-position id="POSID" binding-field="POSID" caption="Jabatan" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-position>
+
+        <input type="hidden" data-bf="GOL" name="GOL" id="GOL" />
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-employee id="EMPID" binding-field="EMPID" caption="Pegawai" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-data-list-employee>
+
+        <x-field-select id="FREQ" binding-field="FREQ" caption="Frekuensi" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+            <option value="D">Per Kehadiran</option>
+            <option value="M">Tetap Bulanan</option>
+            <option value="PRO25">Min 25 (Prorate HKE)</option>
+        </x-field-select>
+
+        <x-field-number id="AMOUNT" binding-field="AMOUNT" caption="Jumlah" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+
+        $('#POSID').on('addvalue:flexdatalist', function (event, selectedValue) {
+            $('#GOL').val(selectedValue.POSITIONNAME);
+
+        });
+        return true;
+    };
+    
+    var customDisplay = function () {
+        
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

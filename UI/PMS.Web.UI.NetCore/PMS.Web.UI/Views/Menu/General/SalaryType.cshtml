@@ -1,0 +1,72 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "SalaryType";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="ID" read-only="@ViewBag.ReadOnly" place-holder="Id" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="NAME" binding-field="NAME" caption="Name" read-only="@ViewBag.ReadOnly" place-holder="Name" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="SYSCODE" binding-field="SYSCODE" caption="Syscode" read-only="@ViewBag.ReadOnly" place-holder="Syscode" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="PAYCODE" binding-field="PAYCODE" caption="Paycode" read-only="@ViewBag.ReadOnly" place-holder="Paycode" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="SLIPNAME" binding-field="SLIPNAME" caption="Slip Name" read-only="@ViewBag.ReadOnly" place-holder="Slipname" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-select id="DEDUCT" binding-field="DEDUCT" caption="Deduct" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+        <x-field-select id="AUTO" binding-field="AUTO" caption="Auto" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#DEDUCT").val("true").trigger("change");
+            $("#AUTO").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        }
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

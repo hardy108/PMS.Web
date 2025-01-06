@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(ViewBag.Menu.Description) ? ViewBag.Menu.MenuName : ViewBag.Menu.Description;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string viewSource = ViewBag.ViewSource;
+}
+
+
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">@ViewBag.Title</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" id="divContentContainer">
+        @Html.Partial(viewSource)
+        <x-form-row>
+            <div class="col-xs-12" style="display:none" id="calloutErrorMessage">
+            </div>
+        </x-form-row>
+    </div>
+    <!-- /.row -->
+    <!-- /.box-body -->
+    <div class="box-footer with-border">
+        <div class="col-xs-12" style="display:none" id="calloutErrorMessage">
+        </div>        
+    </div>
+</div>
+
+
+<script>
+    var closeWaitingBar = function () {
+        $('#divContentContainer').waitMe('hide');
+    };
+
+    var showError = function (errorTitle, errorMessage) {
+        var htmlError = '';
+        if (errorTitle && errorTitle != '')
+            htmlError += "<h4 id='calloutTitle'>" + errorTitle + "</h4>";
+        if (errorMessage && errorMessage != '')
+            htmlError += "<p id='calloutMessage'>" + errorMessage + "</p>";
+        if (htmlError != '') {
+            htmlError = "<div class='callout callout-danger'>" + htmlError + "</div>";
+            $('#calloutErrorMessage').html(htmlError);
+            $('#calloutErrorMessage').show();
+            return;
+        }
+        hideError();
+    };
+
+    var hideError = function () {
+        $('#calloutErrorMessage').html('');
+        $('#calloutErrorMessage').hide();
+        closeWaitingBar();
+    };
+
+    
+
+    
+    var doAction = function (actionFunction) {
+        if (beforeDoAction) {
+            if (!beforeDoAction())
+                return false;
+        }
+        $('#divContentContainer').waitMe({
+            effect: 'ios',
+            text: 'Harap tunggu...',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000'
+        });
+        if (actionFunction)
+            actionFunction();
+    }
+</script>
+
+
+
+
+

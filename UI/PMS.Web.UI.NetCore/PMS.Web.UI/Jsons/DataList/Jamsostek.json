@@ -1,0 +1,102 @@
+[
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Unit",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "JKK",
+    "FieldCaption": "JKK",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "JKM",
+    "FieldCaption": "JKM",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "EMPLOYEE",
+    "FieldCaption": "BPJSTK-EMP",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "ENTERPRISE",
+    "FieldCaption": "BPJSTK-COMP",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "KESEMP",
+    "FieldCaption": "BPJSKS-EMP",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "KESCOMP",
+    "FieldCaption": "BPJSKS-COMP",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "STATUS",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  }
+  //{
+  //  "FieldName": "DATE",
+  //  "FieldCaption": "Tanggal",
+  //  "FieldType": "FDate",
+  //  "IsKey": false,
+  //  "ForSearch": false,
+  //  "Sort": "FNoSort",
+  //  "Format": "dd MMM yyyy",
+  //  "Alignment": "FCenter",
+  //  "Visible": true,
+  //  "SortSequence": 40
+  //}
+]

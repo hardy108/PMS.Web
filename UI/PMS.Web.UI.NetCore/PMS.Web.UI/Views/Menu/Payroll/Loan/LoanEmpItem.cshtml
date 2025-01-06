@@ -1,0 +1,327 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    
+    string tblLoanItem = "tblLoanItem";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblLoanItem)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+<x-form-row>
+    <x-form-col xs-size="12">
+        <button id="btnPilihDetail" class="btn btn-primary pull-left" onclick="@(tblLoanItem)_Handlers.showForm()">
+            Tambah
+        </button>
+        &nbsp;&nbsp;
+        <button id="btnHapusDetail" class="btn" onclick="@(tblLoanItem)_Handlers.deleteRows()">
+            Hapus
+        </button>
+    </x-form-col>
+</x-form-row>
+
+<x-modal id="mdlLoanItem" caption="Input Detail Hutang">
+    <x-modal-body>
+        <x-form-row>
+            <input type="hidden" name="ID" id="ID" data-bf="ID" />
+        </x-form-row>
+        <x-form-row>
+            <input type="hidden" name="SEQ" id="SEQ" data-bf="SEQ" />
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-material id="MATERIALID" binding-field="MATERIALID" caption="Material" multiple="false" xs-size="12" value-field="MATERIALID">
+            </x-field-data-list-material>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-account id="ACCOUNTCODE" binding-field="ACCOUNTCODE" caption="Kode Account" xs-size="12" md-size="6" min-length-search="2">
+            </x-field-data-list-account>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="QTY" binding-field="QTY" caption="Jumlah" xs-size="12" md-size="12"></x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="PRICE" binding-field="PRICE" caption="Harga" xs-size="12" md-size="12"></x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-block id="BLOCKID" caption="Blok" xs-size="12" md-size="6" binding-field="BLOCKID" min-length-search="3"
+                                     chain-to-relatives="@(!ViewBag.ReadOnlyWhenNotInsert)"
+                                     ascendants="@(ViewBag.ReadOnlyWhenNotInsert ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITID",FieldID = "UnitID"}})">
+                is-unit-mandatory="true">
+            </x-field-data-list-block>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text id="NOTE1" binding-field="DETAILNOTE" caption="Keterangan" read-only="false" place-holder="" xs-size="12" md-size="12">
+            </x-field-text>
+        </x-form-row>
+
+    </x-modal-body>
+    <x-modal-footer>
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <button id="btnResetDetail" class="btn" onclick="resetElements('mdlLoanItem')">
+                    Reset
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddDetail" class="btn btn-primary" onclick="@(tblLoanItem)_Handlers.addRows(true)">
+                    Tambah
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddCloseDetail" class="btn btn-primary" onclick="@(tblLoanItem)_Handlers.addRows(true,true)">
+                    Tambah dan Tutup
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnCloseDetail" class="btn" onclick="$('#mdlLoanItem').modal('hide')">
+                    Tutup
+                </button>
+            </x-form-col>
+        </x-form-row>
+    </x-modal-footer>
+</x-modal>
+}
+
+
+
+
+<script>
+    var @(tblLoanItem)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllDetail' name='chkDeleteDetail' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteDetail'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Id",
+                "name": "ID",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "No Material",
+                "name": "MATERIALID",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "MATNAME",
+                "title": "Nama Material",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "ACCOUNTCODE",
+                "title": "Kode Account",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "ACCNAME",
+                "title": "Nama Account",
+                "visible": true
+            },
+
+               {
+                "type": "number",
+                "title": "Jumlah",
+                "name": "QTY",
+                "visible": @(isReadOnlyString),
+                },
+
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Jumlah",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+
+             {
+                "type": "number",
+                "title": "Harga",
+                 "name": "PRICE",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "PRICE_INPUT",
+                "title": "Harga",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='PRICE' value='" + rowdata["PRICE"] + "'  data-bf='PRICE' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Kode Blok",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "DETAILNOTE",
+                "title": "Note",
+                "visible": true
+            },
+
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.ID = dictItem[row.ID].ID;
+                    row.MATERIALID = dictItem[row.ID].MATERIALID;
+                    row.MATERIALNAME = dictItem[row.ID].MATERIALNAME;
+                    row.ACCOUNTCODE = dictItem[row.ID].ACCOUNTCODE;
+                    row.QTY = dictItem[row.ID].QTY;
+                    row.PRICE = dictItem[row.ID].PRICE;
+                    row.BLOCKID = dictItem[row.ID].BLOCKID;
+                    row.DETAILNOTE = dictItem[row.ID].DETAILNOTE;
+
+
+                });
+            }
+            $("#@(tblLoanItem)").footable({
+                "columns": @(tblLoanItem)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["MATERIALID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblLoanItem)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblLoanItem)_Handlers.rowKeys);
+        },
+
+        selectedItems: [],
+
+        addRows: function (fromItem,closeForm) {
+            var qty = 0;
+            if (fromItem) {
+                @(tblLoanItem)_Handlers.selectedItems = $('#MATERIALID').flexdatalist('value');
+
+                id = $('#ID').val();
+                tranid = $('#TRANID').val();
+                material = $('#MATERIALID').val();
+                account = $('#ACCOUNTCODE').val();
+                qty = $('#QTY').val();
+                price = $('#PRICE').val();
+                blockid = $('#BLOCKID').val();
+                note = $('#NOTE1').val();
+            }
+
+            if (!@(tblLoanItem)_Handlers.selectedItems || @(tblLoanItem)_Handlers.selectedItems.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblLoanItem)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+           
+
+                var detail = {
+
+                            ID: id,
+                            TRANID: tranid,
+                            MATERIALID:material,
+                            ACCOUNTCODE:account,
+                            QTY: qty,
+                            PRICE: price,
+                            BLOCKID: blockid,
+                            DETAILNOTE : note
+
+                };
+
+                    detail.key = @(tblLoanItem)_Handlers.getRowKey(detail);
+                    if (!@(tblLoanItem)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+          
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlLoanItem').modal('hide');
+        },
+        showForm: function () {
+
+            if (!$('#UNITID').flexdatalist('value')) {
+                alert("Unit belum dipilih");
+                return false;
+            }
+
+            $('#mdlLoanItem').modal('show');
+            return true;
+        },
+        deleteRows: function (activities) {
+
+            var ft = FooTable.get('#@(tblLoanItem)');
+            var deletedCount = 0;
+            if (ft) {
+                    if (!confirm('Yakin akan menghapus detail hutang?'))
+                        return;
+                    $('[name = "chkDeleteDetail"]').each(function () {
+                        if (this.id !== 'chkAllDetail') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblLoanItem)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["MATERIALID"] > 0)
+                    rows.push(row.val());
+
+            });
+            return rows;
+        },
+    };
+
+
+</script>

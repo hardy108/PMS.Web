@@ -1,0 +1,60 @@
+[
+
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Bisnis Area",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "CREATEBY",
+    "FieldCaption": "Create By",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "CREATED",
+    "FieldCaption": "Created",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY",
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "UPDATEBY",
+    "FieldCaption": "Update By",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Updated",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "FormatString": "DD-MMM-YYYY",
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  }
+]

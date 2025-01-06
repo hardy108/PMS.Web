@@ -1,0 +1,40 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblPremiPanenBasisBasic";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basis Jumat & Gerdan</div>
+            <div class="panel-body">
+                <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%"></table>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Basis Dasar Jumat" read-only="true" place-holder="Basis Dasar" xs-size="12" md-size="2">
+                    </x-field-text>
+                    <x-field-number id="txtFriday" binding-field="FRIDAY1" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-text caption=" " value="Basis Dasar Gerdan" read-only="true" place-holder="Premi Lebih Basis" xs-size="12" md-size="2">
+                    </x-field-text>
+                    <x-field-number id="txtGerdanBase" binding-field="GERDANBASE" xs-size="12" md-size="1" read-only="@ViewBag.ReadOnly">
+                    </x-field-number>
+                </x-form-row>
+
+            </div>
+        </div>
+    </x-form-col>
+</x-form-row>
+
+
+<script>
+
+</script>
+

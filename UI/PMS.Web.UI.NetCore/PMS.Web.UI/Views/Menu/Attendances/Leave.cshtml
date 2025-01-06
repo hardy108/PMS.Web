@@ -1,0 +1,50 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Cuti";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. Dokumen" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="true" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit>
+        <x-field-text binding-field="DATE_IN_TEXT" caption="Tgl. Dokumen" read-only="true" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text binding-field="EMPID" caption="NIK" read-only="true" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text binding-field="EMPNAME" caption="Nama Karyawan" read-only="true" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <input type="hidden" data-bf="TYPEID" />
+        <x-field-text binding-field="LEAVETYPENAME" caption="Jenis Cuti" read-only="true" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text binding-field="LEAVEDATE_IN_TEXT" caption="Tgl. Cuti" read-only="true" xs-size="12" md-size="6">
+        </x-field-text>
+        <x-field-number id="QTY" binding-field="QTY" caption="Total Hari Cuti" xs-size="12" md-size="3" read-only="true">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area binding-field="NOTE" caption="Keterangan" read-only="true" place-holder="Keterangan" xs-size="12" md-size="12">
+        </x-field-text-area>
+    </x-form-row>
+
+</x-form>
+
+

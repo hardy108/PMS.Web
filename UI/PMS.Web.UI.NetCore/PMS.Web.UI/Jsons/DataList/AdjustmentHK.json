@@ -1,0 +1,68 @@
+[
+  {
+    "FieldName": "ID",
+    "FieldCaption": "No Dokumen",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 1
+  },
+  {
+    "FieldName": "DATE_IN_TEXT",
+    "FieldCaption": "Tgl",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Estate",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "WFDOCSTATUSTEXT",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "UPDATED_IN_TEXT",
+    "FieldCaption": "Update",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "UPDATEDBY",
+    "FieldCaption": "Update By",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  }
+]

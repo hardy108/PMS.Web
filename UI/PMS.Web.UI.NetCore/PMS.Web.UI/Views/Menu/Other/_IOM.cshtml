@@ -1,0 +1,105 @@
+﻿
+@{
+
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnly = mode != "New" && mode != "Edit" && mode != "Approval";
+
+    bool onCreate = false;
+    bool onApproval = false;
+    
+
+    try
+    {
+        if (ViewBag.OnCreate)
+        {
+            onCreate = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnApproval)
+        {
+            onApproval = true;
+        }
+    }
+    catch { }
+
+    
+
+    onCreate = onCreate && !readOnly;
+    onApproval = onApproval && !readOnly;
+    
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="REGISTERID" binding-field="REGISTERID" caption="Register No." read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-input binding-field="CREATEDDATE_IN_TEXT" caption="Register Date" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="CREATEDBY" caption="Registered By" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+        <x-field-input binding-field="WFDOCSTATUSTEXT" caption="Status" read-only="true" xs-size="12" md-size="3">
+        </x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-department id="DEPTID" caption="Departemen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DEPTID" min-length-search="0">
+        </x-field-data-list-department>
+        <x-field-text id="TITLE" binding-field="TITLE" caption="Title" read-only="@(!onCreate)" place-holder="Title" xs-size="12" md-size="6">
+        </x-field-text>
+    
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="DESCRIPTION" caption="Description" xs-size="12" read-only="@(!onCreate)" binding-field="DESCRIPTION" rows="6">
+        </x-field-text-area>
+    </x-form-row>    
+    <x-form-row>
+        <x-form-col md-size="3" xs-size="12">
+            <x-field-file property-name="FILEIOM" caption="IOM File" read-only="@(!onCreate)" binding-field="FILEIOM">
+            </x-field-file>
+        </x-form-col>
+    </x-form-row>
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {        
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

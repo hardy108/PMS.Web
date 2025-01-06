@@ -1,0 +1,67 @@
+﻿@using PMS.Web.UI.Code
+
+@{
+    Layout = "~/Views/Filter/_LayoutFilter.cshtml";
+
+    string jsonId = ViewBag.MenuId;
+    string formId = "frm" + jsonId;
+
+    HtmlJsonFormatter jsonFormatter = new HtmlJsonFormatter { Id = jsonId };
+    HtmlInputContainer form = new HtmlInputContainer
+    {
+        Id = formId,
+        HtmlInputs =
+{
+    new HtmlFormRow
+    {
+        HtmlInputs =
+        {
+            new HtmlFormColumn { XSSize=6, MDSize = 4, HtmlInput = new HtmlInputDateTimeRangePicker{ Id = ViewBag.Prefix + "dtDate",Caption = "From Date", Caption2 = "To Date", BindingField="StartDate",BindingField2="EndDate",PickerOption= HtmlInputDateTimePickerOption.DateOnly, JsonFormatter=jsonFormatter,WithInitScript=true } },
+            new HtmlFormColumn { XSSize=6, MDSize = 2, HtmlInput = new HtmlAjaxInputSelectEstate { Id = ViewBag.Prefix + "cboEstate", Caption = "Estate", BindingField="Estate", WithInitScript = true, JsonFormatter=jsonFormatter, Multiple=true } },
+            new HtmlFormColumn { XSSize=6, MDSize = 3, HtmlInput = new HtmlAjaxInputSelect { Id = ViewBag.Prefix + "cboDocType", Caption = "Doc. Type", BindingField="DocType", WithInitScript = true, JsonFormatter=jsonFormatter, Multiple=true,ApiRouteURL="api/approval/authorizeddoctypes" } },
+            new HtmlFormColumn { XSSize=6, MDSize = 3, HtmlInput = new HtmlInputText { Id = ViewBag.Prefix + "txtSearchTerm", Caption = "Keyword", BindingField="SearchTerm", WithInitScript = true, JsonFormatter=jsonFormatter, PlaceHolder = "Keyword" } }
+        }
+    }
+}
+    };
+}
+
+@Html.Raw(form)
+@Html.Raw(jsonFormatter)
+
+<script>
+    var constructFilter = function () {
+        //Add Custom Filter Here
+        filterString = '';
+
+        if (!filter.StartDate || !filter.EndDate) {
+            alert("Please select the start date and the end date!");
+            return false;
+        }
+
+        startDate = filter.StartDate;
+        endDate = filter.EndDate;
+        unitIDs=''
+        if (filter.Estate.length > 0) {            
+            $.each(filter.Estate, function (i, val) {
+                unitIDs += val + ",";
+            });
+            unitIDs = unitIDs.substring(0, unitIDs.length - 1);            
+        } 
+
+        docTypes=''
+        if (filter.DocType.length > 0) {            
+            $.each(filter.DocType, function (i, val) {
+                docTypes += val + ","
+            });
+            docTypes = docTypes.substring(0, docTypes.length - 1);
+        }
+        searchTerm = filter.SearchTerm;
+        return true;
+    }
+
+</script>
+
+
+
+

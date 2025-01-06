@@ -1,0 +1,188 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Premi Operator";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="DOCNO" binding-field="DOCNO" caption="No Dokumen" read-only="true" place-holder="No Dokumen" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Estate" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Estate" xs-size="12" md-size="3" value-field="UNITCODE">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-text binding-field="STATUS" id="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="1">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date id="dt" binding-field="DOCDATE" caption="Tanggal" xs-size="12" md-size="2" picker-option="DateOnly" read-only="@ViewBag.ReadOnlyWhenNotInsert" date-format="dd-MMM-yyyy" value="@strToday">
+        </x-field-date>
+        <x-field-text binding-field="PERIOD" id="PERIOD" caption="Period" read-only="true" place-holder="Period" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="MANAGER" id="MANAGER" caption="Manager" read-only="true" place-holder="Manager" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text binding-field="KTU" id="KTU" caption="KTU" read-only="true" place-holder="KTU" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="TOTAL" id="TOTAL" caption="Total Pembayaran" read-only="true" place-holder="Total Pembayaran" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-col>
+        <button id="btnProcessMonthly" class="btn btn-primary" onclick="ProcessMonthly()" >
+        Proses Kalkulasi
+        </button>
+    </x-form-col>
+    <x-form-row>
+        &nbsp;&nbsp;
+        &nbsp;&nbsp;
+    </x-form-row>
+</x-form>
+
+<script src="~/js/plugins/jquery.blockUI.js"></script>
+<script>
+
+    if (mode == "Display" || mode == "Delete" || mode == "Post" ) {
+        //document.getElementById("btnProcessMonthly").disabled = true;
+        document.getElementById("btnProcessMonthly").style.visibility = "hidden";
+    };
+
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display", "Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+
+    if (mode == "New" || mode == "Edit") {
+        mode = "Display";
+    };
+
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    function ProcessMonthly() {
+        
+        if ($('#UNITCODE').val() == "") {
+            alert("Estate belum dipilih");
+            return false;
+        }
+
+        param = {
+            docNo: $('#DOCNO').val(),
+            unitId: $('#UNITCODE').val(),
+            date: $('#dt').val()
+        };
+
+        $.blockUI({ message: '<h2> Proses Payroll Bulanan </h2>' });
+
+        helper.callAjaxRequestJson("api/ProcessMonthly/process", param, 'get',
+            function (data) {
+                $.unblockUI(alert('Proses Sukses')); 
+                $('#DOCNO').val(data.DOCNO);
+
+                //var docdate = new Date(data.DOCDATE);
+                //var docdate = docdate.toLocaleDateString()
+
+                //$('#dt').val(data.DOCDATE);
+                //$('#dt').val(formatDate(data.DOCDATE));
+                document.getElementById("dt").innerHTML = formatDate(data.DOCDATE);
+
+                $('#PERIOD').val(data.PERIOD);
+                $('#MANAGER').val(data.MANAGER);
+                $('#KTU').val(data.KTU);
+                $('#TOTAL').val(data.TOTAL);
+
+                $('#UNITCODE').flexdatalist('disabled', true);
+                document.getElementById("dt").disabled = true;
+                document.getElementById("TOTAL").value = Currency($('#TOTAL').val());
+
+            },
+            function (error) { $.unblockUI(alert(error.responseJSON.Message)); }
+        );
+
+    };
+
+    function DeleteMonthly() {
+
+        if ($('#DOCNO').val() == "") {
+            alert("No dokumen belum dipilih");
+            return false;
+        }
+
+        param = {
+            docNo: $('#DOCNO').val()
+        };
+
+        $.blockUI({ message: '<h2> Proses Delete </h2>' });
+        helper.callAjaxRequestJson("api/ProcessMonthly/delete", param, 'post',
+            function () { $.unblockUI(alert('Delete Sukses')); },
+            function (error) { $.unblockUI(alert(error.responseJSON.Message)); }
+        );
+    };
+    
+    $(document).ready(function () {       
+        var tot = Currency($('#TOTAL').val());
+        document.getElementById("TOTAL").value = tot;
+    });
+
+    function Currency(value) {
+        var cur = 0 ;
+        cur = parseFloat(value.replace(/,/g, ""))
+            .toFixed(2)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return cur;
+    };
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    };
+
+</script>

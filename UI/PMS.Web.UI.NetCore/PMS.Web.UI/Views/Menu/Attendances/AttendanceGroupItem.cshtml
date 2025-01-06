@@ -1,0 +1,541 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Item";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+    string mdledit = "mdlEdit" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            @*&nbsp;&nbsp;
+                <button id="btnEditBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm('edit')">
+                    Tambah
+                </button>*@
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Tambah Material">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list id="@(prefix)DAY" caption="Hari" multiple="true" xs-size="12">
+                </x-field-data-list>
+                
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)BREAKSTART" caption="Mulai Istirahat" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)BREAKEND" caption="Akhir Istirahat" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)OUTTIME" caption="Jadwal Pulang" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="@(prefix)WORKHOUR" caption="Jam Kerja" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Simpan
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+
+    <x-modal id="@(mdledit)" caption="Edit Hari">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list id="@(prefix)DAYEDIT" caption="Hari" multiple="false" xs-size="12" read-only="true">
+                </x-field-data-list>
+                <input type="hidden" name="@(prefix)DAYCODEEDIT" id="@(prefix)DAYCODEEDIT" />
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)BREAKSTARTEDIT" caption="Mulai Istirahat" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)BREAKENDEDIT" caption="Akhir Istirahat" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="@(prefix)OUTTIMEEDIT" caption="Jadwal Pulang" picker-option="TimeOnly" xs-size="12" md-size="4"></x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="@(prefix)WORKHOUREDIT" caption="Jam Kerja" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdledit)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.editRows()">
+                        Simpan
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdledit)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+
+}
+
+
+<script>
+    var hari = [];
+    hari.push({ DAYCODE: 1, DAYNAME: "Minggu" });
+    hari.push({ DAYCODE: 2, DAYNAME: "Senin" });
+    hari.push({ DAYCODE: 3, DAYNAME: "Selasa" });
+    hari.push({ DAYCODE: 4, DAYNAME: "Rabu" });
+    hari.push({ DAYCODE: 5, DAYNAME: "Kamis" });
+    hari.push({ DAYCODE: 6, DAYNAME: "Jumat" });
+    hari.push({ DAYCODE: 7, DAYNAME: "Sabtu" });
+
+
+    $('#@(prefix)DAY').flexdatalist({
+        textProperty: "{DAYCODE}-{DAYNAME}", valueProperty: "DAYNAME", visibleProperties: ["DAYNAME"],
+        valueField: "DAYCODE", searchContain: true, searchIn: ["DAYCODE", "DAYNAME"],multiple: true, minLength: 0, data: hari,
+    });
+
+    $('#@(prefix)DAYEDIT').flexdatalist({
+        textProperty: "{DAYCODE}-{DAYNAME}", valueProperty: "DAYNAME", visibleProperties: ["DAYNAME"],
+        valueField: "DAYCODE", searchContain: true, searchIn: ["DAYCODE", "DAYNAME"], multiple: false, minLength: 0, data: hari,
+     });
+
+    function updateInputToRow_custom(n, t) {
+        var u = $(n).closest("tr"), x = FooTable.getRow(u), r;
+
+        updateInputToRow(n);
+
+        var code = $('#ID').val();
+        var namaHari = hari.filter(h => h.DAYCODE == $(n).val())[0]["DAYNAME"];
+        return t || (t = "HARI"), x && t && (r = x.val(), r["ID"] = code + '' + $(n).val(), r[t] = namaHari, x.val(r, !1)), x
+    }
+
+    var @(prefix)_ = {
+        selectedItems: {},
+        isItemExist: function (day) {
+            if (!day)
+                return true;
+
+            var x = this.selectedItems[day];
+            if (x) return true;
+            return false;
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "html",
+                "name": "BUTTONEDIT",
+                "title": "Edit",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value, option, rowdata) {
+                    return "<button type='button' class='btn btn-default footable-edit' onclick='@(prefix)_.showEditModal(this)'><span class='fooicon fooicon-pencil' aria-hidden='true'></span></button>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "ID",
+                "title": "ID",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "GROUPID",
+                "title": "GROUPID",
+                "visible": false,
+            },
+            {
+                "type": "number",
+                "name": "DAY",
+                "title": "day",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "HARI",
+                "title": "Hari",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "DAY_INPUT",
+                "title": "Hari",
+                "formatter": function (value, option, rowdata) {
+                    var selected1 = '', selected2 = '', selected3 = '', selected4 = '', selected5 = '', selected6 = '', selected7 = '';
+                    if (rowdata["DAY"] == 1) {
+                        selected1 = 'Selected';
+                    } else if (rowdata["DAY"] == 2) {
+                        selected2 = 'Selected';
+                    } else if (rowdata["DAY"] == 3) {
+                        selected3 = 'Selected';
+                    } else if (rowdata["DAY"] == 4) {
+                        selected4 = 'Selected';
+                    } else if (rowdata["DAY"] == 5) {
+                        selected5 = 'Selected';
+                    } else if (rowdata["DAY"] == 6) {
+                        selected6 = 'Selected';
+                    } else if (rowdata["DAY"] == 7) {
+                        selected7 = 'Selected';
+                    }
+                    return "<select name='DAY' style='width: 70px' data-bf='DAY' onfocusout='updateInputToRow_custom(this)'>" +
+                            "<option value='1' " + selected1 +">Minggu</option>" +
+                            "<option value='2' " + selected2 +">Senin</option>" +
+                            "<option value='3' " + selected3 +">Selasa</option>" +
+                            "<option value='4' " + selected4 +">Rabu</option>" +
+                            "<option value='5' " + selected5 +">Kamis</option>" +
+                            "<option value='6' " + selected6 +">Jumat</option>" +
+                            "<option value='7' " + selected7 +">Sabtu</option>" +
+                            "</select>";
+                    //return "<input type='text' name='HARI' value='" + rowdata["HARI"] + "' style='width: 50px'  data-bf='HARI' onfocusout='updateInputToRow(this)'>";
+
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "name": "BREAKSTART",
+                "title": "Mulai Istirahat",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "BREAKEND",
+                "title": "Akhir Istirahat",
+                "visible": true,
+            },
+            {
+                "type": "text",
+                "name": "OUTTIME",
+                "title": "Jadwal Pulang",
+                "visible": true,
+            },
+            {
+                "type": "number",
+                "name": "WORKHOUR",
+                "title": "Jam Kerja",
+                "visible": true,
+            },
+
+        ],
+
+        showForm: function (edit) {
+
+            //if (!$('#UNITCODE').val()) {
+            //    alert("Estate belum dipilih");
+            //    return false;
+            //}
+
+            //if (!$('#LOCCODE').val()) {
+            //    alert("Lokasi belum dipilih");
+            //    return false;
+            //}
+
+            $('#@(mdl)').modal('show');
+
+            return true;
+        },
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.ID) {
+                        row.HARI = hari.filter(h => h.DAYCODE == row.DAY)[0]["DAYNAME"];
+                        _this.selectedItems[row.DAY] =
+                        {
+                            ID: row.ID,
+                            GROUPID: row.GROUPID,
+                            BREAKSTART: row.BREAKSTART,
+                            BREAKEND: row.BREAKEND,
+                            OUTLINE: row.OUTLINE,
+                            WORKHOUR: row.WORKHOUR,
+                        };
+                    }
+                });
+            }
+
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows,
+            });
+
+            return;
+        },
+        rowKeys: ["DAY"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+        showEditModal: function (element) {
+            var $tr = $(element).closest("tr");
+            var $row = FooTable.getRow($tr);
+            var values = $row.val();
+
+            $('#@(prefix)DAYEDIT').val(values.DAY + '-' + values.HARI);
+            $('#@(prefix)DAYCODEEDIT').val(values.DAY);
+            $('#@(prefix)BREAKSTARTEDIT').val(values.BREAKSTART);
+            $('#@(prefix)BREAKENDEDIT').val(values.BREAKEND);
+            $('#@(prefix)OUTTIMEEDIT').val(values.OUTTIME);
+            $('#@(prefix)WORKHOUREDIT').val(values.WORKHOUR);
+
+            $('#@(mdledit)').modal('show');
+        },
+        editRows: function (closeForm) {
+            var days = $('#@(prefix)DAYCODEEDIT').val();
+            if (!days || (Array.isArray(days) && days.length < 1)) {
+                alert("Hari belum dipilih");
+                return;
+            }
+            var breakStart = $('#@(prefix)BREAKSTARTEDIT').val();
+            if (!breakStart || (Array.isArray(breakStart) && breakStart.length < 1)) {
+                alert("Mulai Istirahat belum diisi");
+                return;
+            }
+            var breakEnd = $('#@(prefix)BREAKENDEDIT').val();
+            if (!breakEnd || (Array.isArray(breakEnd) && breakEnd.length < 1)) {
+                alert("Akhir Istirahat belum diisi");
+                return;
+            }
+            var outTime = $('#@(prefix)OUTTIMEEDIT').val();
+            if (!outTime || (Array.isArray(outTime) && outTime.length < 1)) {
+                alert("Jadwal Pulang belum dipilih");
+                return;
+            }
+            var workHour = $('#@(prefix)WORKHOUREDIT').val();
+            if (!workHour || (Array.isArray(workHour) && workHour.length < 1)) {
+                alert("Jam Kerja belum dipilih");
+                return;
+            }
+
+            var code = $('#ID').val();
+
+            var ft = FooTable.get('#@(tbl)');
+
+            if (days) {
+                if (@(prefix)_.isItemExist(days.DAYCODE)) {
+                    ft.rows.all.forEach(function (row) {
+                        if (row.value.DAY === days) {
+                            var rowVal = row.val();
+                            rowVal['BREAKSTART'] = breakStart;
+                            rowVal['BREAKEND'] = breakEnd;
+                            rowVal['OUTTIME'] = outTime;
+                            rowVal['WORKHOUR'] = workHour;
+                            row.val(rowVal, false);
+                        }
+                    });
+                }
+            }
+
+            resetElements('@(mdledit)');
+            $('#@(mdledit)').modal('hide');
+
+            return ;
+        },
+        addRows: function (closeForm) {
+
+            var days = $('#@(prefix)DAY').flexdatalist('value');
+            if (!days || (Array.isArray(days) && days.length < 1)) {
+                alert("Hari belum dipilih");
+                return;
+            }
+            var breakStart = $('#@(prefix)BREAKSTART').val();
+            if (!breakStart || (Array.isArray(breakStart) && breakStart.length < 1)) {
+                alert("Mulai Istirahat belum diisi");
+                return;
+            }
+            var breakEnd = $('#@(prefix)BREAKEND').val();
+            if (!breakEnd || (Array.isArray(breakEnd) && breakEnd.length < 1)) {
+                alert("Akhir Istirahat belum diisi");
+                return;
+            }
+            var outTime = $('#@(prefix)OUTTIME').val();
+            if (!outTime || (Array.isArray(outTime) && outTime.length < 1)) {
+                alert("Jadwal Pulang belum dipilih");
+                return;
+            }
+            var workHour = $('#@(prefix)WORKHOUR').val();
+            if (!workHour || (Array.isArray(workHour) && workHour.length < 1)) {
+                alert("Jam Kerja belum dipilih");
+                return;
+            }
+
+            var code = $('#ID').val();
+
+            var ft = FooTable.get('#@(tbl)');
+            var added = 0;
+            var addRow = function (day, ft) {
+                var newDay =
+                {
+                    ID: code + '' + day.DAYCODE,
+                    GROUPID: code,
+                    BREAKSTART: breakStart,
+                    BREAKEND: breakEnd,
+                    OUTTIME: outTime,
+                    WORKHOUR: workHour,
+                    DAY: day.DAYCODE,
+                    HARI: day.DAYNAME,
+
+                };
+                newDay.key = @(prefix)_.getRowKey(newDay);
+                ft.rows.add(newDay, false);
+                if (day)
+                    @(prefix)_.selectedItems[day.DAY] =
+                    {
+                        ID: code + '' + day.DAYCODE,
+                        GROUPID: code,
+                        BREAKSTART: breakStart,
+                        BREAKEND: breakEnd,
+                        OUTTIME: outTime,
+                        WORKHOUR: workHour,
+                        DAY: day.DAYCODE,
+                        HARI: day.DAYNAME,
+                    };
+
+            }
+
+
+            if (Array.isArray(days) && days.length === 1)
+                days = days[0];
+            if (Array.isArray(days)) {
+                var error = "";
+                days.forEach(function (day) {
+                    if (@(prefix)_.isItemExist(day.DAYCODE))
+                        error += "\r\n" + day.DAYCODE;
+                    else {
+                        addRow(day,ft);
+                        added++;
+                    }
+                });
+
+                if (error)
+                    alert("Hari sudah ditambahkan sebelumnya" + error);
+            }
+            else {
+                if (@(prefix)_.isItemExist(days.DAYCODE)) {
+                    alert("Hari " + hari.filter(h => h.DAYCODE == days.DAYCODE)[0]["DAYNAME"] + " sudah dipilih sebelumnya");
+                    $('#@(prefix)DAY').flexdatalist('value', null);
+                    return;
+                }
+
+
+                addRow(days,ft);
+                added++;
+            }
+
+            if (added)
+                ft.draw();
+
+            resetElements('@(mdl)');
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Anda yakin ingin menghapus Hari?'))
+                return;
+
+            var ft = FooTable.get('#@(tbl)');
+            var deletedCount = 0;
+
+            if (ft) {
+                $('[name = "chkDelete@(prefix)"]').each(function () {
+                    if (!(this.id)) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            @(prefix)_.selectedItems[$row.val()["ID"]] = null;
+                            //Collection_.deleteRows(null, $row.val()["MATERIALID"]);
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

@@ -1,0 +1,227 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models; 
+@{
+
+    ViewData["Title"] = "Pengajuan Perubahan Data Karyawan";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+}
+    <script>
+        var mode = "@(mode)";
+    </script>
+
+    <x-form id="@ViewBag.MainFormID">
+        <x-form-row>
+            <x-field-text id="ID" binding-field="ID" caption="No. Pengajuan" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+            </x-field-text>
+            <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITCODE" min-length-search="0">
+            </x-field-data-list-unit-by-user-name>
+            <x-field-date id="CREATED" binding-field="CREATED" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+            </x-field-date>
+            <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+            </x-field-text>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-employee caption="Karyawan" id="EMPID" binding-field="EMPID" xs-size="12" md-size="6" show-inactive="true" read-only="@ViewBag.ReadOnlyWhenNotInsert" chain-to-relatives="@(!ViewBag.ReadOnlyWhenNotInsert)"                                        
+                                        ascendants="@(ViewBag.ReadOnlyWhenNotInsert ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITCODE",FieldID = "UnitID"}})">
+                                        is-unit-mandatory="true">
+            </x-field-data-list-employee>
+            <x-field-date id="EFFECTIVEDATE" binding-field="EFFECTIVEDATE" caption="Tgl. Mulai Berlaku" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+            </x-field-date>
+        </x-form-row>
+        <x-form-row>
+            <x-form-col xs-size="12" md-size="6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Saat Ini</div>
+                    <div class="panel-body">
+                        
+                            <x-form-row>
+                                <input type="hidden" data-bf="DIVID" id="DIVID"> 
+                                <x-field-input id="DIVNAME" binding-field="DIVNAME" caption="Lokasi" read-only="true" xs-size="12">
+
+                                </x-field-input>
+                            </x-form-row>
+                            <x-form-row>                                
+                                <input type="hidden" data-bf="POSITIONID" id="POSITIONID">
+                                <x-field-input id="POSITIONNAME" binding-field="POSITIONNAME" caption="Jabatan" read-only="true" xs-size="12">
+                                </x-field-input>
+                            </x-form-row>
+                            <x-form-row>        
+                                <x-field-select select-type="Single" id="RECORDSTATUS" binding-field="RECORDSTATUS" caption="Status Data" read-only="true" xs-size="3">
+                                    <option value="A">Active</option>
+                                    <option value="C">Inactive</option>
+                                    <option value="D">Deleted</option>
+                                </x-field-select>
+                                <x-field-input id="EMPTYPE" binding-field="EMPTYPE" caption="Tipe Karyawan" read-only="true" xs-size="6">
+                                </x-field-input>
+                                <x-field-number id="BASICWAGES" binding-field="BASICWAGES" caption="Gaji Pokok" read-only="true" xs-size="3">
+                                </x-field-number>
+                            </x-form-row>
+
+                            <x-form-row>
+                                <input type="hidden" data-bf="STATUSID" id="STATUSID">
+                                <x-field-text id="STATUSNAME" binding-field="STATUSNAME" caption="Status" read-only="true"  xs-size="6">
+
+                                </x-field-text>
+                                <x-field-text id="TAXSTATUS" binding-field="TAXSTATUS" caption="Status Pajak" read-only="true" xs-size="3">
+
+                                </x-field-text>
+                                <x-field-text id="FAMILYSTATUS" binding-field="FAMILYSTATUS" caption="Status Keluarga" read-only="true" xs-size="3">
+
+                                </x-field-text>
+                            </x-form-row>
+                        
+                    </div>
+                </div>
+            </x-form-col>
+            <x-form-col xs-size="12" md-size="6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Usulan Perubahan</div>
+                    <div class="panel-body">
+                        
+                        <x-form-row>
+                            <input type="hidden" data-bf="NEWUNITCODE" id="NEWUNITCODE">
+                            <x-field-data-list-divisi id="NEWDIVID" binding-field="NEWDIVID" caption="Lokasi" read-only="@ViewBag.ReadOnly" xs-size="12">
+
+                            </x-field-data-list-divisi>
+                        </x-form-row>
+                            <x-form-row>
+                                <x-field-data-list-position id="NEWPOSITIONID" binding-field="NEWPOSITIONID" caption="Jabatan" read-only="@ViewBag.ReadOnly" xs-size="12">
+
+                                </x-field-data-list-position>
+                            </x-form-row>
+                            <x-form-row>
+                                <x-field-select select-type="Single" id="NEWRECORDSTATUS" binding-field="NEWRECORDSTATUS" caption="Status Data" read-only="@ViewBag.ReadOnly" xs-size="3">
+                                    <option value="A">Active</option>
+                                    <option value="C">Inactive</option>
+                                    <option value="D">Deleted</option>
+                                </x-field-select>
+                                <x-field-data-list-employee-type id="NEWEMPTYPE" binding-field="NEWEMPTYPE" caption="Tipe Karyawan" read-only="@ViewBag.ReadOnly" md-size="6">
+
+                                </x-field-data-list-employee-type>
+
+                                <x-field-number id="NEWBASICWAGES" binding-field="NEWBASICWAGES" caption="Gaji Pokok" read-only="@ViewBag.ReadOnly" md-size="3">
+
+                                </x-field-number>
+                            </x-form-row>
+
+                            <x-form-row>
+                                <x-field-data-list-status id="NEWSTATUSID" binding-field="NEWSTATUSID" caption="Status Perkawinan" read-only="@ViewBag.ReadOnly" xs-size="6">
+
+                                </x-field-data-list-status>
+                                <x-field-text id="NEWTAXSTATUS" binding-field="NEWTAXSTATUS" caption="Status Pajak" read-only="true" xs-size="3">
+
+                                </x-field-text>
+                                <x-field-text id="NEWFAMILYSTATUS" binding-field="NEWFAMILYSTATUS" caption="Status Keluarga" read-only="true" xs-size="3">
+
+                                </x-field-text>
+                            </x-form-row>
+                        
+                    </div>
+                </div>
+            </x-form-col>
+        </x-form-row>
+
+
+
+        @*@if (ViewBag.Menu.ShowApproval || ViewBag.Menu.NeedApproval)
+        {
+            @Html.Partial("/Views/Menu/WFApprovalNotes.cshtml")
+        }*@
+
+    </x-form>
+@if (!ViewBag.ReadOnly)
+{
+<script>
+       
+        $('#NEWSTATUSID').on('addvalue:flexdatalist', function (event, status) {
+            $('#NEWTAXSTATUS').val(status.TAXSTATUS);
+            $('#NEWFAMILYSTATUS').val(status.FAMILYSTATUS);
+        });
+
+        $('#NEWDIVID').on('addvalue:flexdatalist', function (event, div) {
+            $('#NEWUNITCODE').val(div.UNITCODE);
+        });
+
+
+        
+        
+
+       
+
+        var beforeSendAction = function (action, savedRecord) {
+            var errorTitle = mode + ' - ' + '@ViewBag.Title';
+
+            if (action == "New" || action == "Edit") {
+                if (!savedRecord.NEWPOSITIONID && !savedRecord.NEWEMPTYPE && !savedRecord.NEWDIVID
+                    && !savedRecord.NEWSTATUSID && savedRecord.NEWBASICWAGES <= 0 ) {
+                    showError(errorTitle, 'Minimal Harus Ada 1 Perubahan Data Karyawan')
+                    return false;
+                }
+
+            }
+
+            /* Specific Code Here - End*/
+            return savedRecord;
+    };
+
+    var afterDisplay = function () {
+        if (mode.toLowerCase() == "new") {
+            $('#EMPID').on('addvalue:flexdatalist', function (event, emp) {
+                $('#DIVID').val(emp.DIVID);
+                $('#DIVNAME').val(emp.DIVNAME + " - " + emp.UNITNAME);
+                $('#POSITIONID').val(emp.POSITIONID);
+                $('#POSITIONNAME').val(emp.POSITIONNAME);
+                $('#EMPTYPE').val(emp.EMPTYPE);
+                $('#STATUSID').val(emp.STATUSID);
+                $('#STATUSNAME').val(emp.STATUSNAME);
+                $('#TAXSTATUS').val(emp.TAXSTATUS);
+                $('#FAMILYSTATUS').val(emp.TAXSTATUS);
+                $('#BASICWAGES').val(emp.BASICWAGES);
+                $('#RECORDSTATUS').val(emp.STATUS);
+
+                if (!displayInProgress) {
+                    //Fill The New Data with The Existing as default
+                    $('#NEWDIVID').val(emp.DIVID);
+                    $('#NEWPOSITIONID').val(emp.POSITIONID);
+                    $('#NEWEMPTYPE').val(emp.EMPTYPE);
+                    $('#NEWSTATUSID').val(emp.STATUSID);
+                    $('#NEWTAXSTATUS').val(emp.TAXSTATUS);
+                    $('#NEWFAMILYSTATUS').val(emp.TAXSTATUS);
+                    $('#NEWBASICWAGES').val(emp.BASICWAGES);
+                    $('#NEWRECORDSTATUS').val(emp.STATUS).change();
+                }
+
+            });
+
+            $('#EMPID').on('after:flexdatalist.remove', function (event, x, data) {
+                $('#DIVID').val(null);
+                $('#DIVNAME').val(null);
+                $('#POSITIONID').val(null);
+                $('#POSITIONNAME').val(null);
+                $('#EMPTYPE').val(null);
+                $('#STATUSID').val(null);
+                $('#STATUSNAME').val(null);
+                $('#TAXSTATUS').val(null);
+                $('#FAMILYSTATUS').val(null);
+                $('#BASICWAGES').val(null);
+                $('#RECORDSTATUS').val(null); 
+                $('#NEWDIVID').val(null);
+                $('#NEWPOSITIONID').val(null);
+                $('#NEWEMPTYPE').val(null);
+                $('#NEWSTATUSID').val(null);
+                $('#NEWTAXSTATUS').val(null);
+                $('#NEWFAMILYSTATUS').val(null);
+                $('#NEWBASICWAGES').val(null);
+                $('#NEWRECORDSTATUS').val(null).change();
+            });
+        }
+
+        return true;
+    }
+
+    
+</script>
+}

@@ -1,0 +1,198 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblLoadingEmployee";
+    string tblLoadingCollectId = "tblLoadingCollect";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnHapusEmployee" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+}
+
+<script>
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllEmployee' name='chkDeleteEmployee' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteEmployee'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "ID Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPCODE",
+                "title": "Kode Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Name Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPTYPE",
+                "title": "Tipe Kary.",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "VALUE",
+                "title": "HK",
+                "visible": true
+            }
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.EMPLOYEEID = dictEmployees[row.EMPLOYEEID].EMPID;
+                    row.EMPCODE = dictEmployees[row.EMPLOYEEID].EMPCODE;
+                    row.EMPNAME = dictEmployees[row.EMPLOYEEID].EMPNAME;
+                    row.EMPTYPE = dictEmployees[row.EMPLOYEEID].EMPTYPE;
+                });
+            }
+
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+
+        },
+        rowKeys: ["EMPLOYEEID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedEmployees: [],
+
+        addRows: function (closeForm) {
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+            var added = 0;
+
+            @(tblId)_Handlers.selectedEmployees.forEach(function (memployee)
+            {
+                var detail = {
+                    EMPLOYEEID: memployee.EMPID,
+                    EMPCODE: memployee.EMPCODE,
+                    EMPNAME: memployee.EMPCODE + ' - ' + memployee.EMPNAME,
+                    EMPTYPE: memployee.EMPTYPE,
+                    EMPHK:0,
+                };
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                    ft.rows.add(detail, false);
+                    added++;
+
+                }
+            });
+
+            if (added)
+                ft.draw();
+            return;
+        },
+
+        deleteRows: function (deletedEmployees) {
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            var rows = [];
+
+            if (ft) {
+                if (deletedEmployees) {
+                    //Caused By delete collect Detail
+                    if (deletedEmployees.length > 0 && Array.isArray(deletedEmployees)) {
+                        $.each(deletedEmployees, function (i, emp) {
+                            ft.rows.all.forEach(function (i, row) {
+                                if (i.value.EMPLOYEEID == emp.EMPLOYEEID) {
+                                    i.delete(false);
+                                    deletedCount++;
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Jika karyawan muat dihapus, semua data yang berhubungan akan dihapus.\r\nYakin akan menghapus karyawan muat?'))
+                        return;
+
+                    $('[name = "chkDeleteEmployee"]').each(function () {
+                        if (this.id !== 'chkAllEmployee') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                rows.push({ EMPLOYEEID: $row.value.EMPLOYEEID });
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount) {
+                    ft.draw();
+
+                    if (deletedEmployees)
+                        rows = deletedEmployees;
+
+                    @(tblLoadingCollectId)_Handlers.deleteRows(rows);
+                }
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

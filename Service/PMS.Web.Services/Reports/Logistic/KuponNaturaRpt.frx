@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/11/2020 12:14:54" ReportInfo.Modified="06/09/2020 13:25:30" ReportInfo.CreatorVersion="2020.1.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqULvGFykoY70YkPWC433o5tI+rnjzNr0acomhxfoeNWm5UESES6wfI9SFEQk9SY8iguEbxqwHoz1VuPK0/Imi4hZUCfqrBAAgo2jGGXwG+HxYDGbmnbRF5o2+cgTwI6x/SqF8LnuEYEi9KnAXZ4xxB2u4nSVH4ClnWNs+KebuC8Ugt35KQppKvJcQmOHYfwcMr3vIkVDEpnpAEy35cyCgDA==">
+      <TableDataSource Name="Table1" Alias="kupon" DataType="System.Int32" Enabled="true" SelectCommand="exec rpt_Pay_TicketNatura @DivisionId, @Date">
+        <Column Name="COMPANY" DataType="System.String"/>
+        <Column Name="UNIT" DataType="System.String"/>
+        <Column Name="NO" DataType="System.Int64"/>
+        <Column Name="DIVISI" DataType="System.String"/>
+        <Column Name="EMPCODE" DataType="System.String"/>
+        <Column Name="EMPNAME" DataType="System.String"/>
+        <Column Name="QTY" DataType="System.Decimal"/>
+        <CommandParameter Name="DivisionId" DataType="22" Expression="[DivisionId]"/>
+        <CommandParameter Name="Date" DataType="22" Expression="[StartDate]"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="DivisionId" DataType="System.String" Expression="[DivisionId]"/>
+    <Parameter Name="StartDate" DataType="System.String" Expression="[StartDate]"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <DataBand Name="Data1" Width="245.7" Height="179.55" CanGrow="true" CanShrink="true" CanBreak="true" DataSource="Table1" Columns.Count="3" Columns.Width="245.7">
+      <ShapeObject Name="Shape1" Width="236.25" Height="179.55"/>
+      <TextObject Name="Text3" Left="9.45" Top="9.45" Width="207.9" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[kupon.COMPANY]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="9.45" Top="28.35" Width="207.9" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[kupon.UNIT]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="9.45" Top="75.6" Width="56.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="NIK" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="9.45" Top="94.5" Width="56.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="Nama" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="9.45" Top="132.3" Width="56.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="Natura" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="9.45" Top="113.4" Width="56.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="Divisi" Font="Arial, 10pt"/>
+      <TextObject Name="Text1" Left="66.15" Top="75.6" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="66.15" Top="94.5" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="66.15" Top="113.4" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="66.15" Top="132.3" Width="9.45" Height="18.9" Text=":" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="75.6" Top="75.6" Width="141.75" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[kupon.EMPCODE]" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="75.6" Top="94.5" Width="141.75" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[kupon.EMPNAME]" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="75.6" Top="113.4" Width="141.75" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[kupon.DIVISI]" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="75.6" Top="132.3" Width="56.7" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="[Round([kupon.QTY],2)]" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="132.3" Top="132.3" Width="28.35" Height="18.9" CanGrow="true" CanShrink="true" GrowToBottom="true" Text="Kg" Font="Arial, 10pt"/>
+      <TextObject Name="Text2" Left="9.45" Top="151.2" Width="94.5" Height="18.9" Font="Arial, 10pt"/>
+      <Sort>
+        <Sort Expression="[kupon.NO]"/>
+      </Sort>
+    </DataBand>
+  </ReportPage>
+</Report>

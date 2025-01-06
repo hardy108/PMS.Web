@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 3
+    },
+    {
+      "Id": "StartDate",
+      "Caption": "Tanggal Jurnal Umum",
+      "Type": "date", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 3
+    },
+    {
+      "Id": "Id",
+      "Caption": "No.Voucher",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/journal/listforselect?RecordStatus=A",
+      "MDSize": 6,
+      "Ascendants": [
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        },
+        {
+          "ElementID": "StartDate",
+          "FieldID": "Date"
+        }
+      ]
+    }
+  ]
+]

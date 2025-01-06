@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 8
+    },
+    {
+      "Id": "Date",
+      "Caption": "Tanggal",
+      "Type": "date", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+
+]

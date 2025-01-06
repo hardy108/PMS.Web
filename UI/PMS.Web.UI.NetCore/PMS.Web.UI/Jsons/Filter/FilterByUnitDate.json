@@ -1,0 +1,25 @@
+[
+  [
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Date",
+      "Caption2": "&nbsp",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    },
+    {
+      "Id": "UnitID",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 4
+    },
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+]

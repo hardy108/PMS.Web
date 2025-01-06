@@ -1,0 +1,205 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblRkhActual";    
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+
+<script>
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllActivity' name='chkDeleteActual' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteActual'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "ACTID",
+                "title": "Kode Kegiatan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Kegiatan",
+                "name": "ACTNAME",
+                "visible": true
+            },
+            
+            {
+                "type": "text",
+                "name": "SPVID",
+                "title": "NIK Mandor",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "SPVNAME",
+                "title": "Mandor",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "title": "Rencana TK (Orang)",
+                "name": "PLANEMPCOUNT",
+                "visible": true,
+            },
+            {
+                "type": "number",
+                "title": "Aktual TK (Orang)",
+                "name": "EMPCOUNT",
+                "visible": @(isReadOnlyString),
+            },
+             {
+                "type": "html",
+                 "name": "EMPCOUNT_INPUT",
+                 "title": "Aktual TK (Orang)",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='EMPCOUNT' value='" + rowdata["EMPCOUNT"] + "'  data-bf='EMPCOUNT'  onfocusout='@(tblId)_Handlers.updateEmployeeCountOnRow(this)'>";
+                },
+
+            }
+            
+        ],
+        
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.ACTNAME = dictActivities[row.ACTID].ACTNAME;
+                    row.SPVNAME = dictMandors[row.SPVID].SPVNAME;
+                    row.PLANEMPCOUNT = dictActivities[row.ACTID].EMPCOUNT;
+                });
+            }
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+            return;
+        },
+        rowKeys: ["ACTID", "SPVID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedActivities: [],
+        selectedMandors: [],
+        selectedActuals:[],
+
+
+        addRows: function (closeForm) {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+            var added = 0;
+
+            
+            
+
+            var jumlahOrang = $('#DEFEMPCOUNT').val()
+
+            @(tblId)_Handlers.selectedActivities.forEach(function (activity) {
+                @(tblId)_Handlers.selectedMandors.forEach(function (mandor) {
+                    var actual = {
+                        ACTID: activity.ACTIVITYID,
+                        ACTNAME: activity.ACTIVITYID + ' - ' + activity.ACTIVITYNAME,
+                        PLANEMPCOUNT: jumlahOrang,
+                        SPVID: mandor.EMPID,
+                        SPVNAME: mandor.EMPID + ' - ' + mandor.EMPNAME,
+                        EMPCOUNT: 0
+                    };
+
+                    actual.key = @(tblId)_Handlers.getRowKey(actual);
+                    if (!@(tblId)_Handlers.isRowExist(actual, ft.rows.all)) {
+                        ft.rows.add(actual, false);
+                        added++;
+                    }
+                });
+            });
+
+            if (added) 
+                ft.draw();               
+            
+            return;
+        },
+
+        deleteRows: function (deletedActuals) {
+            
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                if (deletedActuals) {
+                    //Caused By delete Activity Detail
+                    if (deletedActuals.length > 0 && Array.isArray(deletedActuals)) {
+                        $.each(deletedActuals, function (i, actual) {
+                            $.each(ft.rows.all, function (i, row) {
+                                if (row && row.val) {
+                                    if (row.value["ACTID"] === actual.ACTID && row.value["SPVID"] === actual.SPVID) {
+                                        row.delete(false);
+                                        deletedCount++;
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Yakin akan menghapus detail aktual rkh?'))
+                        return;
+
+                    $('[name = "chkDeleteActual"]').each(function () {
+                        if (this.id !== 'chkAllActual') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

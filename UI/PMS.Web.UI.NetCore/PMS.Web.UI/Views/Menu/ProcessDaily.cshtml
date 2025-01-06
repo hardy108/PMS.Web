@@ -1,0 +1,60 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Payment Daily";
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading" >Proses Payroll Harian</div>
+    <div class="panel-body">
+        <x-form>
+            <x-form-row>
+                <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" read-only="false" place-holder="Estate" xs-size="12" md-size="3">
+                </x-field-data-list-unit-by-user-name>
+                <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="false" min-length-search="2">
+                </x-field-data-list-divisi-by-user-name>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="dt" caption="Date" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="@strToday">
+                </x-field-date>
+            </x-form-row>
+            <x-form-col >
+                <button id="btnProcessDaily" class="btn btn-primary" onclick="ProcessDaily()" />
+                Proses Kalkulasi
+                </button>
+            </x-form-col>
+        </x-form>
+    </div>
+</div>
+
+
+<script src="~/js/plugins/jquery.blockUI.js"></script>
+<script>
+
+    function ProcessDaily() {
+
+        if ($('#DIVID').val() == "") {
+            alert("Divisi belum dipilih");
+            return false;
+        }
+
+        param = {
+            divID: $('#DIVID').val(),
+            date: $('#dt').val()
+        };
+
+        $.blockUI({ message: '<h2> Proses Payroll Harian </h2>' });
+
+        helper.callAjaxRequestJson("api/ProcessDaily/process", param, 'get',
+            function () { $.unblockUI(alert('Proses Sukses')); },
+            function (error) { $.unblockUI(alert(error.responseJSON.Message)); }
+        );
+    };
+
+
+
+
+</script>

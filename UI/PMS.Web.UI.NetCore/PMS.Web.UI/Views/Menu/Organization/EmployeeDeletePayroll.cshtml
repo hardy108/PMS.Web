@@ -1,0 +1,157 @@
+﻿<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="cboUnit" caption="Estate" xs-size="12" md-size="3" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+
+        <x-field-input id="txtKeyword" xs-size="12" md-size="3" caption="Document No."></x-field-input>
+        <x-field-select-boolean id="cboStatus" xs-size="12" md-size="2" caption="Status" true-text="Processed" false-text="Unprocessed" default-value="false"></x-field-select-boolean>
+
+    </x-form-row>
+    <x-tab-panel caption="Details">
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <div id="tblDetails"></div>
+            </x-form-col>
+        </x-form-row>
+    </x-tab-panel>
+    
+</x-form>
+
+
+<script>
+    var table = null;
+
+    var displayRows = function (rows) {
+        if (!rows)
+            rows = [];
+        var columns = [         
+            { title: "Payroll No.", field: "DOCNO" },
+            { title: "NIK", field: "EMPID" },
+            { title: "Nama Karyawan", field: "EMPNAME" },
+            { title: "Jabatan", field: "EMPPOSITION" },
+            {
+                title: "Total Upah", field: "TOTSALARY", formatter: "money", formatterParams:
+                {
+                    decimal: ".",
+                    thousand: ",",                                        
+                    precision: 2
+                }
+            },            
+            { title: "Status", field: "FLAGTEXT" },
+            { title: "Tgl. Proses", field: "UPDATED", formatter: "datetime", formatterParams: { outputFormat: "DD-MMM-YYYY hh:mm" } }
+
+        ];
+
+        var rowCount = 0;
+        if (rows && Array.isArray(rows))
+            rowCount = rows.length;
+        if (rowCount > 0) {
+            rowCount = 0;
+            var unprocessedRows = rows.filter(d => { return !d.FLAG });
+            if (unprocessedRows && Array.isArray(unprocessedRows))
+                rowCount = unprocessedRows.length;
+        }
+        
+        
+        table = new Tabulator("#tblDetails", {
+            data: rows,            
+            layout: "fitColumns",
+            headerSort: false,
+            columns: columns,
+            footerElement: (rowCount > 0 ? "<div id='divFooter'></div>" : null),
+            dataLoaded: function (data) {
+                if (rowCount>0) {
+                    var btn = '<button id="btnProcess" class="btn btn-primary" onclick="processDelete()">Proses Penghapusan Data Karyawan</button>';
+                    $('#divFooter').html(btn);
+                }
+                else
+                    $('#divFooter').html(null);
+            },
+        });
+
+    }
+
+    var loadData = function () {
+        hideError();
+        var keyword = $('#txtKeyword').val(),
+            status = $('#cboStatus').val(),
+            unitCode = $('#cboUnit').val(),
+            apiUrl = "api/employeeho/listdeletedbypayroll?";
+        if (!unitCode) {
+            displayRows([]);
+            return;
+        }
+        var param = "";
+
+        if (keyword)
+            param += "keyword=" + keyword + "&";
+        if (status)
+            param += "status=" + status + "&";
+        if (unitCode)
+            param += "unitcode=" + unitCode + "&";
+
+        if (param)
+            apiUrl += param;
+        showProgressWaiting();
+        helper.callAjaxRequestJson(apiUrl, null, "get", function (data) {
+            displayRows(data);
+            hideProgressWaiting();
+        }, function (error) {
+            showError(parseJSONError(error));
+            hideProgressWaiting();
+        });
+    }
+
+
+    var processDelete = function () {
+        hideError();
+        if (!confirm("Anda yakin akan melakukan proses hapus data karyawan yang tercantum dalam daftar?"))
+            return;
+        var keyword = $('#txtKeyword').val(),
+            status = $('#cboStatus').val(),
+            unitCode = $('#cboUnit').val(),
+            apiUrl = "api/employeeho/processdeletebypayroll?";
+
+        var param = "";
+
+        if (keyword)
+            param += "keyword=" + keyword + "&";
+        if (status)
+            param += "status=" + status + "&";
+        if (unitCode)
+            param += "unitcode=" + unitCode + "&";
+
+        if (param)
+            apiUrl += param;
+
+        
+        showProgressWaiting();
+        helper.callAjaxRequestJson(apiUrl, null, "get", function (data) {
+            displayRows(data);
+            hideProgressWaiting();
+        }, function (error) {
+            showError(parseJSONError(error));
+            hideProgressWaiting();
+        });
+    }
+
+    
+
+    
+    displayRows();
+    loadData();
+    $('#txtKeyword').on('change', function () {
+        loadData();
+    });
+
+    $('#cboStatus').on('change', function () {
+        loadData();
+    });
+
+    $('#cboUnit').on('addvalue:flexdatalist', function (event, emp) {
+        loadData();
+    });
+
+
+</script>

@@ -1,0 +1,55 @@
+[
+  [
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Date",
+      "Caption2": "&nbsp",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    },
+    {
+      "Id": "UnitID",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      
+      //"XSSize": 0,
+      //"SMSize": 0,
+      "MDSize": 2
+      //"LGSize": 0,
+      //"XLSize": 0
+
+    },
+    {
+      "Id": "DivisionID",
+      "Caption": "Divisi",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "Ascendants": [
+        {
+          "ElementID": "UnitID",
+          "FieldID": "UnitID"
+        }
+      ],
+      "MDSize": 2
+    },
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 2
+    },
+    {
+      "Id": "RecordStatus",
+      "Caption": "Status",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/reference/transactionstatus",
+      "MDSize": 2
+    }
+
+  ]
+  
+]
+
+

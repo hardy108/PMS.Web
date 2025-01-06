@@ -1,0 +1,80 @@
+[
+  {
+    "FieldName": "DIVID",
+    "FieldCaption": "Divisi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "LOADINGCODE",
+    "FieldCaption": "Code",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "LOADINGDATE",
+    "FieldCaption": "Date",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Format": "dd MMM yyyy",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "ACTIVITYID",
+    "FieldCaption": "Activitiy Id",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "REMARK",
+    "FieldCaption": "Remark",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "STATUS",
+    "FieldCaption": "Status",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "UPLOAD",
+    "FieldCaption": "Status Upload",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 70
+  }
+]

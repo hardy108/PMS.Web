@@ -1,0 +1,17 @@
+﻿@using PMS.Shared.Models
+@{ 
+    Layout = null;
+}
+@Html.Raw(ViewBag.Link)
+
+<script>
+    allUserAccess = {};
+</script>
+
+@foreach (UserAccess userAccess in ViewBag.AllUserAccess)
+{
+    var userAccessJson = $"Active: {(userAccess.ACTIVE?"true":"false")}, Add: {(userAccess.FADD ? "true" : "false")}, Edit: {(userAccess.FEDIT ? "true" : "false")}, Delete: {(userAccess.FDEL ? "true" : "false")}, Post: {(userAccess.FAPPR ? "true" : "false")}, Unpost: {(userAccess.FCANCEL ? "true" : "false")}";
+<script>
+    allUserAccess["@(userAccess.MENUCODE)"] = {@(userAccessJson)};
+</script>
+}

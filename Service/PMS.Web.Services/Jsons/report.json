@@ -1,0 +1,308 @@
+[
+  //NOT USED
+  //Employee
+  {
+    "ReportID": "RPTEMPJOINT",
+    "ReportName": "Laporan Karyawan Masuk",
+    "ParentID": "RPTEMP",
+    "ReportPath": "EmployeeJoint",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDate",
+    "MandatoryFilterItems": [ "Id" ],
+    "FilterValidation": "Estate belum dipilih",
+    "NeedAUthentication": true
+  },
+  {
+    "ReportID": "RPTEMPMUT",
+    "ReportName": "Laporan Karyawan Mutasi",
+    "ParentID": "RPTEMP",
+    "ReportPath": "EmployeeMutation",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDate",
+    "MandatoryFilterItems": [ "Id" ],
+    "FilterValidation": "Estate belum dipilih",
+    "NeedAUthentication": true
+  },
+  {
+    "ReportID": "RPTEMPOUT",
+    "ReportName": "Laporan Karyawan Keluar",
+    "ParentID": "RPTEMP",
+    "ReportPath": "EmployeeOut",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDate",
+    "MandatoryFilterItems": [ "Id" ],
+    "FilterValidation": "Estate belum dipilih",
+    "NeedAUthentication": true
+  },
+  {
+    "ReportID": "RPTEMPSUM",
+    "ReportName": "Laporan Summary Karyawan",
+    "ParentID": "RPTEMP",
+    "ReportPath": "SummaryKaryawan",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterSummaryKaryawan",
+    "MandatoryFilterItems": [ "UnitId" ],
+    "FilterValidation": "Estate belum dipilih",
+    "NeedAUthentication": true
+  },
+  //Operasional
+  {
+    "ReportID": "RPTDAILYUPKEEP",
+    "ReportName": "Laporan Harian BKM",
+    "ParentID": "RPTOPR",
+    "ReportPath": "DailyUpkeep",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDate",
+    "MandatoryFilterItems": [ "UnitId", "StartDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTSPB",
+    "ReportName": "Display SPB",
+    "ParentID": "RPTOPR",
+    "ReportPath": "SPB",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionFromTo",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "StartDate" ],
+    "FilterValidation": "Estate, Divisi dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTBKU",
+    "ReportName": "Laporan Buku Kerja Unit",
+    "ParentID": "RPTOPR",
+    "ReportPath": "EquipmentTimeSheet",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTOPSLHD",
+    "ReportName": "Laporan Harian Divisi",
+    "ParentID": "RPTOPR",
+    "ReportPath": "LHD",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterLHD",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "Type", "Id" ],
+    "FilterValidation": "Tipe Laporan, Estate dan  Divisi belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTOPSLHP",
+    "ReportName": "Laporan Harian Panen",
+    "ParentID": "RPTOPR",
+    "ReportPath": "LHP",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTRKH",
+    "ReportName": "Laporan Rencana Kerja Harian",
+    "ParentID": "RPTOPR",
+    "ReportPath": "RKH",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionDate",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId" ],
+    "FilterValidation": "Estate dan  Divisi belum dipilih",
+    "NeedAUthentication": false
+  },
+  //Produksi
+  {
+    "ReportID": "RPTPRODPERBLOK",
+    "ReportName": "Laporan Produksi Per Blok",
+    "ParentID": "RPTPROD",
+    "ReportPath": "ProduksiPerBlock",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionDate",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId" ],
+    "FilterValidation": "Estate dan  Divisi belum dipilih",
+    "NeedAUthentication": false
+  },
+  //Attendance
+  {
+    "ReportID": "RPTATTEMP",
+    "ReportName": "Laporan Absensi Karyawan",
+    "ParentID": "RPTATT",
+    "ReportPath": "AttendancePerEmployee",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitEmployeeDate",
+    "MandatoryFilterItems": [ "UnitId", "Id", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate, Karyawan dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTATTSUM",
+    "ReportName": "Rekap HK, Kehadiran & Lebih HK",
+    "ParentID": "RPTATT",
+    "ReportPath": "AttendanceSummary",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterAttendanceSummary",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "Type" ],
+    "FilterValidation": "Tipe Laporan, Estate dan  Divisi belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTSP",
+    "ReportName": "Surat Peringatan",
+    "ParentID": "RPTATT",
+    "ReportPath": "SuratPeringatan",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterSuratPeringatan",
+    "MandatoryFilterItems": [ "UnitId", "Id" ],
+    "FilterValidation": "Estate dan  No SP belum dipilih",
+    "NeedAUthentication": false
+  },
+  //Upkeep
+  {
+    "ReportID": "RPTUPKDETAIL",
+    "ReportName": "Display BKM",
+    "ParentID": "RPTUPK",
+    "ReportPath": "UpkeepDetail",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionFromTo",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "StartDate" ],
+    "FilterValidation": "Estate, Divisi dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTUPKHK",
+    "ReportName": "Laporan Rekap BKM",
+    "ParentID": "RPTUPK",
+    "ReportPath": "UpkeepHk",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionFromTo",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "StartDate" ],
+    "FilterValidation": "Estate, Divisi dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  //General Ledger
+  {
+    "ReportID": "RPTACCBALANCE",
+    "ReportName": "Perincian Saldo",
+    "ParentID": "RPTGL",
+    "ReportPath": "AccountBalance",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitAccountDate",
+    "MandatoryFilterItems": [ "UnitId", "StartDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTACCHISTORY",
+    "ReportName": "Trial Balance",
+    "ParentID": "RPTGL",
+    "ReportPath": "AccountHistory",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitAccountFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  //Harvesting
+  {
+    "ReportID": "RPTHVTDETAIL",
+    "ReportName": "Display Buku Panen",
+    "ParentID": "RPTHVT",
+    "ReportPath": "HarvestingDetail",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionDate",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId" ],
+    "FilterValidation": "Estate dan  Divisi belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTHVTFINE",
+    "ReportName": "Laporan Denda Panen",
+    "ParentID": "RPTHVT",
+    "ReportPath": "HarvestingFine",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTKONTANAN",
+    "ReportName": "Laporan Kontanan",
+    "ParentID": "RPTHVT",
+    "ReportPath": "Kontanan",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitDivisionFromTo",
+    "MandatoryFilterItems": [ "UnitId", "DivisionId", "StartDate" ],
+    "FilterValidation": "Estate, Divisi dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  //Inventory
+  {
+    "ReportID": "RPTGOODRECEIPT",
+    "ReportName": "Laporan Penerimaan Barang",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodReceipt",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTGOODRECEIPTVENDOR",
+    "ReportName": "Laporan Penerimaan Barang Per Vendor",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodReceiptVendor",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTGOODISSUE",
+    "ReportName": "Laporan Pengeluaran Barang",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodIssue",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitFromTo",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "EndDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTGOODMUTATION",
+    "ReportName": "Laporan Mutasi Barang",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodMutation",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitMaterialMonth",
+    "MandatoryFilterItems": [ "UnitId", "StartDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTGOODVALUE",
+    "ReportName": "Laporan Persediaan Barang",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodValue",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitMaterialMonth",
+    "MandatoryFilterItems": [ "UnitId", "StartDate" ],
+    "FilterValidation": "Estate atau Tanggal belum dipilih",
+    "NeedAUthentication": false
+  },
+  {
+    "ReportID": "RPTGOODSTOCK",
+    "ReportName": "Kartu Persediaan Barang",
+    "ParentID": "RPTINV",
+    "ReportPath": "GoodStock",
+    "ReportType": "FR",
+    "FilterJson": "ReportParameterUnitMaterialDate",
+    "MandatoryFilterItems": [ "UnitId", "StartDate", "Id" ],
+    "FilterValidation": "Estate, Material dan Tanggal belum dipilih",
+    "NeedAUthentication": false
+  }
+]

@@ -1,0 +1,92 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblUpkeepVendor";
+    //string tblBlockId = "tblUpkeepBlock";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12" id="frmVendor">
+        <x-form-row>
+            <x-field-number id="OUTPUT" caption="Hasil Kerja" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" binding-field="OUTPUT"></x-field-number>
+            <x-field-number id="PRICE" caption="Price" xs-size="12" md-size="3" read-only="true" binding-field="PRICE"></x-field-number>
+            <x-field-number id="VALUE" caption="Jumlah (Rp)" xs-size="12" md-size="3" read-only="true" binding-field="VALUE"></x-field-number>
+        </x-form-row>
+    </x-form-col>
+</x-form-row>
+
+<script>
+    $('#OUTPUT').on('change', function () {
+
+        var output = $('#OUTPUT').val();
+
+        var act = $('#ITEM').flexdatalist('value');
+        var price = act.PRICE;
+        $('#PRICE').val(price);
+
+        $("#VALUE").val(output * price);
+    });
+
+    var @(tblId)_Handlers = {
+        @*columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllVendor' name='chkDeleteVendor' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteVendor'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "UPKEEPCODE",
+                "title": "No BKM",
+                "visible": false
+            },
+        ],*@
+
+        initTable: function (rows) {
+            
+        },
+        rowKeys: ["UPKEEPCODE"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+        length: function () {
+            var ft = FooTable.get('#@(tblId)');
+            return ft.rows.all.length;
+        },
+        selectedVendors: [],
+        addRows: function () {
+            
+            var defaultOutput = $('#DEFOUTPUT').val();
+            if (!defaultOutput)
+                defaultOutput = 0;
+
+            var act = $('#ITEM').flexdatalist('value');
+            var price = act.PRICE;
+            $('#PRICE').val(price);
+
+            $('#OUTPUT').val(defaultOutput);
+            
+            $('#VALUE').val(defaultOutput * price);
+            
+        },
+        
+    };
+</script>

@@ -1,0 +1,516 @@
+﻿
+@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Collection";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Input Hasil Panen">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list id="@(prefix)EMPLOYEE" binding-field="EMPLOYEEID" caption="Karyawan" text-fields="EMPNAME" xs-size="12" value-field="*" min-length-search="0">
+                </x-field-data-list>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list id="@(prefix)BLOCK" binding-field="BLOCKID" caption="Block" text-fields="CODE" xs-size="12" value-field="*" min-length-search="0" md-size="6">
+                </x-field-data-list>
+                <x-field-input id="@(prefix)COLLPOINT" binding-field="COLLPOINT" caption="TPH" xs-size="12" md-size="6">
+
+                </x-field-input>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="@(prefix)QTY" binding-field="QTY" caption="Hasil" xs-size="12" md-size="4">
+
+                </x-field-number>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAdd@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    var @(prefix)_ = {
+        collectionByEmployee: {},
+        collectionByBlock: {},
+        collectionByEmployeeBlock: {},
+        selectedCollections: {},
+        isCollectionExist: function (employeeId,blockId,collpoint) {
+            if (!blockId || !employeeId || !collpoint )
+                return true;
+            var data = {EMPLOYEEID:employeeId,BLOCKID:blockId,COLLPOINT:collpoint}
+            var x = this.selectedCollections[this.getRowKey(data)];
+            if (x) return true;
+            return false;
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "Employee",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true
+            },
+
+            {
+                "type": "text",
+                "name": "COLLPOINT",
+                "title": "TPH",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "TPHCODE",
+                "title": "TPH",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Hasil",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Hasil",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY'  onfocusout='updateInputToRow(this)'>";
+                },
+
+            },
+            {
+                "type": "number",
+                "name": "QTYKG",
+                "title": "Kg",
+                "visible": true
+            }
+        ],
+
+        showForm: function () {
+            if (!$('#DIVID').val()) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            if (!$('#HARVESTDATE').val()) {
+                alert("Tanggal panen belum dipilih");
+                return false;
+            }
+
+            if (!$('#ACTIVITYID').val()) {
+                alert("Kode kegiatan belum dipilih");
+                return false;
+            }
+
+            var employees = [], blocks=[];
+
+            Object.keys(Employee_.selectedEmployees).forEach(function (key) {
+                var employee = Employee_.selectedEmployees[key];
+                if (employee && !employee.GERDAN) {
+                    employees.push(employee);
+                }
+            });
+            if (employees.length <= 0) {
+                alert("Karyawan belum dipilih");
+                return false;
+            }
+
+            Object.keys(Block_.selectedBlocks).forEach(function (key) {
+                var block = Block_.selectedBlocks[key];
+                if (block) {
+                    blocks.push(block);
+                }
+            });
+            if (blocks.length <= 0) {
+                alert("Block belum dipilih");
+                return false;
+            }
+
+            $('#@(prefix)EMPLOYEE').flexdatalist({
+                minLength: 0,
+                textProperty: "{EMPNAME}",
+                valueProperty: "*",
+                selectionRequired: true,
+                multiple: true,
+                visibleProperties: "EMPNAME",
+                searchIn: "EMPNAME",
+                data: employees
+            });
+
+            $('#@(prefix)BLOCK').flexdatalist({
+                minLength: 0,
+                textProperty: "{CODE}",
+                valueProperty: "*",
+                selectionRequired: true,
+                multiple: true,
+                visibleProperties: "BLOCKID",
+                searchIn: "BLOCKID",
+                data: blocks
+            });
+
+
+            $('#@(mdl)').modal('show');
+
+            return true;
+        },
+
+        addToCollection :  function (employeeId, blockId, newqty, employeeName, blockCode) {
+            if (!employeeId || !blockId)
+                return;
+
+            var _this =  @(prefix)_;
+            var qty = 0;
+            var collByEmp = _this.collectionByEmployee[employeeId];
+            if (collByEmp)
+                qty = parseFloat(collByEmp["QTY"]);
+            qty += parseFloat(newqty);
+            _this.collectionByEmployee[employeeId] = { QTY: qty };
+
+
+            qty = 0;
+
+            var collByBlock = _this.collectionByBlock[blockId];
+            if (collByBlock)
+                qty = parseFloat(collByBlock["QTY"]);
+            qty += parseFloat(newqty);
+            _this.collectionByBlock[blockId] = { QTY: qty };
+
+            qty = 0;
+            var collByEmpBlock = _this.collectionByEmployeeBlock[employeeId + "*" + blockId];
+            if (collByEmpBlock) {
+                qty = parseFloat(collByEmpBlock["QTY"]) + parseFloat(newqty);
+                $.extend(collByEmpBlock, { QTY: qty });
+            }
+            else
+            collByEmpBlock =
+            {
+                TEXT: employeeName + ", Blok " + blockCode,
+                EMPLOYEEID: employeeId,
+                EMPNAME: employeeName,
+                BLOCKID: blockId,
+                BLOCKCODE:blockCode,
+                ID: employeeId + "*" + blockId,
+                QTY: newqty
+            };
+            _this.collectionByEmployeeBlock[employeeId + "*" + blockId] = collByEmpBlock;
+        },
+
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.BLOCKID && row.EMPLOYEEID && row.COLLPOINT) {
+
+                        _this.selectedCollections[_this.getRowKey(row)] =
+                        {
+                            EMPLOYEEID: row.EMPLOYEEID,
+                            BLOCKID: row.BLOCKID,
+                            COLLPOINT: row.COLLPOINT
+                        };
+
+                        _this.addToCollection(row.EMPLOYEEID, row.BLOCKID, row.QTY, row.EMPNAME, row.BLOCKCODE);
+
+                    }
+                });
+            }
+
+            return;
+        },
+        rowKeys: ["EMPLOYEEID","BLOCKID","COLLPOINT"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+
+
+
+
+        addRows: function (closeForm) {
+
+            var _this = @(prefix)_;
+
+            var employee = $('#@(prefix)EMPLOYEE').flexdatalist('value');
+            if (!employee || (Array.isArray(employee) && employee.length < 1)) {
+                alert("Karyawan belum dipilih");
+                return;
+            }
+
+            var block = $('#@(prefix)BLOCK').flexdatalist('value');
+            if (!block || (Array.isArray(block) && block.length < 1)) {
+                alert("Block belum dipilih");
+                return;
+            }
+
+            var collpoint = $('#@(prefix)COLLPOINT').val();
+            if (!collpoint) {
+                alert("TPH belum diisi");
+                return;
+            }
+
+            var qty = parseFloat($('#@(prefix)QTY').val());
+            if (!qty || qty<=0) {
+                alert("Hasil panen belum diisi");
+                return;
+            }
+
+            qty = qty.toFixed(2);
+
+            if (Array.isArray(employee) && employee.length === 1)
+                employee = employee[0];
+
+            if (Array.isArray(block) && block.length === 1)
+                block = block[0];
+
+
+            var added = 0;
+            var addRow = function (iemployee, iblock, icollPoint, iqty, ft) {
+
+                var newCollection =
+                {
+                    EMPLOYEEID: iemployee.EMPID,
+                    EMPNAME: iemployee.EMPNAME,
+                    BLOCKID: iblock.BLOCKID,
+                    BLOCKCODE: iblock.CODE,
+                    COLLPOINT: icollPoint,
+                    QTY: iqty,
+                    QTYKG:0
+
+                };
+                newCollection.key = _this.getRowKey(newCollection);
+                if (_this.isCollectionExist(iemployee.EMPID, iblock.BLOCKID, icollPoint)) {
+                    alert("TPH belum diisi");
+                    return;
+                }
+                added++;
+                ft.rows.add(newCollection, false);
+                if (newCollection) {
+                    _this.selectedCollections[newCollection.key] =
+                    {
+                        EMPLOYEEID: newCollection.EMPLOYEEID,
+                        BLOCKID: newCollection.BLOCKID,
+                        COLLPOINT: newCollection.COLLPOINT
+                    };
+                    _this.addToCollection(newCollection.EMPLOYEEID, newCollection.BLOCKID, newCollection.QTY, newCollection.EMPNAME, newCollection.BLOCKCODE);
+
+                }
+
+            };
+
+
+            var ft = FooTable.get('#@(tbl)')
+            addRow(employee, block, collpoint, qty, ft);
+            if (added)
+                ft.draw();
+            $("#@(prefix)COLLPOINT").val(null);
+            $("#@(prefix)QTY").val(null);
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function (employeeId, blockId) {
+
+            if (!employeeId && !blockId) {
+                if (!confirm('Yakin akan menghapus detail panen?'))
+                    return;
+
+            }
+
+            var _this = @(prefix)_;
+            var ft = FooTable.get('#@(tbl)');
+            var deletedCount = 0;
+
+            if (ft) {
+                var dictQtyBlock = {}, dictQtyEmp = {}, dictQtyEmpBlock = {};
+                var deletedCount = 0;
+
+                var deleteRow = function ($row) {
+                    var row = $row.val();
+                    _this.selectedCollections[row.key] = null;
+
+                    var newQty = parseFloat(row.QTY);
+                    var qty = 0;
+                    var xQty = dictQtyBlock[row.BLOCKID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyBlock[row.BLOCKID] = qty;
+
+                    qty = 0;
+                    xQty = dictQtyEmp[row.EMPLOYEEID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyEmp[row.EMPLOYEEID] = qty;
+
+                    qty = 0;
+                    xQty = dictQtyEmpBlock[row.EMPLOYEEID + "*" + row.BLOCKID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyEmpBlock[row.EMPLOYEEID + "*" + row.BLOCKID] = qty;
+                    deletedCount++;
+                    $row.delete(false);
+                };
+
+                if (!employeeId && !blockId) {
+                    $('[name = "chkDelete@(prefix)"]').each(function () {
+                        if (!(this.id)) {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                deleteRow($row);
+                            }
+
+                        }
+                    });
+                }
+                else {
+                    var rowsCount = ft.rows.all.length;
+                    for (var i = rowsCount - 1; i >= 0; i--) {
+                        var $row = ft.rows.all[i];
+                        if ($row && $row.val) {
+                            if ($row.val()["EMPLOYEEID"] === employeeId || $row.val()["BLOCKID"] === blockId) {
+                                deleteRow($row);
+                            }
+                        }
+                    }
+
+                }
+
+                if (deletedCount) {
+                    ft.draw();
+                    Object.keys(dictQtyEmp).forEach(function (key) {
+                        _this.collectionByEmployee[key].QTY -= parseFloat(dictQtyEmp[key]);
+                    });
+
+                    Object.keys(dictQtyBlock).forEach(function (key) {
+                        _this.collectionByBlock[key].QTY -= parseFloat(dictQtyBlock[key]);
+                    });
+
+                    Object.keys(dictQtyEmpBlock).forEach(function (key) {
+                        _this.collectionByEmployeeBlock[key].QTY -= parseFloat(dictQtyEmpBlock[key]);
+                    });
+
+                }
+
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

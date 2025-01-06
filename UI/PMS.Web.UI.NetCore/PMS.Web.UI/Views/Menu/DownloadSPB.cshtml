@@ -1,0 +1,58 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Download SPB";
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form>
+    <x-form-row>
+        <x-field-select id="cboServerMill" caption="Server Mill" read-only="false" place-holder="Server Mill" xs-size="12" md-size="2" api-url="api/HarvestingBlockResult/servermill">
+        </x-field-select>
+        <x-field-select id="cboUnit" caption="Estate" read-only="false" place-holder="UNITID" xs-size="12" md-size="2" api-url="api/login/getunitsforselect">
+        </x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date id="dt" caption="Date" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="@strToday">
+        </x-field-date>
+    </x-form-row>
+
+</x-form>
+
+<input type="button" name="btnDownloadSPB" value="Download SPB" onclick="DownloadSPB()" />
+
+<script src="~/js/plugins/jquery.blockUI.js"></script>
+<script>
+
+    function DownloadSPB() {
+
+        param = {
+            source: $('#cboServerMill').val(),
+            unitId: $('#cboUnit').val(),
+            from: $('#dt').val(),
+            to: $('#dt').val()
+        };
+
+        $.blockUI({ message: '<h2> Process Download SPB </h2>' });
+
+        helper.callAjaxRequestJson("api/HarvestingBlockResult/downloadspb", param, 'get',
+            function () {DownloadDoket();},
+            function (error) { $.unblockUI(alert(error.responseJSON.Message)); }
+        );
+    };
+
+    function DownloadDoket() {
+
+        param = {
+            source: $('#cboServerMill').val(),
+            unitId: $('#cboUnit').val(),
+            date: $('#dt').val()
+        };
+
+        helper.callAjaxRequestJson("api/SPB/downloadspb", param, 'get',
+            function () { $.unblockUI(alert('Proses Sukses')); }, function (Message) { $.unblockUI(alert(Message)); });
+    };
+
+
+</script>

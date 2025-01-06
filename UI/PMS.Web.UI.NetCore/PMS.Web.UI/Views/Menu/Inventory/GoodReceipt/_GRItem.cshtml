@@ -1,0 +1,317 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblItemId = "tblItem";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblItemId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+<x-form-row>
+    <x-form-col xs-size="12">
+        <button id="btnPilihDetail" class="btn btn-primary pull-left" onclick="@(tblItemId)_Handlers.showForm()">
+            Tambah
+        </button>
+        &nbsp;&nbsp;
+        <button id="btnHapusDetail" class="btn" onclick="@(tblItemId)_Handlers.deleteRows()">
+            Hapus
+        </button>
+    </x-form-col>
+</x-form-row>
+
+<x-modal id="mdlItem" caption="Pilih Karyawan">
+    <x-modal-body>
+        <x-form-row>
+            <x-field-data-list-material id="MATERIALID" binding-field="MATERIALID" caption="No. Material"  multiple="true" value-field="MATERIALID" xs-size="12"  read-only="@ViewBag.ReadOnlyWhenNotInsert">
+            </x-field-data-list-material>   
+        </x-form-row>
+        <x-form-row>
+            <x-field-text id="MATERIALNAME" caption="Nama Material" place-holder="" xs-size="12" md-size="4" read-only="true">
+            </x-field-text>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text id="UNIT" caption="Unit" place-holder="" xs-size="12" md-size="4" read-only="true">
+            </x-field-text>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="QTY" binding-field="QTY" caption="Jumlah" xs-size="12" md-size="4"></x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="PRICE" binding-field="PRICE" caption="Harga Satuan" xs-size="12" md-size="4"></x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text-area id="NOTE" binding-field="NOTE" caption="Keterangan" xs-size="12" md-size="3" picker-option="TimeOnly">
+            </x-field-text-area>
+        </x-form-row>
+    </x-modal-body>
+    <x-modal-footer>
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <button id="btnResetDetail" class="btn" onclick="resetElements('mdlItem')">
+                    Reset
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddDetail" class="btn btn-primary" onclick="@(tblItemId)_Handlers.addRows(true)">
+                    Tambah
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddCloseDetail" class="btn btn-primary" onclick="@(tblItemId)_Handlers.addRows(true,true)">
+                    Tambah dan Tutup
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnCloseDetail" class="btn" onclick="$('#mdlItem').modal('hide')">
+                    Tutup
+                </button>
+            </x-form-col>
+        </x-form-row>
+    </x-modal-footer>
+</x-modal>
+}
+
+
+
+
+<script>
+    var @(tblItemId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllItem' name='chkDeleteItem' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteItem'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "CODE",
+                "name": "CODE",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "NO",
+                "name": "NO",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "No Material",
+                "name": "MATERIALID",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "MATERIALNAME",
+                "title": "Nama Material",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "UNIT",
+                "title": "Unit",
+                "visible": true
+            },
+
+            {
+                "type": "number",
+                "title": "Jumlah",
+                "name": "QTY",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Jumlah",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "number",
+                "title": "Harga Satuan",
+                 "name": "PRICE",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "PRICE_INPUT",
+                "title": "Harga Satuan",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='PRICE' value='" + rowdata["PRICE"] + "'  data-bf='PRICE' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+           
+            {
+                "type": "text",
+                "name": "NOTE",
+                "title": "Keterangan",
+                "visible": true
+            },
+            
+
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+
+                   
+                    row.MATERIALID = dictMaterials[row.CODE].MATERIALID;
+                    row.MATERIALNAME = dictMaterials[row.CODE].MATERIAL.MATERIALNAME;
+                    row.UNIT = dictMaterials[row.CODE].MATERIAL.UOM;
+                    row.NO = dictMaterials[row.CODE].NO;
+                  
+
+                });
+            }
+            $("#@(tblItemId)").footable({
+                "columns": @(tblItemId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["MATERIALID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblItemId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblItemId)_Handlers.rowKeys);
+        },
+
+        selectedMaterials: [],
+
+        addRows: function (fromItem,closeForm) {
+            var qty = 0;
+            if (fromItem) {
+                @(tblItemId)_Handlers.selectedMaterials = $('#MATERIALID').flexdatalist('value');
+
+                matid = $('#MATERIALID').val();
+                qty = $('#QTY').val();
+                price = $('#PRICE').val();
+                expvalue = $('#EXPVALUE').val();
+                note = $('#NOTE').val();
+                matname = $('#MATERIALNAME').val();
+                unit = $('#UNIT').val();
+                
+         
+            }
+
+            if (!@(tblItemId)_Handlers.selectedMaterials || @(tblItemId)_Handlers.selectedMaterials.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblItemId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+
+            @(tblItemId)_Handlers.selectedMaterials.forEach(function (Item) {
+
+                var detail = {
+                    MATERIALID: matid,
+                    QTY: qty,
+                    PRICE: price,
+                    EXPVALUE: expvalue,
+                    NOTE: note,
+                    MATERIALNAME: matname,
+                    UNIT : unit
+
+
+                };
+
+                    detail.key = @(tblItemId)_Handlers.getRowKey(detail);
+                    if (!@(tblItemId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+            });
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlItem').modal('hide');
+        },
+        showForm: function () {
+
+            if (!$('#UNITCODE').flexdatalist('value')) {
+                alert("Unit belum dipilih");
+                return false;
+            }
+
+            $('#mdlItem').modal('show');
+            return true;
+        },
+        deleteRows: function (activities) {
+
+            var ft = FooTable.get('#@(tblItemId)');
+            var deletedCount = 0;
+            if (ft) {
+                    if (!confirm('Yakin akan menghapus Item?'))
+                        return;
+                    $('[name = "chkDeleteItem"]').each(function () {
+                        if (this.id !== 'chkAllItem') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblItemId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["QTY"] > 0)
+                    rows.push(row.val());
+
+            });
+            return rows;
+        },
+    };
+
+    $('#MATERIALID').change(function () {
+        var matId = $('#MATERIALID').val();
+
+        helper.callAjaxRequestJson("api/material/get/" + matId, null, "get", function (data) {
+            $('#MATERIALNAME').val(data.MATERIALNAME);
+            $('#UNIT').val(data.UOM);
+        });
+
+    });
+</script>

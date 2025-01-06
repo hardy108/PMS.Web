@@ -1,0 +1,95 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    Layout = null;
+    string mode = ViewBag.Mode;
+}
+
+
+    <x-form id="@ViewBag.MainFormID">
+
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="3" id="ID" binding-field="ID" caption="No. Transaksi" read-only="true" place-holder="Auto Number">
+            </x-field-text>
+            <x-field-data-list-unit-by-user-name id="UNITID" xs-size="12" md-size="3" caption="Estate"
+                                                 multiple="false" binding-field="UNITID"
+                                                 read-only="@ViewBag.ReadOnlyWhenNotInsert">
+            </x-field-data-list-unit-by-user-name>
+            <x-field-date id="DATE" binding-field="DATE" caption="Tgl. Premi" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+            </x-field-date>
+            <x-field-text binding-field="STATUS_IN_TEXT" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="3">
+            </x-field-text>
+            <input type="hidden" id="STATUS" data-bf="STATUS" />
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-salary-type xs-size="12" md-size="6" caption="Jenis Premi" id="TYPEID" binding-field="TYPEID" read-only="@ViewBag.ReadOnly">
+
+            </x-field-data-list-salary-type>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-employee id="EMPID" xs-size="12" md-size="6" caption="Karyawan"
+                                        value-field="EMPID" multiple="false" binding-field="EMPID"                                        
+                                        ascendants="@(new List<FilterAscendant> { new FilterAscendant { FieldID = "UnitID", ElementID= "UNITID" } })"                                        
+                                        chain-to-relatives="@(!ViewBag.ReadOnlyWhenNotInsert)"
+                                        read-only="@ViewBag.ReadOnlyWhenNotInsert">
+            </x-field-data-list-employee>
+
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-activity xs-size="12" md-size="6" caption="Kegiatan" id="ACTID" binding-field="ACTID" read-only="@ViewBag.ReadOnly" min-length-search="2">
+
+            </x-field-data-list-activity>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-vehicle xs-size="12" md-size="6" caption="Equipment" id="EQUIPID" binding-field="EQUIPID" read-only="@ViewBag.ReadOnly" min-length-search="2">
+
+            </x-field-data-list-vehicle>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="AMOUNT" binding-field="AMOUNT" caption="Jumlah" read-only="@ViewBag.ReadOnly" md-size="3">
+            </x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text-area binding-field="NOTE" id="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12">
+            </x-field-text-area>
+        </x-form-row>
+    </x-form>
+
+    <script>
+        var mode = "@(mode)";
+        var dictAllowedMode = {
+            "": ["Edit", "Delete", "Display","New"],
+            "A": ["Edit", "Delete", "Display","New"],
+            "C": ["Display"],
+            "D": ["Display"]
+        };
+
+        var checkMode = function () {
+            if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+                var allowedMode = dictAllowedMode[record.STATUS];
+                var allowed = false;
+                if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                    allowedMode.forEach(function (modeOk) {
+                        if (modeOk === mode) {
+                            allowed = true;
+                            return;
+                        }
+                    });
+                    if (!allowed) {
+                        alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                        mode = allowedMode[0];
+                        return true;
+                    }
+
+                }
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                    return false;
+                }
+            }
+            return true;
+        };
+
+
+
+    </script>

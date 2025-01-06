@@ -1,0 +1,197 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "PaymentScheme";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Bisnis Area" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4">
+        </x-field-data-list-unit-by-user-name>
+    </x-form-row>
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Umum">
+            <x-form-row>
+                <x-field-number id="PENSIONFUND" binding-field="PENSIONFUND" caption="Dana pensiun tambahan unit Rp" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="PENSIONEMPLOYEE" binding-field="PENSIONEMPLOYEE" caption="% Iuran pensiun pegawai" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="PENSIONCOMPANY" binding-field="PENSIONCOMPANY" caption="% Iuran pensiun perusahaan" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="RICEEMPLOYEE" binding-field="RICEEMPLOYEE" caption="Beras untuk pegawai / HK Kg" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="RICEWIFE" binding-field="RICEWIFE" caption="Beras untuk Istri / HK Kg" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="RICECHILDREN" binding-field="RICECHILDREN" caption="Beras untuk Anak / HK Kg" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="TOTALDAYS" binding-field="TOTALDAYS" caption="Total hari beras sebulan" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="PROVINCEWAGES" binding-field="PROVINCEWAGES" caption="Upah minimum propinsi Rp" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="TAXPAIDBYGOVERMENT" binding-field="TAXPAIDBYGOVERMENT" caption="Pajak ditanggung pemerintah Rp" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="BHLPAIDTWICE" binding-field="BHLPAIDTWICE" caption="Apakah BHL dibayar 2 periode" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="RICEPAIDASMONEY" binding-field="RICEPAIDASMONEY" caption="Beras dibayar berupa" read-only="@ViewBag.ReadOnly" place-holder="[Pilih..]" xs-size="12" md-size="4">
+                    <option value="UANG" selected="selected">UANG</option>
+                    <option value="NATURA">NATURA</option>
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="RICEPRICEDISPLAYED" binding-field="RICEPRICEDISPLAYED" caption="Apakah Rp nilai beras ditampilkan" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="SKUDAILYWAGES" binding-field="SKUDAILYWAGES" caption="Upah SKU harian Rp" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="BHLDAILYWAGES" binding-field="BHLDAILYWAGES" caption="Upah harian BHL Rp" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="PREMIBASEDCALCULATION" binding-field="PREMIBASEDCALCULATION" caption="Dasar perhitungan premi" read-only="@ViewBag.ReadOnly" place-holder="[Pilih..]" xs-size="12" md-size="4">
+                    <option value="Proporsional" selected="selected">Proporsional</option>
+                    <option value="Dominan">Dominan</option>
+                    <option value="Rata-Rata">Rata-Rata</option>
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="OVERTIMERICEADD" binding-field="OVERTIMERICEADD" caption="Beras menambah lembur" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+                </x-field-select>
+            </x-form-row>
+        </x-tab-panel>
+        <x-tab-panel caption="Kalkulasi Premi">
+            <x-form-row>
+                <x-field-number id="MANDORPREMIPCT" binding-field="MANDORPREMIPCT" caption="Mandor Panen SKU (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDORPREMIPCTBHL" binding-field="MANDORPREMIPCTBHL" caption="Mandor Panen BHL (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDORPENALTYPCT" binding-field="MANDORPENALTYPCT" caption="Denda Mandor (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="KRANIPREMIPCT" binding-field="KRANIPREMIPCT" caption="Krani Panen SKU (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="KRANIPREMIPCTBHL" binding-field="KRANIPREMIPCTBHL" caption="Krani Panen BHL (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="KRANIPENALTYPCT" binding-field="KRANIPENALTYPCT" caption="Denda Krani (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDORBRONDOLPREMIPCT" binding-field="MANDORBRONDOLPREMIPCT" caption="Mandor Brondol SKU (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDORBRONDOLPREMIPCTBHL" binding-field="MANDORBRONDOLPREMIPCTBHL" caption="Mandor Brondol BHL (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDORBRONDOLPENALTYPCT" binding-field="MANDORBRONDOLPENALTYPCT" caption="Denda Mandor Brondol (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <br />
+            <x-form-row>
+                <x-field-number id="KRANIBRONDOLSKU" binding-field="KRANIBRONDOLSKU" caption="Krani Brondol SKU (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="KRANIBRONDOLBHL" binding-field="KRANIBRONDOLBHL" caption="Krani Brondol BHL (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <br />
+            <x-form-row>
+                <x-field-number id="MANDOR1PREMIPCT" binding-field="MANDOR1PREMIPCT" caption="Mandor 1 (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+                <x-field-number id="MANDOR1PENALTYPCT" binding-field="MANDOR1PENALTYPCT" caption="Denda Mandor 1 (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="CHECKERPREMIPCT" binding-field="CHECKERPREMIPCT" caption="Checker (%)" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-select id="BHLTOBASE" binding-field="BHLTOBASE" caption="Jika BHL tidak dapat basis / dipotong?" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+                </x-field-select>
+            </x-form-row>
+        </x-tab-panel>
+        <x-tab-panel caption="Perhitungan Premi">
+            <x-form-row>
+                <x-field-select id="PREMISYSTEM" binding-field="PREMISYSTEM" caption="Sistem Perhitungan Premi"  place-holder="[Pilih..]" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4">
+                    <option value="H" selected="selected">Harian</option>
+                    <option value="B">Bulanan</option>
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="MINEMPLOYEE" binding-field="MINEMPLOYEE" caption="Jumlah Pegawai Minimal per Mandor" read-only="@ViewBag.ReadOnly" place-holder="0.0000" xs-size="12" md-size="4">
+                </x-field-number>
+            </x-form-row>
+        </x-tab-panel>
+        <x-tab-panel caption="Premi Hadir">
+            <x-form-row>
+                <x-field-number id="MININSKU" binding-field="MININSKU" caption="Min Kehadiran Pegawai Panen (SKU)" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="MININBHL" binding-field="MININBHL" caption="Min Kehadiran Pegawai Panen (BHL)" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="MININMDR" binding-field="MININMDR" caption="Min Kehadiran Pegawai Panen (Mandor)" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="MININKRN" binding-field="MININKRN" caption="Min Kehadiran Pegawai Panen (Krani)" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="MININMDR1" binding-field="MININMDR1" caption="Min Kehadiran Pegawai Panen (Mandor 1)" read-only="@ViewBag.ReadOnly" place-holder="0" xs-size="12" md-size="2">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="RATEINSKU" binding-field="RATEINSKU" caption="Rate Tunjangan Kehadiran Per Hari (SKU)" read-only="@ViewBag.ReadOnly" place-holder="0.00" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="RATEINBHL" binding-field="RATEINBHL" caption="Rate Tunjangan Kehadiran Per Hari (BHL)" read-only="@ViewBag.ReadOnly" place-holder="0.00" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="RATEINNDR" binding-field="RATEINNDR" caption="Rate Tunjangan Kehadiran Per Hari (Mandor)" read-only="@ViewBag.ReadOnly" place-holder="0.00" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="RATEINKRN" binding-field="RATEINKRN" caption="Rate Tunjangan Kehadiran Per Hari (Krani)" read-only="@ViewBag.ReadOnly" place-holder="0.00" xs-size="12" md-size="2">
+                </x-field-number>
+                <x-field-number id="RATEINMDR1" binding-field="RATEINMDR1" caption="Rate Tunjangan Kehadiran Per Hari (Mandor 1)" read-only="@ViewBag.ReadOnly" place-holder="0.00" xs-size="12" md-size="2">
+                </x-field-number>
+            </x-form-row>
+        </x-tab-panel>
+        <x-tab-panel caption="Panen">
+            <x-form-row>
+                <x-field-select id="HARVESTKBHK" binding-field="HARVESTKBHK" caption="Kutip Brondolan Dapat HK" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+                </x-field-select>
+            </x-form-row>
+        </x-tab-panel>
+    </x-tab>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#BHLPAIDTWICE").val("true").trigger("change");
+            $("#RICEPRICEDISPLAYED").val("true").trigger("change");
+            $("#OVERTIMERICEADD").val("true").trigger("change");
+            $("#BHLTOBASE").val("true").trigger("change");
+            $("#HARVESTKBHK").val("true").trigger("change");
+
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+    }
+    return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

@@ -1,0 +1,73 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Penalty";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="PENALTYID" binding-field="PENALTYID" caption="Id" read-only="true" place-holder="Auto Number" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Bisnis Area" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2">
+        </x-field-data-list-unit-by-user-name>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-penalty id="PENALTYCODE" binding-field="PENALTYCODE" caption="Kode Account" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2">
+        </x-field-data-list-penalty>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="QTY" binding-field="QTY" caption="Jumlah Denda" place-holder="0" xs-size="12" md-size="4">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="AMOUNT" binding-field="AMOUNT" caption="Rp. Denda" place-holder="0.00" xs-size="12" md-size="4">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="REMARK" binding-field="REMARK" caption="Keterangan" place-holder="" xs-size="12" md-size="6">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#ACTIVE").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        }
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

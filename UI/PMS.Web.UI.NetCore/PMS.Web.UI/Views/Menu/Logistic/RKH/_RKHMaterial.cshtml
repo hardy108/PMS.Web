@@ -1,0 +1,304 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblRkhMaterial";
+    string tblDetailId = "tblRkhDetail";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihMaterial" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusMaterial" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlMaterial" caption="Pilih Material">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list id="ACTID2" binding-field="ACTID" caption="Kegiatan" multiple="true" xs-size="12" value-field="*">
+                </x-field-data-list>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-material id="MATERIALID2" binding-field="MATID" caption="Material" multiple="true" xs-size="12" value-field="*">
+                </x-field-data-list-material>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="MATERIALQTY2" binding-field="QTY" caption="Qty" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetHerbisida" class="btn" onclick="resetElements('mdlMaterial')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddMaterial" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseMaterial" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true,true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseActivity" class="btn" onclick="$('#mdlHerbisida').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+
+
+<script>
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllMaterial' name='chkDeleteMaterial' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteMaterial'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "ACTID",
+                "title": "Kode Kegiatan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Kegiatan",
+                "name": "ACTNAME",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "MATID",
+                "title": "Kode Material",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Nama Material",
+                "name": "MATNAME",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "title": "Qty",
+                "name": "QTY",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Qty",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString)
+            },
+            {
+                "type": "text",
+                "name": "UOM",
+                "title": "UOM",
+                "visible": true
+            }
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.ACTNAME = dictActivities[row.ACTID].ACTNAME;
+                    row.MATNAME = dictMaterials[row.MATID].MATNAME
+                    row.UOM = dictMaterials[row.MATID].UOM;
+                });
+            }
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["ACTID", "MATID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+        selectedActivities: [],
+        selectedMaterials: [],
+        addRows: function (fromMaterial,closeForm) {
+            var qty = 0;
+            if (fromMaterial) {
+                @(tblId)_Handlers.selectedActivities = $('#ACTID2').flexdatalist('value');
+                @(tblId)_Handlers.selectedMaterials = $('#MATERIALID2').flexdatalist('value');
+                qty = $('#MATERIALQTY2').val();
+            }
+            else {
+                @(tblId)_Handlers.selectedActivities = $('#ACTID').flexdatalist('value');
+                @(tblId)_Handlers.selectedMaterials = $('#MATERIALID').flexdatalist('value');
+                
+            }
+
+            if (!@(tblId)_Handlers.selectedActivities || !@(tblDetailId)_Handlers.selectedActivities.length) {
+                return false;
+            }
+
+            if (!@(tblId)_Handlers.selectedMaterials || @(tblId)_Handlers.selectedMaterials.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+            @(tblId)_Handlers.selectedMaterials.forEach(function (material) {
+                var mat = {
+                    MATID: material.MATERIALID,
+                    MATNAME: material.MATERIALNAME,
+                    UOM: material.UOM
+                };
+                dictMaterials[material.MATERIALID] = mat;
+                @(tblId)_Handlers.selectedActivities.forEach(function (activity) {
+                    if (!fromMaterial) {
+                        activity.ACTIVITYNAME = activity.ACTIVITYID + " - " + activity.ACTIVITYNAME;
+                    }
+                    var detail = {
+                            ACTID: activity.ACTIVITYID,
+                            ACTNAME: activity.ACTIVITYNAME,
+                            MATID: material.MATERIALID,
+                            MATNAME: material.MATERIALNAME,
+                            UOM: material.UOM,
+                            QTY: qty
+                    };
+
+                    detail.key = @(tblId)_Handlers.getRowKey(detail);
+                    if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+                });
+            });
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlMaterial').modal('hide');
+        },
+        showForm: function () {
+            var activities = [];
+            Object.keys(dictActivities).forEach(function (key) {
+                
+                activities.push({
+                    ACTIVITYID : dictActivities[key].ACTID,
+                    ACTIVITYNAME : dictActivities[key].ACTNAME
+                });
+            });
+            if (activities && activities.length > 0) {
+                $('#ACTID2').flexdatalist({
+                    minLength: 0,
+                    textProperty: "{ACTIVITYNAME}",
+                    valueProperty: "*",
+                    selectionRequired: true,
+                    multiple: true,
+                    visibleProperties: "ACTIVITYNAME",
+                    searchIn: "ACTIVITYNAME",                    
+                    data: activities
+                });
+                $('#mdlMaterial').modal('show');
+            }
+            else {
+                alert("Kegiatan belum dipilih");
+            }
+            return true;
+        },
+        deleteRows: function (activities) {
+            
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                if (activities) {
+                    //Caused By delete Activity Detail
+                    if (activities.length > 0 && Array.isArray(activities)) {
+                        $.each(activities, function (i, activityId) {
+                            $.each(ft.rows.all, function (i, row) {
+                                if (row && row.val) {
+                                    if (row.val()["ACTID"] === activityId) {
+                                        row.delete(false);
+                                        deletedCount++;
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Yakin akan menghapus detail material?'))
+                        return;
+                    $('[name = "chkDeleteMaterial"]').each(function () {
+                        if (this.id !== 'chkAllMaterial') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["QTY"] > 0)
+                    rows.push(row.val());
+            });
+            return rows;
+        },
+    };
+</script>

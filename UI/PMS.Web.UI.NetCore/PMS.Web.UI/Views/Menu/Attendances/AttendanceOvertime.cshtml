@@ -1,0 +1,78 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "AttendanceOvertime";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-data-list-employee id="EMPLOYEE" binding-field="EMPID" caption="Karyawan" value-field="EMPID" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+        <x-field-data-list-unit id="UNITID" binding-field="UNITID" caption="Estate" xs-size="12" md-size="4" read-only="true">
+        </x-field-data-list-unit>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No SPL" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-date binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="Jam Lembur" binding-field="OVERTIME" caption="Jam Lembur" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area binding-field="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="6">
+        </x-field-text-area>
+    </x-form-row>
+</x-form>
+
+<script>
+
+    $('#EMPLOYEE').change(function () {
+        var empId = $('#EMPLOYEE').val();
+
+        helper.callAjaxRequestJson("api/employee/get/" + empId, null, "get", function (data) {
+            $('#UNITID').val(data.UNITCODE);
+        });
+
+    });
+
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+     
+        if (savedRecord.NOTE == null)
+            savedRecord.NOTE = "";
+
+        return savedRecord;
+    }
+
+</script>

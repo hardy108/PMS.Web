@@ -1,0 +1,218 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Approval Buku Panen - Max Brondol";
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnlyWhenNotInsert = false;
+    try
+    {
+        readOnlyWhenNotInsert = ViewBag.ReadOnlyWhenNotInsert;
+    }
+    catch { }
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnlyWhenNotInsert)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" });
+    }
+
+
+    bool allowApproveDetail = false;
+    //try
+    //{
+    //    allowApproveDetail = (ViewBag.Mode == "Approval");
+    //}
+    //catch { }
+
+    bool allowEditDetail = false;
+    //try
+    //{
+    //    allowEditDetail = !readOnly && ViewBag.allowEditDetail;
+    //}
+    //catch { }
+
+
+
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. Buku Panen" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="true" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-date id="DATE" binding-field="DATE" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    <x-tab-panel caption="Details">
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <div id="tblDetails"></div>
+            </x-form-col>
+        </x-form-row>        
+    </x-tab-panel>
+</x-form>
+
+
+
+
+
+<script>
+
+    var allowApproveDetail = @(allowApproveDetail?"true":"false");
+    var readOnly =  @(readOnly?"true":"false");
+    var allowEditDetail =  @(allowEditDetail?"true":"false");
+    var tblDetails;
+
+
+
+
+
+    var formatterApproval = function (cell, params, onRendered) {
+        var rowData = cell.getRow().getData();
+
+
+        if (rowData.REJECTED || !allowApproveDetail)
+            return tickCrossTabulator(cell, params, onRendered);
+
+        var attr = "";
+        if (rowData.NEWAPPROVED)
+            attr += " checked";
+
+        var checkbox = "<input type='checkbox'" + attr + " />";
+        checkbox = $.parseHTML(checkbox);
+
+        $(checkbox).on("change", function () {
+            if (!allowApproveDetail)
+                return;
+            var rowX = cell.getRow();
+            var rowDataX = rowX.getData();
+
+            if (rowDataX.NEWAPPROVED != this.checked) {
+                if (this.checked) {
+                    rowDataX.PREVREJECTIONREASON = rowDataX.REJECTIONREASON;
+                    rowDataX.REJECTIONREASON = "";
+                }
+                else
+                    rowDataX.REJECTIONREASON = !rowDataX.PREVREJECTIONREASON ? "" : rowDataX.PREVREJECTIONREASON;
+                rowDataX.REJECTIONREASON = rowDataX.REJECTIONREASON + " ";
+                rowDataX.NEWAPPROVED = this.checked;
+                rowX.update(rowDataX);
+            }
+        });
+        return checkbox[0];
+    };
+
+    var formatterRejectionReason = function (cell, params, onRendered) {
+
+        var rowData = cell.getRow().getData();
+        var cellValue = cell.getValue();
+        if (cellValue === null) 
+            cellValue = "";
+
+        if (!allowApproveDetail || rowData.REJECTED || rowData.NEWAPPROVED)
+            return cellValue;
+
+        var textbox = "<input type='text' value='" + cellValue + "' style='width:100%'>";
+        textbox = $.parseHTML(textbox);
+        $(textbox).on("change", function () {
+            var rowX = cell.getRow();
+            var rowDataX = rowX.getData();
+            if (rowDataX.APPROVED && allowApproveDetail) {
+                rowDataX.REJECTIONREASON = $(this).val();
+                rowX.update(rowDataX);
+            }
+        });
+        return textbox[0];
+
+    };
+    
+
+    var initTableDetails = function () {
+
+        var columns = [
+            //{ formatter: "responsiveCollapse", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false },
+            {
+                formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", width: 30, minWidth: 30, hozAlign: "center", resizable: false, headerSort: false,
+                cellClick: function (e, cell) {
+                    cell.getRow().toggleSelect();
+                },
+                visible: allowEditDetail,
+                responsive: 0
+            },
+
+            { title: "Block", field: "BLOCKID", width: 110, minWidth: 110, visible:false},
+            { title: "Block", field: "BLOCKNAME", width: 150, minWidth: 150},
+            { title: "Luas (Ha)", field: "LUASBLOCK", width: 150, minWidth: 150 },
+            { title: "Janjang", field: "JJG", width: 150, minWidth: 150 },
+            { title: "Brondol (Kg)", field: "BRONDOL", width: 150, minWidth: 150 },
+            { title: "Current Brondol (Kg)", field: "CURRENTBRONDOL", width: 150, minWidth: 150 },
+            { title: "Ratio", field: "RATIO", width: 150, minWidth: 150 },
+            { title: "Approve", field:"NEWAPPROVED", hozAlign: "center", formatter: formatterApproval}
+            //{ title: "Alasan Penolakan", field: "REJECTIONREASON", formatter:formatterRejectionReason}
+        ];
+
+        tblDetails = new Tabulator("#tblDetails", {
+            minHeight: 300,
+            data: record.THARVESTWFMAXBRONDOLDETAIL,
+            index: "BLOCKID",
+            layout: "fitDataStretch",
+            headerSort: true,
+            movableColumns: true,
+            minHeight: 300,
+            //responsiveLayout: "collapse",
+            placeholder: "No Data Available",
+            initialSort: [             //set the initial sort order of the data
+                { column: "BLOCKID", dir: "asc" },
+            ],
+            columns: columns
+        });
+    }
+
+    var customDisplay = function () {
+        initTableDetails();
+        return true;
+    };
+
+
+    var beforeSendAction = function (action, savedRecord) {
+        var errorTitle = mode + ' - ' + '@ViewBag.Title';
+    /* Specific Code Here - End*/
+
+
+
+        var data = tblDetails.getData();
+        if (data && Array.isArray(data) && data.length > 0) {
+            data.forEach(element => {
+                element.APPROVED = element.NEWAPPROVED;
+            });
+        }
+        savedRecord.THARVESTWFMAXBRONDOLDETAIL = data;
+        savedRecord.THARVESTWFMAXBRONDOLDETAIL_COUNT = data.length;
+
+        return savedRecord;
+    };
+
+
+
+
+
+
+</script>
+
+

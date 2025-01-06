@@ -1,0 +1,99 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Blok & Batch";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <input type="hidden" name="BLOCKID" id="BLOCKID" data-bf="BLOCKID" />
+        <input type="hidden" name="ID" id="ID" data-bf="ID" />
+        @*<x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Estate" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" min-length-search="0">
+            </x-field-data-list-unit-by-user-name>
+            <x-field-data-list-divisi id="DIVID" binding-field="DIVID" caption="Divisi" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3"
+                                      chain-to-relatives="@(!(ViewBag.ReadOnlyWhenNotInsert))"
+                                      accendants="@(ViewBag.ReadOnlyWhenNotInsert ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITCODE",FieldID = "UnitID"}})">
+            </x-field-data-list-divisi>*@
+        <x-field-data-list-divisi id="DIVID" binding-field="DIVID" caption="Divisi" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-divisi>
+        <x-field-text id="NAME" binding-field="NAME" caption="Kode Blok" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-select id="BLNTANAM" binding-field="BLNTANAM" caption="Bulan Tanam" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+            <option value="0" selected="selected">[Pilih...]</option>
+            <option value="1">Januari</option>
+            <option value="2">Februari</option>
+            <option value="3">Maret</option>
+            <option value="4">April</option>
+            <option value="5">Mei</option>
+            <option value="6">Juni</option>
+            <option value="7">Juli</option>
+            <option value="8">Agustus</option>
+            <option value="9">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+        </x-field-select>
+        <x-field-number id="THNTANAM" binding-field="THNTANAM" value="0" caption="Tahun Tanam" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="JENISBIBIT" binding-field="JENISBIBIT" caption="Jenis Bibit" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-text>
+        <x-field-number id="LUASBLOCK" binding-field="LUASBLOCK" caption="Luas Blok" value="0.00" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+        <x-field-number id="CURRENTPLANTED" binding-field="CURRENTPLANTED" caption="Current Planted" value="0.00" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+        <x-field-number id="BJR" binding-field="BJR" caption="BJR" value="0.00" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="TOPOGRAPI" binding-field="TOPOGRAPI" caption="Topografi" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-text>
+        <x-field-text id="KELASTANAH" binding-field="KELASTANAH" caption="Kelas Tanah" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-text>
+        <x-field-text id="COSTCTR" binding-field="COSTCTR" caption="Cost Center" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-text>
+        <x-field-text id="WBS" binding-field="WBS" caption="WBS" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-number id="SPH" binding-field="SPH" caption="SPH" value="0" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-number>
+        <x-field-select id="PHASE" binding-field="PHASE" caption="Phase" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+            <option value="-1" selected="selected">[Pilih...]</option>
+            <option value="0">Nursery</option>
+            <option value="9">GA</option>
+            <option value="8">LC</option>
+            <option value="1">TBM</option>
+            <option value="5">TM</option>
+        </x-field-select>
+        <x-field-date id="EFFDATE" binding-field="EFFDATE" caption="Tanggal Efektif" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#PHASE").val("-1").trigger("change");
+            $("#ACTIVE").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

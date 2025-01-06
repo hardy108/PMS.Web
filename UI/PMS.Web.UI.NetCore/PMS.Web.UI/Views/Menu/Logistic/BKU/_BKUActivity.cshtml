@@ -1,0 +1,505 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+
+    string tblActivityId = "tblBKUActivity";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihActivityTop" class="btn btn-primary pull-left" onclick="@(tblActivityId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusActivityTop" class="btn" onclick="@(tblActivityId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblActivityId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihActivity" class="btn btn-primary pull-left" onclick="@(tblActivityId)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusActivity" class="btn" onclick="@(tblActivityId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlActivity" caption="Pilih Kegiatan,KM & BLOCK">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-activity id="ACTID" binding-field="ACTID" caption="Kegiatan" multiple="true" xs-size="12" value-field="*" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+                </x-field-data-list-activity>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-employee id="OPRID" binding-field="OPRID" caption="Operator" multiple="true" xs-size="12" value-field="*" api-url-param="STATUS=A">
+                </x-field-data-list-employee>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-employee id="HELPERID" binding-field="HELPERID" caption="Kernet" multiple="true" xs-size="12" value-field="*" api-url-param="STATUS=A">
+                </x-field-data-list-employee>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="VOL" binding-field="VOL" caption="Jumlah" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="BLOCKFROMID" binding-field="BLOCKFROMID" caption="Blok Asal" multiple="true" md-size="6" xs-size="12"
+                                         accendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="BLOCKTOID" binding-field="BLOCKTOID" caption="Blok Tujuan" multiple="true" md-size="6" xs-size="12"
+                                         accendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-block id="RECID" binding-field="RECID" caption="Receiver" multiple="true" md-size="6" xs-size="12"
+                                         accendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "DIVID", FieldID = "DivisionID" }
+
+                        })" value-field="*">
+                </x-field-data-list-block>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="TIMESTART" binding-field="TIMESTART" caption="Jam Awal"  xs-size="12" md-size="3" picker-option="TimeOnly">
+                </x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="TIMEEND" binding-field="TIMEEND" caption="Jam Akhir"  xs-size="12" md-size="3" picker-option="TimeOnly">
+                </x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="KMSTART" binding-field="KMSTART" caption="KMSTART" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="KMEND" binding-field="KMEND" caption="KMEND" xs-size="12" md-size="4"></x-field-number>
+            </x-form-row>
+
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetActivity" class="btn" onclick="resetElements('mdlActivity')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddActivity" class="btn btn-primary" onclick="@(tblActivityId)_Handlers.addRows(true)">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseActivity" class="btn btn-primary" onclick="@(tblActivityId)_Handlers.addRows(true,true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseActivity" class="btn" onclick="$('#mdlActivity').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    var @(tblActivityId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllActivity' name='chkDeleteActivity' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteActivity'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "ID",
+                "name": "ID",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "title": "EQUIPTIMESHEETID",
+                "name": "EQUIPTIMESHEETID",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "title": "NOTE",
+                "name": "NOTE",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "ACTID",
+                "title": "Kode Kegiatan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "ACTNAME",
+                "title": "Nama Kegiatan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "OPRID",
+                "title": "Operator",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "OPRNAME",
+                "title": "Operator",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "HELPERID",
+                "title": "Kernet",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "HELPERNAME",
+                "title": "Kernet",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "VOL",
+                "title": "Volume",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "VOL_INPUT",
+                "title": "Volume",
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='VOL'  value='" + rowdata["VOL"] + "'  data-bf='VOL'  onfocusout='updateInputToRow(this)'>";
+                },
+                 "visible": !@(isReadOnlyString),
+
+            },
+            {
+                "type": "text",
+                "name": "BLOCKFROMID",
+                "title": "Dari",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKTOID",
+                "title": "Ke",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "RECID",
+                "title": "Receiver",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "TIMESTART",
+                "title": "Jam Awal",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "TIMEEND",
+                "title": "Jam Akhir",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "KMSTART",
+                "title": "KM/HM Awal",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "KMEND",
+                "title": "KM/HM Akhir",
+                "visible": true
+            },
+         
+        ],
+        showForm: function () {
+            if (!$('#DIVID').flexdatalist('value')) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            $('#mdlActivity').modal('show');
+            return true;
+        },
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.ID = dictActivities[row.ACTID].ID;
+                    row.EQUIPTIMESHEETID = dictActivities[row.ACTID].EQUIPTIMESHEETID;
+                    row.NOTE = dictActivities[row.ACTID].NOTE;
+                    row.ACTID = dictActivities[row.ACTID].ACTID;
+                    row.ACTNAME = dictActivities[row.ACTID].ACT.ACTIVITYNAME;
+                    row.OPRID = dictActivities[row.ACTID].OPRID;
+                    row.OPRNAME = dictActivities[row.ACTID].OPRID;
+                    row.HELPERID = dictActivities[row.ACTID].HELPERID;
+                    row.HELPERNAME = dictActivities[row.ACTID].HELPERID;
+                    row.BLOCKFROMID = dictActivities[row.ACTID].BLOCKFROMID;
+                    row.BLOCKTOID = dictActivities[row.ACTID].BLOCKTOID;
+                    row.RECID = dictActivities[row.ACTID].RECID;
+                    row.TIMESTART = dictActivities[row.ACTID].TIMESTART;
+                    row.TIMEEND = dictActivities[row.ACTID].TIMEEND;
+                    row.KMSTART = dictActivities[row.ACTID].KMSTART;
+                    row.KMEND = dictActivities[row.ACTID].KMEND;
+               
+                });
+            }
+
+            $("#@(tblActivityId)").footable({
+                "columns": @(tblActivityId)_Handlers.columns,
+                "rows": rows
+            });
+            return;
+        },
+        rowKeys: ["ACTID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblActivityId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblActivityId)_Handlers.rowKeys);
+        },
+
+        selectedActivities: [],
+        selectedMandors: [],
+        selectedMandors1: [],
+        selectedBlocks: [],
+        selectedBlocks1: [],
+        selectedBlocks2: [],
+
+        addRows: function (fromActivity,closeForm) {
+            var qty = 0;
+            if (fromActivity) {
+				@(tblActivityId)_Handlers.selectedActivities = $('#ACTID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedActivities || !@(tblActivityId)_Handlers.selectedActivities.length) {
+                    alert("Jenis kegiatan belum dipilih");
+                    return false;
+                }
+
+				@(tblActivityId)_Handlers.selectedMandors = $('#OPRID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedMandors || !@(tblActivityId)_Handlers.selectedMandors.length) {
+                    alert("Operator belum dipilih");
+                    return false;
+                }
+
+				@(tblActivityId)_Handlers.selectedMandors1 = $('#HELPERID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedMandors1 || !@(tblActivityId)_Handlers.selectedMandors1.length) {
+                    alert("Kernet belum dipilih");
+                    return false;
+                }
+
+				@(tblActivityId)_Handlers.selectedBlocks = $('#BLOCKFROMID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedBlocks || !@(tblActivityId)_Handlers.selectedBlocks.length) {
+                    alert("Block asal belum dipilih");
+                    return false;
+                }
+
+				@(tblActivityId)_Handlers.selectedBlocks1 = $('#BLOCKTOID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedBlocks1 || !@(tblActivityId)_Handlers.selectedBlocks1.length) {
+                    alert("Block tujuan belum dipilih");
+                    return false;
+                }
+
+				@(tblActivityId)_Handlers.selectedBlocks2 = $('#RECID').flexdatalist('value');
+                if (!@(tblActivityId)_Handlers.selectedBlocks2 || !@(tblActivityId)_Handlers.selectedBlocks2.length) {
+                    alert("Receiver belum dipilih");
+                    return false;
+                }
+
+				var volume = $('#VOL').val();
+                if (!volume || volume < 0) {
+						alert("Jumlah volume harus diisi");
+						return false;
+                }
+
+
+                var timestart = $('#TIMESTART').val();
+                if (!timestart || timestart < 0) {
+                        alert("Jam awal harus diisi");
+                        return false;
+                }
+
+
+                var timeend = $('#TIMEEND').val();
+                if (!timeend || timeend < 0) {
+                    alert("Jam akhir harus diisi");
+                    return false;
+                }
+
+
+                var kmstart = $('#KMSTART').val();
+                if (!kmstart || kmstart < 0) {
+                    alert("KM awal harus diisi");
+                    return false;
+                }
+
+
+                var kmend = $('#KMEND').val();
+                if (!kmend || kmend < 0) {
+                    alert("KM awal harus diisi");
+                    return false;
+                }
+
+					//var note = $('#NOTE').val();
+
+					if (kmstart > kmend) {
+						alert("KM awal harus lebih kecil dari KM akhir");
+						return false;
+                    }
+
+                    if (timestart > timeend) {
+                        alert("Jam awal harus lebih kecil dari Jam akhir");
+                        return false;
+                    }
+            }
+
+
+            if (!@(tblActivityId)_Handlers.selectedActivities || @(tblActivityId)_Handlers.selectedActivities.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblActivityId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+            @(tblActivityId)_Handlers.selectedActivities.forEach(function (activity) {
+                @(tblActivityId)_Handlers.selectedBlocks.forEach(function (block) {
+                    @(tblActivityId)_Handlers.selectedBlocks1.forEach(function (block1) {
+                        @(tblActivityId)_Handlers.selectedBlocks2.forEach(function (block2) {
+                            @(tblActivityId)_Handlers.selectedMandors.forEach(function (mandor) {
+                                @(tblActivityId)_Handlers.selectedMandors1.forEach(function (mandor1) {
+                var mat = {
+                    ACTID: activity.ACTIVITYID,
+                    ACTNAME: activity.ACTIVITYNAME,
+                    VOL: volume
+                };
+                dictActivities[activity.ACTIVITYID] = mat;
+                var detail = {
+                            ACTID: activity.ACTIVITYID,
+                            ACTNAME: activity.ACTIVITYID + ' - ' + activity.ACTIVITYNAME,
+                            OPRID: mandor.EMPID,
+                            OPRNAME: mandor.EMPID + ' - ' + mandor.EMPNAME,
+                            HELPERID: mandor1.EMPID,
+                            HELPERNAME: mandor1.EMPID + ' - ' + mandor1.EMPNAME,
+                            BLOCKFROMID: block.BLOCKID,
+                            BLOCKTOID: block1.BLOCKID,
+                            RECID: block2.BLOCKID,
+                            TIMESTART: timestart,
+                            TIMEEND: timeend,
+                            KMSTART: kmstart,
+                            KMEND: kmend,
+                            VOL: volume
+                    };
+
+                    detail.key = @(tblActivityId)_Handlers.getRowKey(detail);
+                    if (!@(tblActivityId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+                });
+            });
+         });
+                    });
+                });
+            });
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlActivity').modal('hide');
+        },
+
+       
+
+        deleteRows: function () {
+            if (!confirm('Yakin akan menghapus detail kegiatan?'))
+                return;
+
+            var ft = FooTable.get('#@(tblActivityId)');
+            var deletedCount = 0,
+                deletedActivities = {};
+
+            if (ft) {
+                $('[name = "chkDeleteActivity"]').each(function () {
+                    if (this.id !== 'chkAllActivity') {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            $row.delete(false);
+                            deletedCount++;
+                            deletedActivities[$row.val()["ACTID"]] = $row.val()["ACTID"];
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblActivityId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["VOL"] > 0 && row.val()["VOL"]>0)
+                    rows.push(row.val());
+            });
+            return rows;
+        },
+    };
+</script>

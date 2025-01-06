@@ -1,0 +1,107 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+    <OutputType>Exe</OutputType>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Logs\**" />
+    <Compile Remove="Views\Menu\Other\IT Approval\**" />
+    <Content Remove="Logs\**" />
+    <Content Remove="Views\Menu\Other\IT Approval\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="Views\Menu\Other\IT Approval\**" />
+    <None Remove="Logs\**" />
+    <None Remove="Views\Menu\Other\IT Approval\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BundlerMinifier.Core" Version="2.9.406" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.9.406" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\dynatabs\" />
+    <Folder Include="wwwroot\css\tabulator\" />
+    <Folder Include="wwwroot\css\waitme\" />
+    <Folder Include="wwwroot\fonts\gstatic\" />
+    <Folder Include="wwwroot\js\plugins\dynatabs\" />
+    <Folder Include="wwwroot\js\plugins\tabulator\" />
+    <Folder Include="wwwroot\js\plugins\waitme\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Menu\ApprovalInbox.cshtml" />
+    <None Include="Views\Menu\Attendances\Attendance.cshtml" />
+    <None Include="Views\Menu\Attendances\ScheduleEmployee.cshtml" />
+    <None Include="Views\Menu\Attendances\TransaksiAbsensi.cshtml" />
+    <None Include="Views\Menu\CloseBook.cshtml" />
+    <None Include="Views\Menu\Doket.cshtml" />
+    <None Include="Views\Menu\DoketGalery.cshtml" />
+    <None Include="Views\Menu\DownloadSPB.cshtml" />
+    <None Include="Views\Menu\Form.cshtml" />
+    <None Include="Views\Menu\FormDisplayV1.cshtml" />
+    <None Include="Views\Menu\FormDisplayV2.cshtml" />
+    <None Include="Views\Menu\General\AbsentType.cshtml" />
+    <None Include="Views\Menu\General\Position.cshtml" />
+    <None Include="Views\Menu\Link.cshtml" />
+    <None Include="Views\Menu\List.cshtml" />
+    <None Include="Views\Menu\Logistic\BKU\BKU.cshtml" />
+    <None Include="Views\Menu\Logistic\BKU\_BKUActivity.cshtml" />
+    <None Include="Views\Menu\Logistic\BKU\_BKUEmployee.cshtml" />
+    <None Include="Views\Menu\Logistic\BKU\_BKUMaterial.cshtml" />
+    <None Include="Views\Menu\Logistic\Contract\Contract.cshtml" />
+    <None Include="Views\Menu\Logistic\Contract\_ContractDetail.cshtml" />
+    <None Include="Views\Menu\Logistic\Loading\_LoadingBlock.cshtml" />
+    <None Include="Views\Menu\Logistic\Loading\_LoadingCollect.cshtml" />
+    <None Include="Views\Menu\Logistic\Loading\_LoadingEmployee.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\RKH.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\_RKHActual.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\_RKHDetail.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\_RKHHasilKerja.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\_RKHMaterial.cshtml" />
+    <None Include="Views\Menu\Logistic\RKH\_RKHTaksasi.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\Upkeep.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\UpkeepBorongan.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\_UpkeepBlockX.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\_UpkeepEmployee.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\_UpkeepMaterial.cshtml" />
+    <None Include="Views\Menu\Logistic\Upkeep\_UpkeepVendor.cshtml" />
+    <None Include="Views\Menu\Organization\EmployeeRegistration.cshtml" />
+    <None Include="Views\Menu\Organization\_EmployeeAttachment.cshtml" />
+    <None Include="Views\Menu\Organization\_EmployeeAttachment_EmployeeMaster.cshtml" />
+    <None Include="Views\Menu\Payroll\PremiOperator\PremiOperator.cshtml" />
+    <None Include="Views\Menu\_DoketDetail.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PMS.Shared\PMS.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="unregisterservice.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="registerservice.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

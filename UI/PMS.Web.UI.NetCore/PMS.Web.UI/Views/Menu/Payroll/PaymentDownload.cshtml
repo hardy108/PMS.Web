@@ -1,0 +1,70 @@
+﻿<x-form id="formPaymentDownload">
+    <x-form-col xs-size="12">
+        <x-form-row>
+            <x-field-data-list-unit-by-user-name id="UNIT" xs-size="12" md-size="4" caption="Unit" value-field="UNITID" min-length-search="0" place-holder="Unit" multiple="false">
+            </x-field-data-list-unit-by-user-name>
+            
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-period id="PERIOD" xs-size="12" md-size="4" caption="Periode" place-holder="Periode" value-field="TO2" multiple="false" min-length-search="0" chain-to-relatives="true" ascendants="@(new List<PMS.Shared.Models.FilterAscendant> { new PMS.Shared.Models.FilterAscendant { ElementID ="UNIT",FieldID="UnitID" } })">
+            </x-field-data-list-period>
+        </x-form-row>
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <button id="btnDOWNLOAD" class="btn btn-primary" onclick="doAction(downloadPayment)">Download</button>
+            </x-form-col>
+        </x-form-row>
+        &nbsp;
+        &nbsp;
+        
+    </x-form-col>
+
+</x-form>
+
+<script>
+
+    
+
+    var beforeDoAction = function () {
+        hideError();
+        
+        if (!($('#UNIT').val())) {
+            showError('Error','Unit belum dipilih');
+            return false;
+        }
+        if (!($('#PERIOD').val())) {
+            showError('Error','Periode belum dipilih');
+            return false;
+        }
+        return true;
+    }
+    var downloadPayment = function () {
+
+        var xhr = new XMLHttpRequest();
+        var unitId = $('#UNIT').flexdatalist('value'),
+            date = $('#PERIOD').flexdatalist('value');
+        xhr.open("GET", _API_URL + "api/ProcessMonthly/paymentjournalcsv?period=2&unitId=" + unitId + "&date=" + date, true);
+        xhr.setRequestHeader("Authorization", authServices.getBearerToken());
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+                var csv = this.response;
+                var downloadLink = document.createElement("a");
+                var blob = new Blob(["\ufeff", csv]);
+                var url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download = "PaymentJournal.csv";  //Name the file here
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                window.URL.revokeObjectURL(url);
+            }
+            if (closeWaitingBar)
+                closeWaitingBar();
+        };
+        xhr.send();
+    };
+
+</script>
+
+
+

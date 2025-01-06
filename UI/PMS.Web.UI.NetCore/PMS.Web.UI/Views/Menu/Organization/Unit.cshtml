@@ -1,0 +1,91 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Bisnis Area";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="UNITCODE" binding-field="UNITCODE" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+        <input type="hidden" data-bf="ID" name="ID" id="ID" />
+        <input type="hidden" data-bf="CODE" name="CODE" id="CODE" />
+        <input type="hidden" data-bf="TYPE" name="TYPE" id="TYPE" value="EST" />
+
+        <x-field-text id="NAME" binding-field="NAME" caption="Nama" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-company id="LEGALID" binding-field="LEGALID" caption="Perusahaan" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-data-list-company>
+
+        <x-field-text-area id="ADDR1" binding-field="ADDR1" caption="Alamat" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text-area>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="POSTALCODE" binding-field="POSTALCODE" caption="Kode Pos" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="UNITMGR" binding-field="UNITMGR" caption="Manager" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="UNITKTU" binding-field="UNITKTU" caption="KTU" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="INTIID" binding-field="INTIID" caption="Kode Inti" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="ALIAS" binding-field="ALIAS" caption="Alias" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-text id="RSPO" binding-field="RSPO" caption="CSPO" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+    
+    var customDisplay = function () {
+
+        $('#UNITCODE').on('change', function () {
+            var unitid = $('#UNITCODE').val();
+            
+            $("#ID").val(unitid);
+            $("#CODE").val(unitid);
+        });
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

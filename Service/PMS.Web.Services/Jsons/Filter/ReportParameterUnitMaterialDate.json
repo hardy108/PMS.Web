@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 4
+    },
+    {
+      "Id": "Id",
+      "Caption": "Material",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/material/listforselect?active=true",
+      "MDSize": 4,
+      "MinLengthSearch": 3
+    },
+    {
+      "Id": "StartDate",
+      "Caption": "Tanggal",
+      "Type": "date", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+
+]

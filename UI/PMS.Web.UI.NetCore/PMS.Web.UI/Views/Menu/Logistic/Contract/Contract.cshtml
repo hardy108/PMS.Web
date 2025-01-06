@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "Contract";
+    Layout = null;
+    string mode = ViewBag.Mode;
+    string tblDetailId = "tblDetail";
+
+}
+
+
+    <x-form id="@ViewBag.MainFormID">
+        <x-form-row>
+
+            <x-field-text id="ID" binding-field="ID" caption="No. Kontrak" read-only="true" place-holder="Auto Number" xs-size="12" md-size="4">
+            </x-field-text>
+            <input type="hidden" data-bf="STATUS" id="STATUS" />
+            <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+            </x-field-data-list-unit-by-user-name>
+            <x-field-date binding-field="DATE" caption="Tgl. Kontrak" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+            </x-field-date>            
+        </x-form-row>
+        <x-form-row>            
+            <x-form-col xs-size="12" md-size="8">
+                <x-form-row no-gutters="true">
+                    <x-field-date id="STARTDATE" picker-option="DateOnly" xs-size="6" caption="Tgl. Berlaku" date-format="dd-MMM-yyyy" binding-field="STARTDATE" read-only="@ViewBag.ReadOnly"></x-field-date>
+                    <x-field-date id="ENDDATE" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="ENDDATE" read-only="@ViewBag.ReadOnly"></x-field-date>
+                </x-form-row>
+            </x-form-col>
+            <script>helper.initDateRange2('STARTDATE', 'ENDDATE', 'DD-MMM-YYYY')</script>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text-area binding-field="NOTE" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12">
+            </x-field-text-area>
+        </x-form-row>
+        <x-form-row>
+            &nbsp;
+        </x-form-row>
+
+        <x-form-row>
+            @Html.Partial("_ContractDetail.cshtml")
+        </x-form-row>
+    </x-form>
+
+
+
+    <script>
+    var mode = "@(mode)";
+
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        @(tblDetailId)_Handlers.initTable(record.TCONTRACTITEM);
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlDetail');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        var errorTitle = action + ' - ' + '@ViewBag.Title';
+
+        if (action == "New" || action == "Edit") {
+
+
+            if (!savedRecord.DATE) {
+                showError(errorTitle, 'Tanggal kontrak tidak boleh kosong')
+                return false;
+            }
+
+            if (!savedRecord.STARTDATE) {
+                showError(errorTitle, 'Tanggal Awal kontrak tidak boleh kosong')
+                return false;
+            }
+
+            if (!savedRecord.ENDDATE) {
+                showError(errorTitle, 'Tanggal Akhir kontrak tidak boleh kosong')
+                return false;
+            }
+
+
+            
+        }
+
+        savedRecord["TCONTRACTITEM"] = @(tblDetailId)_Handlers.saveRows();
+        if (savedRecord["TCONTRACTITEM"])
+            savedRecord["TCONTRACTITEM_COUNT"] = savedRecord["TCONTRACTITEM"].length;
+
+        if (!savedRecord["TCONTRACTITEM"].length) {
+            showError(errorTitle, 'Kontrak harus memiliki paling tidak 1 item pekerjaan')
+            return false;
+        }
+
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+    </script>

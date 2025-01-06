@@ -1,0 +1,312 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblLoadingBlock";
+    string tblLoadingCollectId = "tblLoadingCollect";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" ></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+<x-form-row>
+    <x-form-col xs-size="12">
+        <button id="btnHapusBlock" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+            Hapus
+        </button>
+    </x-form-col>
+</x-form-row>
+}
+
+
+<script>
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllBlock' name='chkDeleteBlock' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteBlock'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "THNTANAM",
+                "title": "Tahun Tanam",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "LUASBLOCK",
+                "title": "Luas Blok",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "KG",
+                "title": "KG Panen",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "html",
+                "name": "KG_INPUT",
+                "title": "KG Panen",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='KG' value='" + rowdata["KG"] + "'  data-bf='KG' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString)
+            }
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.THNTANAM = dictBlocks[row.BLOCKID].THNTANAM;
+                    row.BLOCKID = dictBlocks[row.BLOCKID].BLOCKID;
+                    row.LUASBLOCK = dictBlocks[row.BLOCKID].LUASBLOCK;
+                });
+            }
+
+                if ($('#SPBDATATYPE').val() == 1) {
+                    $("#@(tblId)").footable({
+                        "columns": @(tblId)_Handlers.columns,
+                        "rows": rows
+                    }, function (ft) {
+                        ft.columns.get('KG').visible = true;
+                        ft.columns.get('KG_INPUT').visible = false;
+                        ft.draw();
+                    });
+                }
+                else
+                {
+                    $("#@(tblId)").footable({
+                        "columns": @(tblId)_Handlers.columns,
+                        "rows": rows
+                    });
+                }
+
+    
+        },
+        rowKeys: ["BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedBlocks: [],
+
+        addRows: function () {
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+                @(tblId)_Handlers.selectedBlocks.forEach(function (block) {
+                    var kg ;
+                    if (block.KG == undefined)
+                        kg = 0;
+                    else
+                        kg = block.KG;
+
+
+                    var detail = {
+                        THNTANAM:block.THNTANAM,
+                        BLOCKID: block.BLOCKID,
+                        LUASBLOCK: block.LUASBLOCK,
+                        KG:kg
+                    };
+                    detail.key = @(tblId)_Handlers.getRowKey(detail);
+                    if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+                });
+
+            if (added)
+                ft.draw();
+
+            return;
+        },
+
+        deleteRows: function (deletedBlocks) {
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            var rows = [];
+
+            if (ft) {
+                if (deletedBlocks) {
+                    //Caused By delete collect Detail
+                    if (deletedBlocks.length > 0 && Array.isArray(deletedBlocks)) {
+                        $.each(deletedBlocks, function (d, blk) {
+                            ft.rows.all.forEach(function (i, row) {
+                                if (i.value.BLOCKID == blk.BLOCKID) {                                   
+                                    i.delete(false);
+                                    deletedCount++;
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Jika blok dihapus, semua data yang berhubungan akan dihapus.\r\nYakin akan menghapus blok?'))
+                        return;
+
+                    $('[name = "chkDeleteBlock"]').each(function () {
+                        if (this.id !== 'chkAllBlock') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                rows.push({ BLOCKID: $row.value.BLOCKID });
+                                $row.delete(false);                               
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount) 
+                    ft.draw();
+
+                    if (deletedBlocks)
+                    rows = deletedBlocks;
+
+                        @(tblLoadingCollectId)_Handlers.deleteRows(rows);
+                
+            }
+        },
+
+        saveRows: function () {
+
+            var ft = FooTable.get('#@(tblId)');
+
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+
+            $.each(ft.rows.all, function (i, row) {
+
+                if (row.val()["KG"] == 0) {
+                    alert("BLOK "+ row.val()["BLOCKID"] + " Tidak Boleh KG = 0")
+                    return null;
+                }
+
+                if (row.val()["KG"] > 0)
+                    rows.push(row.val());
+            });
+            return rows;
+        },
+
+        addSPB: function (spbId) {
+
+            @(tblId)_Handlers.selectedBlocks.length = 0;
+
+            selectedBlocks: [];
+            helper.callAjaxRequestJson("api/HarvestingBlockResult/get/" + spbId, null, "get", function (data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(function (item) {
+                        var blockId = {
+                            BLOCKID: item.BLOCKID,
+                            THNTANAM: item.BLOCKDETAIL.THNTANAM,
+                            LUASBLOCK: item.BLOCKDETAIL.LUASBLOCK,
+                            KG: item.QTY
+                        };
+                        @(tblId)_Handlers.selectedBlocks.push(blockId);
+                    })
+                    @(tblId)_Handlers.addRows();
+                }
+            });
+
+        },
+
+        deleteAllRows: function (deleteOnly) {
+            var deletedCount = 0;
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var deletedBlocks=[];
+            if (ft.rows.all.length !== 0) {
+                @(tblId)_Handlers.selectedBlocks.length = 0;
+                $.each(ft.rows.all, function (i, row) {
+                    var blkId = {
+                        BLOCKID: row.value.BLOCKID
+                    };
+                    deletedBlocks.push(blkId);
+                });
+
+                if (ft) {
+                    if (deletedBlocks) {
+                        if (deletedBlocks.length > 0 && Array.isArray(deletedBlocks)) {
+                            $.each(deletedBlocks, function (d, blk) {
+                                ft.rows.all.forEach(function (i, row) {
+                                    if (i.value.BLOCKID == blk.BLOCKID) {
+                                        i.delete(false);
+                                        deletedCount++;
+                                    }
+                                });
+                            });
+                        }
+                        if (deleteOnly && deletedCount) {
+                            this.EditKG();
+                            ft.draw();
+                        }
+                    }
+                }
+            }
+        },
+        ReadKG: function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+            ft.columns.get('KG').visible = true;
+            ft.columns.get('KG_INPUT').visible = false; 
+        },
+        EditKG: function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+            ft.columns.get('KG').visible = true;
+            ft.columns.get('KG_INPUT').visible = true; 
+        }
+    };
+
+</script>
+

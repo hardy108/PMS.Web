@@ -1,0 +1,187 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Master Data Karyawan";
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+}
+
+<script>
+        var mode = "@(mode)";
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="DIVID" binding-field="DIVID" caption="Divisi" read-only="true" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="EMPID" binding-field="EMPID" caption="ID Karyawan" read-only="true" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="EMPNAME" binding-field="EMPNAME" caption="Nama Lengkap" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="KTPID" binding-field="KTPID" caption="e-KTP/NIK" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="STATUSTEXT" binding-field="STATUSTEXT" caption="Status Data" read-only="true" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-gender id="EMPSEX" binding-field="EMPSEX" caption="Jenis Kelamin" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly"></x-field-data-list-gender>
+        <x-field-data-list-religion id="RELIGION" binding-field="RELIGION" caption="Agama" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly"></x-field-data-list-religion>
+        <x-field-text id="RACE" binding-field="RACE" caption="Suku" read-only="@(ViewBag.ReadOnly)" place-holder="Suku" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-text id="PLACEOFBIRTH" binding-field="PLACEOFBIRTH" caption="Tempat Lahir" read-only="@(ViewBag.ReadOnly)" place-holder="Tempat Lahir" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-date id="BIRTHDAY" binding-field="BIRTHDAY" caption="Tanggal Lahir" read-only="@(ViewBag.ReadOnly)" place-holder="Tanggal Lahir" xs-size="12" md-size="2" date-format="DD-MMM-YYYY" picker-option="DateOnly">
+        </x-field-date>
+        <x-field-data-list-education id="EDUCATION" binding-field="EDUCATION" caption="Pendidikan" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-data-list-education>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="KTPADDRESS" binding-field="KTPADDRESS" caption="Alamat (Sesuai KTP)" read-only="@ViewBag.ReadOnly" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-text id="STATUSNAME" binding-field="STATUSNAME" caption="Status" read-only="true" xs-size="4">
+        </x-field-text>
+        <x-field-text id="FAMILYSTATUS" binding-field="FAMILYSTATUS" caption="Status Keluarga" read-only="true" xs-size="2">
+        </x-field-text>
+        <x-field-text id="TAXSTATUS" binding-field="TAXSTATUS" caption="Status Pajak" read-only="true" xs-size="2">
+        </x-field-text>
+        <x-field-text id="NPWP" binding-field="NPWP" caption="NPWP" read-only="@(ViewBag.ReadOnly)" place-holder="NPWP" xs-size="12" md-size="4">
+        </x-field-text>
+
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-employee caption="Atasan" id="SUPERVISORID" binding-field="SUPERVISORID" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-data-list-employee>
+        <x-field-data-list-position id="POSITIONID" binding-field="POSITIONID" caption="Jabatan" read-only="true" xs-size="12" md-size="3">
+        </x-field-data-list-position>
+        <x-field-data-list-employee-type id="EMPTYPE" binding-field="EMPTYPE" caption="Tipe Karyawan" read-only="true" xs-size="12" md-size="2">
+        </x-field-data-list-employee-type>
+        <x-field-select select-type="Boolean" id="PKWT" binding-field="PKWT" caption="PKWT" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-select>
+        <x-field-select select-type="Boolean" id="NATURA" binding-field="NATURA" caption="Hak Natura" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text caption="No. SPK" id="NOSPK" binding-field="NOSPK" xs-size="12" md-size="4" read-only="true">
+        </x-field-text>
+        <x-field-date id="JOINTDATE" binding-field="JOINTDATE" caption="Tanggal Masuk" read-only="true" place-holder="Tanggal Masuk" xs-size="12" md-size="2" date-format="DD-MMM-YYYY" picker-option="DateOnly">
+        </x-field-date>
+        <x-form-col md-size="2"></x-form-col>
+        <x-field-text id="GOLONGAN" binding-field="GOLONGAN" caption="Golongan" read-only="@(ViewBag.ReadOnly)" xs-size="2">
+        </x-field-text>
+        <x-field-data-list id="ATTENDGROUPID" binding-field="ATTENDGROUPID" caption="Group Absensi" read-only="@(ViewBag.ReadOnly)" place-holder="Group Absensi" xs-size="12" md-size="2" api-url="api/attendancegroup/list?"
+                           visible-fields="NAME" value-field="ID" search-contain="true" min-length-search="0" search-fields="[ID,NAME]"></x-field-data-list>
+    </x-form-row>
+
+
+    <x-form-row>
+        &nbsp;
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Data Payroll">
+            @Html.Partial("_EmployeePayroll.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="BPJS">
+            @Html.Partial("_EmployeeBPJS.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Bank">
+            @Html.Partial("_EmployeeBank.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Data Keluarga">
+            @Html.Partial("_EmployeeFamily.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Lampiran Dokumen">
+            @Html.Partial("_EmployeeAttachment.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+<script>
+    var allowEdit = false, allowEditBank = false, allowEditAbsensi = false, allowEditBPJS = false;
+    var readOnly =  @(GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly));
+    var customDisplay = function () {        
+        Family.initTable(readOnly, record.MEMPLOYEEFAMILY);
+        displayFiles(record.MEMPLOYEEFILE, readOnly);
+        //Family_.initTable(record.TEMPLOYEEFAMILY);
+        return true;
+    };
+
+
+    var setSpecialPermission = function () {
+        if (record.EmployeeChangePermission) {
+            allowEdit = record.EmployeeChangePermission.ALLOWEDIT;
+            allowEditBank = record.EmployeeChangePermission.ALLOWEDITBANK;
+            allowEditBPJS = record.EmployeeChangePermission.ALLOWEDITBPJS;
+            allowEditAbsensi = record.EmployeeChangePermission.ALLOWEDITABSENSI;
+        }
+
+        if (!allowEdit) {
+            $('#btnSave').hide();
+        }
+        if (!allowEditBank) {
+            disableDataList('BANKID');
+
+            $('#BANKACCNO').attr('readonly', 'readonly');
+            $('#BANKACCNAME').attr('readonly', 'readonly');
+        }
+        if (!allowEditAbsensi) {
+            disableDataList('ATTENDGROUPID');
+
+        }
+
+        if (!allowEditBPJS) {
+            $('#BPJSKES').attr('disabled', 'disabled');
+            $('#BPJSKESEHATANNO').attr('readonly', 'readonly');
+            $('#BPJSKESEHATANET').attr('readonly', 'readonly');
+            $('#BPJSKESEHATANBASE').attr('readonly', 'readonly');
+            $('#BPJSJKK').attr('disabled', 'disabled');
+            $('#BPJSJHT').attr('disabled', 'disabled');
+            $('#BPJSJP').attr('disabled', 'disabled');
+            $('#BPJSKETENAGAKERJAANNO').attr('readonly', 'readonly');
+            $('#BPJSKETENAGAKERJAANNPP').attr('readonly', 'readonly');
+
+            $('#BPJSBASE').attr('readonly', 'readonly');
+        }
+
+        return true;
+    }
+
+    
+</script>
+
+@if (!ViewBag.ReadOnly)
+{
+    <script>
+        
+        
+
+        var beforeSendAction = function (action, savedRecord) {
+            var errorTitle = mode + ' - ' + '@ViewBag.Title';
+        /* Specific Code Here - End*/
+            if (!allowEdit && (action == "New" || action == "Edit")) {
+                showError("Anda tidak punya akses untuk mengubah data karyawan");
+                return false;
+            }
+
+            var checkFiles = beforeSaveFiles();
+            if (checkFiles !== true) {
+                showError(checkFiles);
+                return false;
+            }
+            savedRecord.MEMPLOYEEFILE = employeeFiles;
+            savedRecord.MEMPLOYEEFILE_COUNT = employeeFiles.length;
+
+            var families = Family.getData();
+            savedRecord.MEMPLOYEEFAMILY = families;
+            savedRecord.MEMPLOYEEFAMILY_COUNT = families.length;
+
+            return savedRecord;
+        };
+    </script>
+}
+
+

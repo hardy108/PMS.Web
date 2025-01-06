@@ -1,0 +1,52 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Mill";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="MILLCODE" binding-field="MILLCODE" caption="Kode" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="4">
+        </x-field-text>
+
+        <x-field-text id="MILLNAME" binding-field="MILLNAME" caption="Nama" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="6">
+        </x-field-text>
+
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+    
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+    
+    var customDisplay = function () {
+        
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

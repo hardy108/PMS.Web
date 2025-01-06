@@ -1,0 +1,123 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    ViewData["Title"] = "Periode";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <input type="hidden" name="PERIODCODE" id="PERIODCODE" data-bf="PERIODCODE" />
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Unit" xs-size="12" md-size="4" read-only="@isReadonlyWhenNotInsert" binding-field="UNITCODE" min-length-search="2">
+        </x-field-data-list-unit-by-user-name>
+
+        <x-field-select id="MONTH" binding-field="MONTH" caption="Bulan" read-only="@isReadonlyWhenNotInsert" place-holder="Bulan" xs-size="12" md-size="4">
+            <option value="1">Januari</option>
+            <option value="2">Februari</option>
+            <option value="3">Maret</option>
+            <option value="4">April</option>
+            <option value="5">Mei</option>
+            <option value="6">Juni</option>
+            <option value="7">Juli</option>
+            <option value="8">Agustus</option>
+            <option value="9">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+        </x-field-select>
+
+        <x-field-number id="YEAR" binding-field="YEAR" value="0" caption="Tahun" read-only="@isReadonlyWhenNotInsert" xs-size="12" md-size="4"></x-field-number>
+    </x-form-row>
+
+    <x-form>(Periode 1)</x-form>
+
+    <x-form-row>
+        <x-field-date binding-field="FROM1" caption="Dari" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy"></x-field-date>
+        <x-field-date binding-field="TO1" caption="Sampai" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy"></x-field-date>
+
+        <x-field-number id="RICEPRICE1" binding-field="RICEPRICE1" value="0" caption="Harga Beras" read-only="ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-select id="ACTIVE1" binding-field="ACTIVE1" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean"></x-field-select>
+    </x-form-row>
+
+    <x-form>(Periode 2)</x-form>
+
+    <x-form-row>
+        <x-field-date binding-field="FROM2" caption="Dari" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy"></x-field-date>
+        <x-field-date binding-field="TO2" caption="Sampai" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy"></x-field-date>
+
+        <x-field-number id="RICEPRICE2" binding-field="RICEPRICE2" value="0" caption="Harga Beras" read-only="ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+
+        <x-field-select id="ACTIVE2" binding-field="ACTIVE2" caption="Aktif" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean"></x-field-select>
+    </x-form-row>
+
+    @*<x-form-row id="pnlPeriod1" caption="Periode 1">
+            <x-form-col xs-size="12" md-size="6">
+                <x-form-row no-gutters="true">
+                    <x-field-date id="FROM1" picker-option="DateOnly" xs-size="6" caption="Periode 1 Dari" date-format="dd-MMM-yyyy" binding-field="FROM1" read-only="@ViewBag.ReadOnly"></x-field-date>
+                    <x-field-date id="TO1" picker-option="DateOnly" xs-size="6" caption="Periode 1 Sampai" date-format="dd-MMM-yyyy" binding-field="TO1" read-only="@ViewBag.ReadOnly"></x-field-date>
+                </x-form-row>
+            </x-form-col>
+            <script>helper.initDateRange2('FROM1', 'TO1', 'dd-MMM-yyyy')</script>
+
+            <x-field-number id="RICEPRICE1" binding-field="RICEPRICE1" value="0" caption="Harga Beras Periode 1" read-only="ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+
+            <x-field-select id="ACTIVE1" binding-field="ACTIVE1" caption="Aktif Periode 1" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+            </x-field-select>
+        </x-form-row>
+
+        <x-form-row id="pnlPeriod2" caption="Periode 2">
+            <x-form-col xs-size="12" md-size="6">
+                <x-form-row no-gutters="true">
+                    <x-field-date id="FROM2" picker-option="DateOnly" xs-size="6" caption="Periode 2 Dari" date-format="dd-MMM-yyyy" binding-field="FROM2" read-only="@ViewBag.ReadOnly"></x-field-date>
+                    <x-field-date id="TO2" picker-option="DateOnly" xs-size="6" caption="Periode 2 Sampai" date-format="dd-MMM-yyyy" binding-field="TO2" read-only="@ViewBag.ReadOnly"></x-field-date>
+                </x-form-row>
+            </x-form-col>
+            <script>helper.initDateRange2('FROM2', 'TO2', 'dd-MMM-yyyy')</script>
+
+            <x-field-number id="RICEPRICE2" binding-field="RICEPRICE2" value="0" caption="Harga Beras Periode 2" read-only="ViewBag.ReadOnly" xs-size="12" md-size="3"></x-field-number>
+
+            <x-field-select id="ACTIVE2" binding-field="ACTIVE2" caption="Aktif Periode 2" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+            </x-field-select>
+        </x-form-row>*@
+
+    <x-form-row>
+        <x-field-text-area binding-field="REMARK" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#ACTIVE1").val("false").trigger("change");
+            $("#ACTIVE2").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

@@ -1,0 +1,101 @@
+[
+  {
+    "FieldName": "STATUSID",
+    "FieldCaption": "Kode",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "STATUSNAME",
+    "FieldCaption": "Keterangan",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "SPOUSE",
+    "FieldCaption": "Istri",
+    "FieldType": "FInteger",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "CHILDREN",
+    "FieldCaption": "Anak",
+    "FieldType": "FInteger",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "FAMILYSTATUS",
+    "FieldCaption": "Status Keluarga",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "TAXSTATUS",
+    "FieldCaption": "Status Pajak",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 60
+  },
+  {
+    "FieldName": "ABSENSEX_IN_TEXT",
+    "FieldCaption": "Prioritas",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 70
+  },
+  {
+    "FieldName": "ACTIVE",
+    "FieldCaption": "Aktif",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 80
+  },
+  {
+    "FieldName": "UPDATED_IN_TEXT",
+    "FieldCaption": "Last Update",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 90
+  }
+]

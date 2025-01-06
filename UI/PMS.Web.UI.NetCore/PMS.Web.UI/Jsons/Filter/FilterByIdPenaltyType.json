@@ -1,0 +1,27 @@
+[
+  [
+
+    {
+      "Id": "ID",
+      "Caption": "ID Salary Type",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/salarytype/listforselect",
+      //"XSSize": 0,
+      //"SMSize": 0,
+      "MDSize": 4
+      //"LGSize": 0,
+      //"XLSize": 0
+
+    },    
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean      
+      "MDSize": 8
+    }
+
+  ]
+  
+]
+
+

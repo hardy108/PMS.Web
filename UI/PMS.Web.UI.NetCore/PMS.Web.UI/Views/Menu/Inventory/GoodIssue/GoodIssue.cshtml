@@ -1,0 +1,133 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Pengeluaran Barang";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblItem = "tblItem";
+}
+<script>
+    var dictItems = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+
+        <x-field-text id="NO" binding-field="NO" caption="No" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-unit id="UNITCODE" binding-field="UNITCODE" caption="Unit" min-length-search="0" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-data-list-unit>
+
+        <x-field-text id="VOUCHERNO" binding-field="VOUCHERNO" caption="Voucher No" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-date id="DATE" binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-sloc id="LOCCODE" binding-field="LOCCODE" caption="Lokasi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="0"
+                                Ascendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" }})">
+            >
+        </x-field-data-list-sloc>
+
+        <x-field-text binding-field="NOTE" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="6">
+        </x-field-text>
+
+        @*<input type="text" id="tes" name='BLOCKID' data-bf='BLOCKID' class='flexdatalist'
+                         data-url='http://localhost:1635/api/block/list?DivisionID=7122-1&' data-search-in='["BLOCKID","DIVNAME","UNITNAME"]' data-visible-properties='["BLOCKID","LUASBLOCK"]'
+                         data-text-property='{BLOCKID}' data-value-property='BLOCKID' data-search-contain='true' data-min-length='2' 
+                         miltiple='multiple' data-limit-of-values='1' x-type='xdatalist' tabindex='-1' />*@
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Material">
+            @Html.Partial("_GIItem.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        
+        //$("#tes").flexdatalist({
+        //    url: _API_URL + "api/block/list?DivisionID=7122-1&", textProperty: "{BLOCKID}", valueProperty: "BLOCKID", visibleProperties: ["BLOCKID", "LUASBLOCK"],
+        //    searchIn: ["BLOCKID", "DIVNAME", "UNITNAME"], valueField: "BLOCKID", searchContain: true, multiple: false, minLength: 2
+        //    //relatives: "BD1P" , relativeFields: "UnitID", chainedRelatives: true,
+        //    //data: bloks,
+        //});
+
+        Item_.initTable(record.TGIITEM);
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        //resetElements('mdlActivity');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        if (action == "New" || action == "Edit") {
+            savedRecord["TGIITEM"] = Item_.saveRows();
+            if (savedRecord["TGIITEM"])
+                savedRecord["TGIITEM_COUNT"] = savedRecord["TGIITEM"].length;
+        }
+        return savedRecord;
+    }
+
+
+</script>

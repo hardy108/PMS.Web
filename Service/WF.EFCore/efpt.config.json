@@ -1,0 +1,315 @@
+﻿{
+   "ContextClassName": "WFContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "DoNotCombineNamespace": false,
+   "IdReplace": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "WF.EFCore",
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AutoNumberHistory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Company]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Delegation]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DelegationDocument]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Department]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Document]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentAccessToken]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentAttachment]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentBAFinger]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentBAFingerDetail]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentHistory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentITAkses]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentITRequest]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentITRequestAppType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentITRequestChangeType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentITService]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPDO]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPDODetailAttachments]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPDODetails]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPremiNonPanen]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPTA]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPTADetailAttachments]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentPTADetails]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentStatus]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentTypeNotificationTemplate]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[DocumentViewType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[EmailContentTemplate]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Employee]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[File]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[FileAttachmentFromPTA]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ITRequestAppType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ITRequestChangeType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PDOVendor]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PTACostCenter]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PTACostElement]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PTAType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PTAWBSElement]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[PTAWBSElement_temp]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ReferenceCode]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ReportDocType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Role]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RoleActivity]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RoleDocumentType]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RoleUnit]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RoleUser]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[UnitStructure]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[User]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[UserLoginToken]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwActiveUser]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMOBJECT]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMOBJECTTYPE]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMORGANIZATION]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMPROPERTY]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMRELATION]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMRELATIONTYPE]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwAMUSER]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwApprovalHistory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwDocument]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwDocumentBAF]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwPDOApprovedJournal]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwPTAForUpdateBudget]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwRole]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwRoleMember]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwUser]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwWorkflowInbox]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[vwWorkflowOutbox]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Workflow]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[WorkflowAction]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[WorkflowActivity]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[WorkflowRoute]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[WorkflowTransaction]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[WorkflowTransactionHistory]"
+      }
+   ],
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseSpatial": false
+}

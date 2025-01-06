@@ -1,0 +1,21 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+
+
+    <x-form-row>
+        <x-field-select select-type="Boolean" id="BPJSKES" binding-field="BPJSKES" caption="BPJS Kesehatan" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="2"></x-field-select>
+        <x-field-text id="BPJSKESEHATANNO" binding-field="BPJSKESEHATANNO" caption="No. BPJS Kesehatan" read-only="@(ViewBag.ReadOnly)" place-holder="No. BPJS Kesehatan" xs-size="12" md-size="4"></x-field-text>
+        <x-field-text id="BPJSKESEHATANET" binding-field="BPJSKESEHATANET" caption="Kode Entitas" read-only="@(ViewBag.ReadOnly)" place-holder="Kode Entitas" xs-size="12" md-size="4"></x-field-text>
+        <x-field-number id="BPJSKESEHATANBASE" binding-field="BPJSKESEHATANBASE" caption="Upah Dasar" read-only="@(ViewBag.ReadOnly)" place-holder="Upah Dasar" xs-size="12" md-size="2"></x-field-number>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-select select-type="Boolean" id="BPJSJKK" binding-field="BPJSJKK" caption="JKK dan JKM" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="2"></x-field-select>
+        <x-field-select select-type="Boolean" id="BPJSJHT" binding-field="BPJSJHT" caption="JHT" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="2"></x-field-select>
+        <x-field-select select-type="Boolean" id="BPJSJP" binding-field="BPJSJP" caption="JP" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="2"></x-field-select>
+        <x-field-text id="BPJSKETENAGAKERJAANNO" binding-field="BPJSKETENAGAKERJAANNO" caption="No. BPJS TK" read-only="@(ViewBag.ReadOnly)" place-holder="No. BPJS TK" xs-size="12" md-size="2"></x-field-text>
+        <x-field-text id="BPJSKETENAGAKERJAANNPP" binding-field="BPJSKETENAGAKERJAANNPP" caption="NPP" read-only="@(ViewBag.ReadOnly)" place-holder="NPP" xs-size="12" md-size="2"></x-field-text>
+        <x-field-number id="BPJSBASE" binding-field="BPJSBASE" caption="Upah Dasar" read-only="@(ViewBag.ReadOnly)" place-holder="Upah Dasar" xs-size="12" md-size="2"></x-field-number>
+    </x-form-row>
+
+    

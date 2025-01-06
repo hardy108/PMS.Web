@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 8
+    },
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Tanggal",
+      "Caption2": "&nbsp;",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ],
+  [
+    {
+      "Id": "Type",
+      "Caption": "Tipe Account",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/accounttype/listforselect",
+      "MDSize": 4
+    },
+    {
+      "Id": "Id",
+      "Caption": "No.Account",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/account/listforselect?IsActive=true",
+      "MDSize": 8,
+      "Ascendants": [
+        {
+          "ElementID": "Type",
+          "FieldID": "TypeId"
+        }
+      ]
+    }
+  ]
+
+]

@@ -1,0 +1,141 @@
+﻿
+@using PMS.Web.UI.Code
+
+<div class="box">
+    <div class="box-header">
+        <button type="button" id="btnFilter" class="btn btn-primary btn-sm dropdown-toggle pull-right" data-toggle="collapse" data-target="#formFilter">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+
+    <div class="box-body">
+        <div id="formFilterPanel" class="panel-group">
+            <div class="panel panel-default">
+                <div id="formFilter" class="panel-collapse collapse">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center text-lg-left" id="divDoketList">
+
+</div>
+
+@Html.Partial("_DoketDetail")
+
+
+<ul id="pagination" class="pagination-md"></ul>
+<script>
+    var totalPages = 0, startPage = 0, visiblePages = 10, pageSize = 18;
+
+    var doPagination = function () {
+        var startDate = $('#dtDateStart').val(),
+            endDate = $("#dtDateEnd").val(),
+            divisionId = "";
+
+        $.each($('#cboDivision').val(), function (i, val) {
+            divisionId += val + ",";
+        });
+        divisionId = divisionId.substring(0, divisionId.length - 1);
+
+        $('#pagination').twbsPagination('destroy');
+        var filter = {
+            DivisionId: divisionId,
+            StartDate: startDate,
+            EndDate: endDate,
+            Status: "1,2"
+        };
+
+        helper.callAjaxRequestJson("api/doketgallery/count", filter, "get", function (responseData) {
+            var recordCount = responseData;
+
+            if (recordCount <= 0) {
+                $('#divDoketList').html('<h3>Tidak ada doket sesuai kriteria diatas<h3>');
+                return;
+            }
+            totalPages = Math.ceil(recordCount / pageSize);
+            if (totalPages * pageSize < recordCount)
+                totalPages++;
+
+            if (totalPages > 1) {
+                $('#pagination').twbsPagination({
+                    totalPages: totalPages,
+                    visiblePages: visiblePages,
+                    startPage: 1,
+                    hideOnlyOnePage: true,
+                    initiateStartPageClick: true,
+                    onPageClick: function (event, page) {
+                        showPage(page, divisionId, startDate, endDate);
+                    }
+                });
+            }
+            showPage(1, divisionId, startDate, endDate);
+
+
+
+        });
+    };
+
+
+
+    var showPage = function (pageNo, divisionId, startDate, endDate) {
+        if (totalPages < 1) {
+            $('#divDoketList').html('<h3>Tidak ada doket sesuai kriteria diatas<h3>');
+            return;
+        }
+        if (pageNo > totalPages)
+            pageNo = totalPages;
+        else if (pageNo < 1)
+            pageNo = 1;
+        var rowNoStart = (pageNo - 1) * pageSize + 1,
+            rowNoEnd = rowNoStart + pageSize - 1
+        var param = {
+
+            DivisionId: divisionId,
+            StartDate: startDate,
+            EndDate: endDate,
+            RowNoStart: rowNoStart,
+            RowNoEnd: rowNoEnd,
+            Status: "1,2"
+        };
+
+        helper.callAjaxRequestJson("api/doketgallery/list", param, "get", function (responseData) {
+            var html = "";
+            if (Array.isArray(responseData)) {
+                responseData.forEach(function (value) {
+
+                    html += "<div class='col-lg-2 col-md-3 col-6'>" +
+                        "<label>" + value.DOK_ID + "</label>" +
+                        "<a onclick='showDoketDetail($(this))' data-doketid='" + value.DOK_ID + "' data-divisionid='" + value.DOK_DIVID + "' href='#' class='d-block mb-4 h-100'>" +
+                        "<img class='img-fluid img-thumbnail' src='" + _API_URL + "api/doketgallery/imagetn?divisionId=" + value.DOK_DIVID + "&fileName=" + value.DOK_FOTO + "&width=200&height=200' alt=''>" +
+                        "</a>" +
+                        "</div>";
+                });
+            }
+            $('#divDoketList').html(html);
+        });
+    };
+
+    var showDoketDetail = function (e) {
+
+        var divisionId = e.data('divisionid'),
+            doketId = e.data('doketid');
+        $('#frmDoketDetail').modal('show');
+        var param = {
+            DivisionId: divisionId,
+            DoketId: doketId
+        };
+        var successFunction = function (data) {
+            displayDoketDetail(data);
+        };
+        helper.callAjaxRequestJson("api/doketgallery/get", param, 'get', successFunction);
+    }
+
+    $.get(window.location.origin + "/Filter/Index?filterName=FilterDoket").done(function (responseData) {
+        $('#formFilter').html(responseData);
+    });
+
+    doPagination();
+</script>

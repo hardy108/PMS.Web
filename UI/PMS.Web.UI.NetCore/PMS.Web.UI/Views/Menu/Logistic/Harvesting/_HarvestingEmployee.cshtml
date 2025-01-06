@@ -1,0 +1,424 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Employee";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Pilih Karyawan">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-unit id="@(prefix)UNIT" binding-field="UNITID" caption="Estate" multiple="false" xs-size="12" md-size="6" value-field="UNITCODE" min-length-search="0">
+                </x-field-data-list-unit>
+                <x-field-select select-type="Boolean" id="@(prefix)WITHGERDAN" binding-field="WITHGERDAN" caption="Dengan Gerdan" xs-size="12" md-size="6" onchange="@(prefix)_.showHideGerdan()">
+                </x-field-select>
+                <x-field-data-list-employee id="@(prefix)EMPLOYEE" binding-field="EMPID" caption="Karyawan" multiple="true" xs-size="12" value-field="*"
+                                            ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = prefix + "UNIT",FieldID="UnitID" }})" min-length-search="3">
+                </x-field-data-list-employee>
+            </x-form-row>
+            <x-form-row id="@(prefix)rowGerdan">
+                <x-field-data-list-employee id="@(prefix)GERDAN" binding-field="GEMPID" caption="Gerdan" multiple="false" xs-size="12" value-field="*"
+                                            ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = prefix + "UNIT",FieldID="UnitID" }})" min-length-search="3">
+                </x-field-data-list-employee>
+            </x-form-row>            
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAdd@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    var @(prefix)_ = {
+        selectedEmployees: {},
+        isEmployeeExist: function (employeeId,isemployee) {
+            if (!employeeId)
+                return true;
+
+            var x = this.selectedEmployees[employeeId];
+            if (x) return true;
+
+
+            if (!isemployee) {
+                var selectedEmployessCurrent = $('#@(prefix)EMPLOYEE').flexdatalist('value');
+                if (selectedEmployessCurrent && selectedEmployessCurrent.EMPID === employeeId) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        showHideGerdan: function () {
+            
+                if ($("#@(prefix)WITHGERDAN").val() === "true") {
+                    $("#@(prefix)rowGerdan").show();
+                    $('#@(prefix)EMPLOYEE').flexdatalist('limitOfValues', 1);
+                    $('#@(prefix)EMPLOYEE').flexdatalist('value', null);
+                }
+                else {
+                    $("#@(prefix)rowGerdan").hide();
+                    $('#@(prefix)EMPLOYEE').flexdatalist('limitOfValues', 0);
+                    $('#@(prefix)GERDAN').flexdatalist('value', null);
+                }
+            
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "Karyawan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "EMPTYPE",
+                "title": "Tipe",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "UNITNAME",
+                "title": "Estate",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "VALUE",
+                "title": "HK (Karyawan)",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "GEMPID",
+                "title": "Gerdan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "GEMPNAME",
+                "title": "Gerdan",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "GVALUE",
+                "title": "HK (Gerdan)",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTYKG",
+                "title": "KG",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Hasil",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTYFINE",
+                "title": "Denda",
+                "visible": true
+            }
+        ],
+
+        showForm: function () {
+
+            if (!$('#DIVID').val()) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            if (!$('#HARVESTDATE').val()) {
+                alert("Tanggal panen belum dipilih");
+                return false;
+            }
+
+            if (!$('#ACTIVITYID').val()) {
+                alert("Kode kegiatan belum dipilih");
+                return false;
+            }
+
+            var unitId = $("#@(prefix)UNIT").val();
+            if (!unitId || unitId === "") {
+                var divisi = $('#DIVID').flexdatalist('value');
+                if (divisi)
+                    $("#@(prefix)UNIT").flexdatalist('value', divisi.substr(0,4));
+            }
+
+            $('#@(mdl)').modal('show');
+            this.showHideGerdan();
+            return true;
+        },
+        initTable: function (rows) {
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+            var _this = @(prefix)_;
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.EMPLOYEEID)
+                        _this.selectedEmployees[row.EMPLOYEEID] = {EMPID:row.EMPLOYEEID,EMPNAME:row.EMPNAME,GERDAN:false};
+                    if (row.GEMPID)
+                        _this.selectedEmployees[row.GEMPID] = { EMPID: row.GEMPID, EMPNAME: row.GEMPNAME, GERDAN: true };
+                });
+            }
+
+            if (!readonly) {
+
+                $('#@(prefix)EMPLOYEE').on('addvalue:flexdatalist', function (event, employee) {
+                    if (_this.isEmployeeExist(employee.EMPID, true)) {
+                        alert("Karyawan sudah dipilih sebelumnya");
+                        return;
+                    }
+
+                });
+
+                $('#@(prefix)GERDAN').on('addvalue:flexdatalist', function (event, employee) {
+                    if (_this.isEmployeeExist(employee.EMPID, true)) {
+                        alert("Gerdan sudah dipilih sebelumnya");
+                        return;
+                    }
+
+                });
+
+                _this.showHideGerdan();
+            }
+            return;
+        },
+
+        rowKeys: ["EMPLOYEEID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+
+
+
+
+        addRows: function (closeForm) {
+
+            var employees = $('#@(prefix)EMPLOYEE').flexdatalist('value');
+            if (!employees || (Array.isArray(employees) && employees.length < 1)) {
+                alert("karyawan belum dipilih");
+                return;
+            }
+            var added = 0;
+            var addRow = function (employee, gerdan,ft) {
+
+
+                var newEmployee =
+                {
+                    EMPLOYEEID: employee.EMPID,
+                    EMPNAME: employee.EMPID + " - " + employee.EMPNAME,
+                    GEMPID: gerdan ? gerdan.EMPID : "",
+                    GEMPNAME: gerdan ? gerdan.EMPID + " - " + gerdan.EMPNAME : "",
+                    EMPTYPE: employee.EMPTYPE,
+                    UNITNAME: employee.UNITNAME,
+                    VALUE: 0,
+                    GVALUE: 0,
+                    VALUECALC: 0,
+                    GVALUECALC: 0
+                };
+                newEmployee.key = @(prefix)_.getRowKey(newEmployee);
+                ft.rows.add(newEmployee, false);
+                if (employee) {
+                    @(prefix)_.selectedEmployees[employee.EMPID] = { EMPID: employee.EMPID, EMPNAME: employee.EMPID + ' - ' + employee.EMPNAME, GERDAN: false };
+                }
+                if (gerdan)
+                    @(prefix)_.selectedEmployees[gerdan.EMPID] = { EMPID: gerdan.EMPID, EMPNAME: gerdan.EMPID + ' - ' + gerdan.EMPNAME, GERDAN: true };
+            };
+
+            var ft = FooTable.get('#@(tbl)')
+            if (Array.isArray(employees) && employees.length === 1)
+                employees = employees[0];
+            if (Array.isArray(employees)) {
+                var error = "";
+                employees.forEach(function (employee) {
+                    if (@(prefix)_.isEmployeeExist(employee.EMPID, true))
+                        error += "\r\n" + employee.EMPID + " - " + employee.EMPNAME;
+                    else {
+                        addRow(employee,null,ft);
+                        added++;
+                    }
+                });
+
+                if (error)
+                    alert("Karyawan berikut sudah ditambahkan sebelumnya" + error);
+            }
+            else {
+                if (@(prefix)_.isEmployeeExist(employees.EMPID, true)) {
+                    alert("Karyawan " + employees.EMPID + " - " + employees.EMPNAME + " sudah dipilih sebelumnya");
+                    $('#@(prefix)EMPLOYEE').flexdatalist('value', null);
+                    return;
+                }
+
+                var gerdan = null;
+                if ($("#@(prefix)WITHGERDAN").val() === "true") {
+                    gerdan = $('#@(prefix)GERDAN').flexdatalist('value');
+                    if (!gerdan) {
+                        alert("gerdan belum dipilih");
+                        return;
+                    }
+
+                    if (gerdan.EMPID === employees.EMPID) {
+                        alert("gerdan harus berbeda dengan karyawan");
+                        $('#@(prefix)GERDAN').flexdatalist('value', null);
+                        return;
+                    }
+
+                    if (@(prefix)_.isEmployeeExist(gerdan.EMPID, false)) {
+                        alert("Gerdan " + gerdan.EMPID + " - " + gerdan.EMPNAME + " sudah dipilih sebelumnya");
+                        $('#@(prefix)GERDAN').flexdatalist('value', null);
+                        return;
+                    }
+
+                }
+                addRow(employees, gerdan,ft);
+                added++;
+            }
+
+
+
+
+            if (added)
+                ft.draw();
+
+            $('#@(prefix)EMPLOYEE').val(null);
+            $('#@(prefix)GERDAN').val(null);
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Jika karyawan panen dihapus, semua data hasil panen dan denda dari karyawan tersebut akan dihapus.\r\nYakin akan menghapus karyawan panen?'))
+                return;
+
+
+            var ft = FooTable.get('#@(tbl)');
+            var deletedCount = 0;
+
+            if (ft) {
+                $('[name = "chkDelete@(prefix)"]').each(function () {
+                    if (!(this.id)) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            @(prefix)_.selectedEmployees[$row.val()["EMPLOYEEID"]] = null;
+                            if ($row.val()["GEMPID"])
+                                @(prefix)_.selectedEmployees[$row.val()["GEMPID"]] = null;
+                            Collection_.deleteRows($row.val()["EMPLOYEEID"], null);
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

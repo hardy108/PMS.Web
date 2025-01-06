@@ -1,0 +1,69 @@
+[
+  {
+    "FieldName": "CODE",
+    "FieldCaption": "Kode",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "LOCID",
+    "FieldCaption": "Lokasi",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "NAME",
+    "FieldCaption": "Nama",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "ACTIVE",
+    "FieldCaption": "Aktif",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  },
+  {
+    "FieldName": "CSPO",
+    "FieldCaption": "CSPO",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 50
+  },
+  {
+    "FieldName": "UPDATED",
+    "FieldCaption": "Last Update",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Format": "dd-MMM-yyyy HH:mm:ss",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 60
+  }
+]

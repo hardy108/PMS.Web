@@ -1,0 +1,58 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    Layout = null;
+    string mode = ViewBag.Mode;
+}
+
+
+    <x-form id="@ViewBag.MainFormID">
+
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="3" id="CODE" binding-field="CODE" caption="Kode" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Kode">
+            </x-field-text>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="ACTIVE" binding-field="ACTIVE" caption="Aktif" read-only="@ViewBag.ReadOnly">
+            </x-field-select>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="6" id="NAME" binding-field="NAME" caption="Nama" read-only="@ViewBag.ReadOnly" place-holder="Nama">
+            </x-field-text>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-account-type id="TYPEID" xs-size="12" md-size="6" caption="Tipe"
+                                       multiple="false" binding-field="TYPEID"
+                                       read-only="@ViewBag.ReadOnlyWhenNotInsert">
+            </x-field-data-list-account-type>
+        </x-form-row>
+        <x-form-row>
+            <x-field-data-list-account id="PARENTCODE" xs-size="12" md-size="6" caption="Parent"
+                                       multiple="false" binding-field="PARENTCODE"
+                                       read-only="@ViewBag.ReadOnlyWhenNotInsert">
+            </x-field-data-list-account>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text-area binding-field="NOTE" id="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12">
+            </x-field-text-area>
+        </x-form-row>
+        <x-form-row>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="TMCOST" binding-field="TMCOST" caption="TM Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="TBMCOST" binding-field="TBMCOST" caption="TBM Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="HVCOST" binding-field="HVCOST" caption="Harvesting Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="NUCOST" binding-field="NUCOST" caption="Nursery Cost">
+            </x-field-select>
+        </x-form-row>
+        <x-form-row>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="RACOST" binding-field="RACOST" caption="RA Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="CECOST" binding-field="CECOST" caption="CE Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="GACOST" binding-field="GACOST" caption="GA Cost">
+            </x-field-select>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="CO" binding-field="CO" caption="Cost Object">
+            </x-field-select>
+        </x-form-row>
+
+    </x-form>

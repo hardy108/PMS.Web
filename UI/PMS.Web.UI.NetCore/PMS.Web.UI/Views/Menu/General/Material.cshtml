@@ -1,0 +1,68 @@
+﻿@using PMS.Web.UI.Code
+@{
+    ViewData["Title"] = "Material";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+}
+
+<x-form id="@ViewBag.MainFormID">
+
+    <x-form-row>
+        <x-field-text id="MATERIALID" binding-field="MATERIALID" caption="ID" read-only="@ViewBag.ReadOnly" place-holder="Id" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="MATERIALNAME" binding-field="MATERIALNAME" caption="Name" read-only="@ViewBag.ReadOnly" place-holder="Name" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="UOM" binding-field="UOM" caption="Satuan" read-only="@ViewBag.ReadOnly" place-holder="Satuan" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-account id="ACCOUNTCODE" binding-field="ACCOUNTCODE" caption="Kode Account" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="TYPEID" min-length-search="2">
+        </x-field-data-list-account>
+    </x-form-row>
+    <x-form-row>
+        <x-field-select id="REQBATCH" binding-field="REQBATCH" caption="Memerlukan Batch" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+        <x-field-select id="ACTIVE" binding-field="ACTIVE" caption="Aktif" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>
+    </x-form-row>
+
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        if (mode == "New") {
+            $("#ACTIVE").val("true").trigger("change");
+            $("#REQBATCH").val("true").trigger("change");
+        }
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        }
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        return savedRecord;
+    }
+</script>

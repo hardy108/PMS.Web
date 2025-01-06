@@ -1,0 +1,63 @@
+﻿@using PMS.Web.UI.Models
+@using System.IO;
+@using Newtonsoft.Json
+@using PMS.Shared.Models
+
+@{
+    Layout = null;
+    string filterId = ViewBag.FilterID,
+           prefixID = ViewBag.Prefix;
+    FilterJson filterJsons = ViewBag.FilterRows;
+}
+    
+<x-form-col>
+    <div class="panel-body">
+        <x-form id="@filterId">
+
+            @if (filterJsons != null)
+            {
+                @Html.Partial("/Views/Filter/_FilterForm.cshtml")
+                if (filterJsons.Any())
+                {
+                    <x-form-row>
+                        <x-form-col md-size="2">
+                            <button type="button" class="btn btn-primary" onclick="@(prefixID)doFilterX()">Filter</button>&nbsp;&nbsp;
+                            <button type="button" class="btn btn-default" onclick="resetElements('@(filterId)')">Reset</button>
+                        </x-form-col>                       
+                    </x-form-row>
+                }
+            }
+        </x-form>
+    </div>
+</x-form-col>
+   
+<script>
+
+        var @(prefixID)doFilterX = function () {
+            var f = xFormSave('@filterId');
+
+            if (!@(prefixID)checkFilter(f)) {
+                alert("@ViewBag.FilterValidation");
+                return false;
+            }
+            if (typeof checkFilterAdditional !== 'undefined') {
+                if (!checkFilterAdditional(f))
+                    return false;
+            }
+
+            $.extend(f, {
+                PageNo: 1,
+                PageSize: _LIST_PAGE_SIZE
+            });
+            filterJson['@filterId'] = f;
+            sessionStorage.setItem("Filter_@filterId",JSON.stringify(filterJson['@filterId']));
+            if (!(typeof doPagination === 'undefined'))
+                doPagination();
+            else if (!(typeof LoV === 'undefined')) {
+                if (!(typeof LoV["@ViewBag.lovId"] === 'undefined')) {
+                    if (!(typeof LoV["@ViewBag.lovId"].doPagination === 'undefined'))
+                        LoV["@ViewBag.lovId"].doPagination();
+                }
+            }
+        };
+</script>

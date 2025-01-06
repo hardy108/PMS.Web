@@ -1,0 +1,185 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Upkeep Borongan";
+    //Layout = "~/Views/Shared/_LayoutDisplay2.cshtml";
+    Layout = null ;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+
+    string tblBlockId = "tblUpkeepBlock";
+    string tblMaterialId = "tblUpkeepMaterial";
+    string tblEmployeeId = "tblUpkeepEmployee";
+    string tblVendorId = "tblUpkeepVendor";
+}
+<script>
+    var dictBlocks = {}, dictEmployees = {},
+        dictMaterials = {}, dictVendors = {};
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+
+        <x-field-text id="UPKEEPCODE" binding-field="UPKEEPCODE" caption="No. BKM" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+        <input type="hidden" name="UNITID" id="UNITID" data-bf="UNITID" />
+        <input type="hidden" name="UPKEEPTYPE" id="UPKEEPTYPE" data-bf="UPKEEPTYPE" value="1" />
+        <x-field-date binding-field="UPKEEPDATE" caption="Tgl. BKM" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text binding-field="STATUS" caption="Status BKM" read-only="true" place-holder="Status BKM" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-employee id="MANDORID" binding-field="MANDORID" caption="Mandor" multiple="false" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" api-url-param="STATUS=A&Mandor1=true&MandorTanam=true&MandorNonTanam=true" min-length-search="2">
+        </x-field-data-list-employee>
+        <x-field-data-list-contract id="CONTID" binding-field="CONTID" caption="No Kontrak" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" min-length-search="2" multiple="false"
+                                    Ascendants="@(new List<FilterAscendant>
+                        {   new FilterAscendant { ElementID = "UNITID", FieldID = "UnitID" }
+                        })">
+        </x-field-data-list-contract>
+        <x-field-data-list-contract-item id="ITEM" binding-field="ITEM" caption="Jenis Pekerjaan" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" min-length-search="0" multiple="false"
+                           Ascendants="@(new List<FilterAscendant>{   new FilterAscendant { ElementID = "CONTID", FieldID = "CONTID" }})" value-field="*">
+        </x-field-data-list-contract-item>
+        <input type="hidden" name="ACTIVITYID" id="ACTIVITYID" data-bf="ACTIVITYID" />
+        <x-field-text binding-field="CANCELEDCOMMENT" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Block">
+            @Html.Partial("_UpkeepBlock.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Material">
+            @Html.Partial("_UpkeepMaterial.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Karyawan">
+            @Html.Partial("_UpkeepEmployee.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Vendor">
+            @Html.Partial("_UpkeepVendor.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        dictBlocks = {};
+        if (record.TUPKEEPBLOCK && record.TUPKEEPBLOCK.length > 0) {
+            record.TUPKEEPBLOCK.forEach(function (value) {
+                dictBlocks[value.BLOCKID] = value;
+            });
+        }
+
+        dictMaterials = {};
+        var holder = {}; var holder2 = {};
+        if (record.TUPKEEPMATERIAL && record.TUPKEEPMATERIAL.length > 0) {
+            record.TUPKEEPMATERIAL.forEach(function (value, i) {
+                if (holder.hasOwnProperty(value.MATERIALID)) {
+                    holder[value.MATERIALID] = holder[value.MATERIALID] + value.QUANTITY;
+                } else {
+                    holder[value.MATERIALID] = value.QUANTITY;
+                    holder2[value.MATERIALID] = value.MATERIAL;
+                }
+            });
+
+            var len = record.TUPKEEPMATERIAL.length;
+            record.TUPKEEPMATERIAL.splice(0, len);
+
+            var obj2 = [];
+            for (var prop in holder) {
+                obj2.push({ UPKEEPCODE: record.UPKEEPCODE, ACTIVITYID: record.ACTIVITYID, MATERIALID: prop, QUANTITY: holder[prop], MATERIAL: holder2[prop] });
+            }
+            
+            obj2.forEach(function (val) {
+                dictMaterials[val.MATERIALID] = val;
+                record.TUPKEEPMATERIAL.push(val);
+            });
+        }
+
+        dictEmployees = {};
+        
+        if (record.TUPKEEPEMPLOYEE && record.TUPKEEPEMPLOYEE.length > 0) {
+            record.TUPKEEPEMPLOYEE.forEach(function (value) {
+                dictEmployees[value.EMPLOYEEID] = value;
+            });
+        }
+
+        dictVendors = {};
+        if (record.TUPKEEPVENDOR != null) {
+            dictVendors[record.TUPKEEPVENDOR.UPKEEPCODE] = record.TUPKEEPVENDOR;
+        }
+        
+
+        if (record != null) {
+            helper.callAjaxRequestJson("api/contract/getitem?Id=" + record.ACTIVITYID + "&&CONTID=" + record.CONTID, null, "get", function (data) {
+                $('#ITEM').val(data);
+            });
+        }
+
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        @(tblBlockId)_Handlers.initTable(record.TUPKEEPBLOCK);
+        @(tblMaterialId)_Handlers.initTable(record.TUPKEEPMATERIAL);
+        @(tblEmployeeId)_Handlers.initTable(record.TUPKEEPEMPLOYEE);
+        @*@(tblVendorId)_Handlers.initTable(record.TUPKEEPVENDOR);*@
+        xFormDisplay('frmVendor', record.TUPKEEPVENDOR);
+
+        $('#DIVID').on('change', function () {
+            var divId = $('#DIVID').val(),
+                estateId = divId.substring(0, 4);
+            $("#UNITID").val(estateId);
+        });
+
+        $('#ITEM').on('change', function () {
+            var act = $('#ITEM').flexdatalist('value');
+            $("#ACTIVITYID").val(act.ACTID);
+        });
+
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlBlock');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        savedRecord["TUPKEEPBLOCK"] = @(tblBlockId)_Handlers.saveRows();
+        savedRecord.TUPKEEPBLOCK_COUNT = @(tblBlockId)_Handlers.length();
+        savedRecord["TUPKEEPMATERIAL"] = @(tblMaterialId)_Handlers.saveRows();
+        savedRecord.TUPKEEPMATERIAL_COUNT = @(tblMaterialId)_Handlers.length();
+        savedRecord["TUPKEEPEMPLOYEE"] = @(tblEmployeeId)_Handlers.saveRows();
+        savedRecord.TUPKEEPEMPLOYEE_COUNT = @(tblEmployeeId)_Handlers.length();
+
+
+        return savedRecord;
+    }
+
+    
+</script>

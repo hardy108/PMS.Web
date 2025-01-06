@@ -1,0 +1,159 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Pendaftaran Karyawan Baru";
+    Layout = null;  
+    string mode = ViewBag.Mode;
+
+    bool readOnlyWhenNotInsert = false;
+    try
+    {
+        readOnlyWhenNotInsert = ViewBag.ReadOnlyWhenNotInsert;
+    }
+    catch { }
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnlyWhenNotInsert)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" });
+    }
+    
+
+}
+
+<script>
+        var mode = "@(mode)";
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="REGISTRATIONID" binding-field="REGISTRATIONID" caption="No. Registrasi" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-date id="CREATED" binding-field="CREATED" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="KTPID" binding-field="KTPID" caption="e-KTP/NIK" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text caption="No. SPK" id="NOSPK" binding-field="NOSPK" xs-size="12" md-size="3" read-only="@(ViewBag.ReadOnly)">
+        </x-field-text>
+        <x-field-text id="EMPNAME" binding-field="EMPNAME" caption="Nama Lengkap" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="4">
+        </x-field-text>
+        <x-field-data-list-gender id="EMPSEX" binding-field="EMPSEX" caption="Jenis Kelamin" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly"></x-field-data-list-gender>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="PLACEOFBIRTH" binding-field="PLACEOFBIRTH" caption="Tempat Lahir" read-only="@(ViewBag.ReadOnly)" place-holder="Tempat Lahir" xs-size="12" md-size="4">
+        </x-field-text>
+        <x-field-date id="BIRTHDAY" binding-field="BIRTHDAY" caption="Tanggal Lahir" read-only="@(ViewBag.ReadOnly)" place-holder="Tanggal Lahir" xs-size="12" md-size="2" date-format="DD-MMM-YYYY" picker-option="DateOnly">
+        </x-field-date>
+        <x-field-data-list-education id="EDUCATION" binding-field="EDUCATION" caption="Pendidikan" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-data-list-education>
+        <x-field-data-list-religion id="RELIGION" binding-field="RELIGION" caption="Agama" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly"></x-field-data-list-religion>
+        <x-field-text id="RACE" binding-field="RACE" caption="Suku" read-only="@(ViewBag.ReadOnly)" place-holder="Suku" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="KTPADDRESS" binding-field="KTPADDRESS" caption="Alamat (Sesuai KTP)" read-only="@ViewBag.ReadOnly" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-status xs-size="12" md-size="4" id="STATUSID" caption="Status" binding-field="STATUSID" read-only="@(ViewBag.ReadOnly)"></x-field-data-list-status>
+        <x-field-text id="FAMILYSTATUS" binding-field="FAMILYSTATUS" caption="Status Keluarga" read-only="true" xs-size="2">
+        </x-field-text>
+        <x-field-text id="TAXSTATUS" binding-field="TAXSTATUS" caption="Status Pajak" read-only="true" xs-size="2">
+        </x-field-text>
+        <x-field-text id="NPWP" binding-field="NPWP" caption="NPWP" read-only="@(ViewBag.ReadOnly)" place-holder="NPWP" xs-size="12" md-size="4">
+        </x-field-text>
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-divisi-by-user-name id="DIVID" min-length-search="0" caption="Divisi" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="4" chain-to-relatives="@(!readOnlyWhenNotInsert)" ascendants="@(ascendants)"></x-field-data-list-divisi-by-user-name>
+        <x-field-data-list-position id="POSITIONID" binding-field="POSITIONID" caption="Jabatan" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="4" min-length-search="0">
+        </x-field-data-list-position>
+        <x-field-data-list-employee-type id="EMPTYPE" binding-field="EMPTYPE" caption="Tipe Karyawan" read-only="@(ViewBag.ReadOnly)" xs-size="12" md-size="2" min-length-search="0">
+        </x-field-data-list-employee-type>
+        <x-field-select select-type="Boolean" id="PKWT" binding-field="PKWT" caption="PKWT" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-select>        
+    </x-form-row>
+    <x-form-row>
+        <x-field-date id="JOINTDATE" binding-field="JOINTDATE" caption="Tanggal Masuk" read-only="@(ViewBag.ReadOnly)" place-holder="Tanggal Masuk" xs-size="12" md-size="2" date-format="DD-MMM-YYYY" picker-option="DateOnly">
+        </x-field-date>
+        <x-field-number id="BASICWAGES" binding-field="BASICWAGES" caption="Gaji Pokok" read-only="@(ViewBag.ReadOnly)" place-holder="Gaji Pokok" xs-size="12" md-size="2">
+        </x-field-number>
+        <x-field-select select-type="Boolean" id="NATURA" binding-field="NATURA" caption="Hak Natura" xs-size="12" md-size="2" read-only="@(ViewBag.ReadOnly)"></x-field-select>
+
+    </x-form-row>
+
+
+    <x-form-row>
+        &nbsp;
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="BPJS">
+            @Html.Partial("_EmployeeBPJS.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Bank">
+            @Html.Partial("_EmployeeBank.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Data Keluarga">
+            @Html.Partial("_EmployeeFamily.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Lampiran Dokumen">
+            @Html.Partial("_EmployeeAttachment.cshtml")
+        </x-tab-panel>
+    </x-tab>
+
+
+
+
+</x-form>
+
+<script>
+    
+    var readOnly =  @(GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly));
+    var customDisplay = function () {
+        Family.initTable(readOnly,record.TEMPLOYEEREGISTRATIONFAMILY);
+        displayFiles(record.TEMPLOYEEREGISTRATIONFILE, readOnly);
+        //Family_.initTable(record.TEMPLOYEEFAMILY);
+
+
+
+        return true;
+    };
+
+
+</script>
+
+@if (!ViewBag.ReadOnly)
+{
+    <script>
+
+
+
+        var beforeSendAction = function (action, savedRecord) {
+            var errorTitle = mode + ' - ' + '@ViewBag.Title';
+        /* Specific Code Here - End*/
+           
+
+            var checkFiles = beforeSaveFiles();
+            if (checkFiles !== true) {
+                showError(checkFiles);
+                return false;
+            }
+            savedRecord.TEMPLOYEEREGISTRATIONFILE = employeeFiles;
+            savedRecord.TEMPLOYEEREGISTRATIONFILE_COUNT = employeeFiles.length;
+
+            var families = Family.getData();
+            savedRecord.TEMPLOYEEREGISTRATIONFAMILY = families;
+            savedRecord.TEMPLOYEEREGISTRATIONFAMILY_COUNT = families.length;
+
+            return savedRecord;
+        };
+    </script>
+}
+
+

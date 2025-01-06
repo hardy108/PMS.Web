@@ -1,0 +1,333 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Block";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Pilih Block">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list-block-by-user-name id="@(prefix)BLOCK" binding-field="BLOCKID" caption="Blok" text-fields="CODE" multiple="true" xs-size="12" value-field="*" min-length-search="0"
+                    ascendants="@(new List<FilterAscendant> { new FilterAscendant { ElementID = "DIVID",FieldID="DivisionID" }})" chain-to-relatives="true">
+                </x-field-data-list-block-by-user-name>
+            </x-form-row>            
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAdd@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    var @(prefix)_ = {
+        selectedBlocks: {},
+        isBlockExist: function (blockId) {
+            if (!blockId)
+                return true;
+
+            var x = this.selectedBlocks[blockId];
+            if (x) return true;
+            return false;
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true
+            },
+
+            {
+                "type": "number",
+                "name": "THNTANAM",
+                "title": "Tahun Tanam",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "LUASBLOCK",
+                "title": "Luas Blok",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "HARVESTAREA",
+                "title": "Luas Panen",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "number",
+                "name": "KG",
+                "title": "Kg",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Hasil",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTYFINE",
+                "title": "Denda",
+                "visible": true
+            },
+            {
+                "type": "html",
+                "name": "HARVESTAREA_INPUT",
+                "title": "Luas Panen",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='HARVESTAREA' value='" + rowdata["HARVESTAREA"] + "'  data-bf='HARVESTAREA'  onfocusout='updateInputToRow(this)'>";
+                },
+
+            },
+
+        ],
+
+        showForm: function () {
+
+            if (!$('#DIVID').val()) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            if (!$('#HARVESTDATE').val()) {
+                alert("Tanggal panen belum dipilih");
+                return false;
+            }
+
+            if (!$('#ACTIVITYID').val()) {
+                alert("Kode kegiatan belum dipilih");
+                return false;
+            }
+            $('#@(mdl)').modal('show');
+
+            return true;
+        },
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.BLOCKID)
+                        _this.selectedBlocks[row.BLOCKID] = {BLOCKID:row.BLOCKID,BLOCKCODE:row.BLOCKCODE,THNTANAM:row.THNTANAM,LUASBLOCK:row.LUASBLOCK};
+                });
+            }
+            $('#@(prefix)BLOCK').on('addvalue:flexdatalist', function (event, block) {
+                if (_this.isBlockExist(block.BLOCKID)) {
+                    alert("Blok sudah dipilih sebelumnya");
+                    return;
+                }
+
+            });
+
+            return;
+        },
+        rowKeys: ["BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+
+
+
+
+        addRows: function (closeForm) {
+
+            var blocks = $('#@(prefix)BLOCK').flexdatalist('value');
+            if (!blocks || (Array.isArray(blocks) && blocks.length < 1)) {
+                alert("Block belum dipilih");
+                return;
+            }
+            var added = 0;
+            var addRow = function (block,ft) {
+
+
+                var newBlock =
+                {
+                    BLOCKID: block.BLOCKID,
+                    BLOCKCODE: block.CODE,
+                    LUASBLOCK: block.LUASBLOCK,
+                    THNTANAM: block.THNTANAM,
+                    HARVESTAREA:0
+                };
+                newBlock.key = @(prefix)_.getRowKey(newBlock);
+                ft.rows.add(newBlock, false);
+                if (block)
+                    @(prefix)_.selectedBlocks[block.BLOCKID] = { BLOCKID: block.BLOCKID, CODE: block.CODE, THNTANAM: block.THNTANAM, LUASBLOCK: block.LUASBLOCK };
+
+            };
+
+            var ft = FooTable.get('#@(tbl)')
+            if (Array.isArray(blocks) && blocks.length === 1)
+                blocks = blocks[0];
+            if (Array.isArray(blocks)) {
+                var error = "";
+                blocks.forEach(function (block) {
+                    if (@(prefix)_.isBlockExist(block.BLOCKID))
+                        error += "\r\n" + block.CODE;
+                    else {
+                        addRow(block,ft);
+                        added++;
+                    }
+                });
+
+                if (error)
+                    alert("Blok berikut sudah ditambahkan sebelumnya" + error);
+            }
+            else {
+                if (@(prefix)_.isBlockExist(blocks.BLOCKID)) {
+                    alert("Blok " + blocks.CODE + " sudah dipilih sebelumnya");
+                    $('#@(prefix)BLOCK').flexdatalist('value', null);
+                    return;
+                }
+
+
+                addRow(blocks,ft);
+                added++;
+            }
+
+
+
+
+            if (added)
+                ft.draw();
+
+            $('#@(prefix)BLOCK').val(null);
+
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Jika blok panen dihapus, semua data hasil panen dan denda atas blok tersebut akan dihapus.\r\nYakin akan menghapus blok panen?'))
+                return;
+
+            var ft = FooTable.get('#@(tbl)');
+            var deletedCount = 0;
+
+            if (ft) {
+                $('[name = "chkDelete@(prefix)"]').each(function () {
+                    if (!(this.id)) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            @(prefix)_.selectedBlocks[$row.val()["BLOCKID"]] = null;            
+                            Collection_.deleteRows(null, $row.val()["BLOCKID"]);
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },        
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

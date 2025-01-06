@@ -1,0 +1,168 @@
+﻿@using PMS.Web.UI.Code
+
+@{
+    Layout = "~/Views/Filter/_LayoutFilter.cshtml";
+
+    string jsonId = ViewBag.MenuId;
+    string formId = "frm" + jsonId;
+
+    HtmlJsonFormatter jsonFormatter = new HtmlJsonFormatter { Id = jsonId };
+    HtmlInputContainer form = new HtmlInputContainer
+    {
+        Id = formId,
+        HtmlInputs =
+            {
+                new HtmlFormRow
+                {
+                    HtmlInputs =
+                    {
+                        new HtmlFormColumn { XSSize=6, MDSize = 6, HtmlInput = new HtmlInputDateTimeRangePicker{ Id = ViewBag.Prefix + "dtDate",Caption = "From Date", Caption2 = "To Date", BindingField="StartDate",BindingField2="EndDate",PickerOption= HtmlInputDateTimePickerOption.DateOnly, JsonFormatter=jsonFormatter,WithInitScript=true } },
+                        new HtmlFormColumn { XSSize=3, MDSize = 3, HtmlInput = new HtmlAjaxInputSelectEstate {  Id = ViewBag.Prefix + "cboEstate", Caption = "Estate", BindingField="Estate", WithInitScript = true, JsonFormatter=jsonFormatter, Multiple=true } },
+                        new HtmlFormColumn { XSSize=3, MDSize = 3, HtmlInput = new HtmlAjaxInputSelect { Id = ViewBag.Prefix + "cboDivision", Caption = "Division", BindingField="Division", WithInitScript = true, JsonFormatter=jsonFormatter, Multiple=true } },
+                    }
+                },
+                //new HtmlFormRow
+                //{
+                //    HtmlInputs =
+                //    {
+                //        new HtmlFormColumn { XSSize=12, MDSize = 12, HtmlInput = new HtmlInputLoVBlock{ Id = ViewBag.Prefix + "LoVKeraniId", WithInitScript = true, Multiple = true,
+                //                                                                                   FixedFilters = { new HtmlFixedFilter { ToBindingField = "Estate", FromFormId = ViewBag.Prefix + "cboEstate" },
+                //                                                                                                    new HtmlFixedFilter { ToBindingField = "Division", FromFormId = ViewBag.Prefix + "cboDivision"} }
+                //                                                                                       } }
+                //    }
+                //},
+                //new HtmlFormRow
+                //{
+                //    HtmlInputs =
+                //    {
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputLoV{ Id = ViewBag.Prefix + "LoVKeraniId", LoVid = "LOV-EMPLOYEE",
+                //                                                                                 ToBindingField = "EMPCODE", SourceFieldText = "EMPCODE", SourceFieldValues = { "EMPCODE", "EMPNAME" },
+                //                                                                                 WithInitScript = true, Multiple = true, AdditionalReturnFunction = "customLoVFunction",
+                //                                                                                 FixedFilters = { new HtmlFixedFilter { ToBindingField = "Estate", FromFormId = ViewBag.Prefix + "cboEstate" },
+                //                                                                                                  new HtmlFixedFilter { ToBindingField = "Division", FromFormId = ViewBag.Prefix + "cboDivision"} },
+                //                                                                                 Caption = "Kerani", LargeModal = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtKeraniName", Caption = "Nama", ReadOnly = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtKeraniDivision", Caption = "Divisi", ReadOnly = true } }
+                //    }
+                //},
+                //new HtmlFormRow
+                //{
+                //    HtmlInputs =
+                //    {
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtKeraniId", Caption = "Kerani", WithButton = true, ButtonCaption = "Browse", ReadOnly = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtKeraniName", Caption = "Nama", ReadOnly = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtKeraniDivision", Caption = "Divisi", ReadOnly = true } }
+                //    }
+                //},
+                //new HtmlFormRow
+                //{
+                //    HtmlInputs =
+                //    {
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtActivityId", Caption = "Aktifias", WithButton = true, ButtonCaption = "Browse", ReadOnly = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtActivityName", Caption = "Nama", ReadOnly = true } },
+                //        new HtmlFormColumn { XSSize=4, MDSize = 4, HtmlInput = new HtmlInputText{ Id = ViewBag.Prefix + "txtActivityUoM", Caption = "UoM", ReadOnly = true } }
+                //    }
+                //}
+            }
+        };
+    }
+
+    @Html.Raw(form)
+    @Html.Raw(jsonFormatter)
+
+<script>
+
+    @*var customLoVFunction = function (selectedData) {
+        $("#@(ViewBag.Prefix)txtKeraniName").val(selectedData[0].EMPNAME);
+        $("#@(ViewBag.Prefix)txtKeraniDivision").val(selectedData[0].DIVID);
+    };
+
+    $("#@(ViewBag.Prefix)txtKeraniIdbtn")[0].onclick = function () {
+        var LoVId = "LOV-EMPLOYEE";
+        var multiple = "false";
+        var fixedFilter = {
+            "Estate": $("#@(ViewBag.Prefix)cboEstate").val(),
+            "Division": $("#@(ViewBag.Prefix)cboDivision").val()
+        };
+        var largeModal = "true";
+
+        helper.loadLoV(LoVId, multiple, function(selectedData) {
+            $("#@(ViewBag.Prefix)txtKeraniId").val(selectedData[0].EMPCODE);
+            $("#@(ViewBag.Prefix)txtKeraniName").val(selectedData[0].EMPNAME);
+            $("#@(ViewBag.Prefix)txtKeraniDivision").val(selectedData[0].DIVID);
+        }, fixedFilter, largeModal);
+    };
+
+    $("#@(ViewBag.Prefix)txtActivityIdbtn")[0].onclick = function () {
+        var LoVId = "LOV-ACTIVITY";
+        var multiple = "true";
+
+        helper.loadLoV(LoVId, multiple, function(selectedData) {
+            $("#@(ViewBag.Prefix)txtActivityId").val(selectedData[0].ACTIVITYID);
+            $("#@(ViewBag.Prefix)txtActivityName").val(selectedData[0].ACTIVITYNAME);
+            $("#@(ViewBag.Prefix)txtActivityUoM").val(selectedData[0].UOM1);
+        });
+    };*@
+
+    $('#@(ViewBag.Prefix)cboEstate').on('change', function () {
+        if (!$.isEmptyObject($('#@(ViewBag.Prefix)cboEstate').val())) {
+            var estateIds = $('#@(ViewBag.Prefix)cboEstate').val(), estateId = estateIds;
+            if (!estateId) {
+                helper.loadSelect2StaticFromArray([], "@(ViewBag.Prefix)cboDivision");
+                return;
+            }
+            if (Array.isArray(estateIds)) {
+                estateId = "";
+                estateIds.forEach(function (estate) {
+                    estateId += estate + ",";
+                });
+                estateId = estateId.substring(0, estateId.length - 1);
+            }
+            helper.loadSelect2StaticFromAjax("api/login/getdivisionsforselect", { UnitID: estateId }, "get", "@(ViewBag.Prefix)cboDivision");
+        } else {
+            $('#@(ViewBag.Prefix)cboDivision').val([]).trigger("change");
+            $('#@(ViewBag.Prefix)cboDivision>option').remove();
+        }
+    });
+
+    var constructFilter = function () {
+        //Add Custom Filter Here
+        filterString = '';
+
+        if (filter.StartDate && filter.EndDate) {
+            filterString += " Cast(DOK_TGLPANEN As Date) Between '" + filter.StartDate + "' And '" + filter.EndDate + "' And";
+        } else {
+            alert("Please select the start date and the end date!");
+            return false;
+        }
+
+        if (filter.Estate.length > 0) {
+            if (filter.Division.length > 0) {
+                filterString += " DOK_DIVID IN  (";
+                $.each(filter.Division, function (i, val) {
+                    filterString += "'" + val + "',"
+                });
+                filterString = filterString.substring(0, filterString.length - 1);
+                filterString += ") And";
+            } else {
+                alert("Please pick at least one division!");
+                return false;
+            }
+        } else {
+            alert("Please pick at least one division!");
+            return false;
+        }
+
+        if (filterString) {
+            filterString = filterString.substring(0, filterString.length - 3);
+        } else {
+            filterString = '1=2';
+        }
+
+        return true;
+    }
+
+</script>
+
+
+

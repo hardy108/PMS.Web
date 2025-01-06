@@ -1,0 +1,503 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblId = "tblRkhTaksasi";    
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Taksasi Details</div>
+            <div class="panel-body">
+                <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%"></table>
+            </div>
+        </div>
+        
+    </x-form-col>
+</x-form-row>
+<x-form-row>
+    <x-form-col xs-size="12" id="frmEstPanen">
+        <x-form-row>
+            <x-field-number id="tBASIS" binding-field="BASIS" caption="Basis (Kg/HK)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+            <x-field-number id="tLEBIHBASIS" binding-field="LEBIH" caption="Lebih Basis (Kg/TK)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+            <x-field-number id="tOUTPUTPANEN" binding-field="OUTPUTPANEN" caption="Output Pemanen (Kg/TK)" xs-size="12" md-size="3" read-only="true">
+            </x-field-number>
+            <x-field-number id="tESTTKPANEN" binding-field="ESTTKPANEN" caption="Est. TK Panen (TK)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+            <x-field-number id="tANCAKPANEN" binding-field="ANCAKPANEN" caption="Ancak per TK (Ha/TK)" xs-size="2" read-only="true">
+            </x-field-number>
+        </x-form-row>
+
+        <x-form-row>
+            <x-field-number id="tOUTPUTANGKUT" binding-field="OUTPUTANGKUT" caption="Output Unit Angkut (Kg/Rit)" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+            </x-field-number>
+            <x-field-number id="tRITASI" binding-field="RITASI" caption="Kebutuhan Ritasi (Rit)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="tESTBRONDOLPCT" binding-field="ESTBRONDOLPCT" caption="Estimasi Borondolan (%)" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnly">
+            </x-field-number>
+            <x-field-number id="tESTBRONDOLKG" binding-field="ESTBRONDOLKG" caption="Estimasi Brondolan (Kg)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+            <x-field-number id="tOUTPUTKUTIP" binding-field="OUTPUTKUTIP" caption="Output Kutip Brondol (Kg/Tk)" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+            </x-field-number>
+            <x-field-number id="tESTTKBRONDOL" binding-field="ESTTKBRONDOL" caption="Est. TK Brondol (TK)" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+            <x-field-number id="tRATIO" binding-field="RATIO" caption="Rasion TK Panen : Brondol" xs-size="12" md-size="2" read-only="true">
+            </x-field-number>
+        </x-form-row>
+    </x-form-col>
+</x-form-row>
+
+    
+
+
+
+
+
+    <script>
+        
+        var updateRow = function (e) {
+            var ft = FooTable.get('#@(tblId)');
+            var $tr = $(e).closest('tr');
+            var $row = FooTable.getRow($tr);
+            if ($row) {
+                var rowVal = $row.val();
+                if (rowVal) {
+                    var bf = $(e).attr("data-bf");
+                    if (bf) {
+                        if (rowVal[bf] !== $(e).val()) {
+                            rowVal[bf] = $(e).val();
+                            rowVal = @(tblId)_Handlers.calculateRowValue(rowVal);
+                            $row.val(rowVal,false);                            
+                            if (ft) {
+                                var estPanen = @(tblId)_Handlers.calculateAllRows(ft.rows.all, $('#tOUTPUTANGKUT').val(), $('#tESTBRONDOLPCT').val(), $('#tOUTPUTKUTIP').val());
+                                xFormDisplay('frmEstPanen', estPanen);
+                            }
+                            ft.draw();
+                        }
+                    }    
+                }
+                
+            }
+        };
+
+        var updateEstPanen = function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (ft) {
+                var estPanen = @(tblId)_Handlers.calculateAllRows(ft.rows.all, $('#tOUTPUTANGKUT').val(), $('#tESTBRONDOLPCT').val(), $('#tOUTPUTKUTIP').val());
+                xFormDisplay('frmEstPanen', estPanen);
+            }
+        };
+
+        $('#tOUTPUTANGKUT').on('focusout', function () { updateEstPanen(); });
+        $('#tESTBRONDOLPCT').on('focusout', function () { updateEstPanen(); });
+        $('#tOUTPUTKUTIP').on('focusout', function () { updateEstPanen(); });
+
+    var @(tblId)_Handlers = {
+        rows:[],
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllTaksasi' name='chkDeleteTaksasi' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteTaksasi'>";
+                }
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false,
+                "breakpoints": "xs"
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true,
+                "breakpoints": "xs"
+            },
+            {
+                "type": "number",
+                "name": "BLOCKAREA",
+                "title": "Luas Blok (Ha)",
+                "visible": true,
+                "breakpoints": "xs"
+            },
+            {
+                "type": "number",
+                "name": "WORKAREA",
+                "title": "Vol Kerja (Ha)",
+                "visible": @(isReadOnlyString),
+                "breakpoints": "xs"
+            },
+            {
+                "type": "html",
+                "name": "WORKAREA_INPUT",
+                "title": "Vol Kerja (Ha)",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='WORKAREA' value='" + rowdata["WORKAREA"] + "'  data-bf='WORKAREA' onfocusout='updateRow(this)' style='max-width:100%'>";
+                },
+                "visible": !@(isReadOnlyString),
+                "breakpoints": "xs"
+            },
+            {
+                "type": "number",
+                "name": "THNTANAM",
+                "title": "TT",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "text",
+                "title": "Topo grafi",
+                "name": "TOPOGRAFI",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "SPH",
+                "name": "SPH",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+             {
+                "type": "number",
+                "name": "BJR",
+                "title": "BJR (Kg)",
+                 "visible": @(isReadOnlyString),
+                 "breakpoints": "xs"
+            },
+            {
+                "type": "html",
+                "name": "BJR_INPUT",
+                "title": "BJR (Kg)",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='BJR' value='" + rowdata["BJR"] + "'  data-bf='BJR' onfocusout='updateRow(this)'  style='max-width:100%'>";
+                },
+                "visible": !@(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+             {
+                "type": "number",
+                "name": "AKP",
+                "title": "AKP (%)",
+                 "visible": @(isReadOnlyString),
+                 "breakpoints": "xs"
+
+            },
+            {
+                "type": "html",
+                "name": "AKP_INPUT",
+                "title": "AKP (%)",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='AKP' value='" + rowdata["AKP"] + "'  data-bf='AKP' onfocusout='updateRow(this)'  style='max-width:100%'>";
+                },
+                "visible": !@(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Jjg",
+                "name": "JANJANG",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Tonase (Kg)",
+                "name": "KG",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Basis",
+                "name": "BASIS",
+                "visible": @(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "html",
+                "name": "BASIS_INPUT",
+                "title": "Basis",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='BASIS' value='" + rowdata["BASIS"] + "'  data-bf='BASIS' onfocusout='updateRow(this)'  style='max-width:100%'>";
+                },
+                "visible": !@(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Lebih Basis",
+                "name": "LEBIHBASIS",
+                "visible": @(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "html",
+                "name": "LEBIHBASIS_INPUT",
+                "title": "Lebih Basis",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='LEBIHBASIS' value='" + rowdata["LEBIHBASIS"] + "'  data-bf='LEBIHBASIS' onfocusout='updateRow(this)'  style='max-width:100%'>";
+                },
+                "visible": !@(isReadOnlyString),
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Output TK Panen",
+                "name": "OUTPUTPANEN",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Est TK Panen",
+                "name": "ESTBUTUHPANEN",
+                "visible": true,
+                "breakpoints": "xs"
+
+            },
+            {
+                "type": "number",
+                "title": "Ancak / TK",
+                "name": "ANCAKTK",
+                "visible": true,
+                "breakpoints": "xs"
+
+            }
+
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.BLOCKCODE = dictBlocks[row.BLOCKID].BLOCKCODE
+                     @(tblId)_Handlers.rows.push(row);
+                });
+            }
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedBlocks: [],
+
+        addRows: function () {
+            if (!@(tblId)_Handlers.selectedBlocks || @(tblId)_Handlers.selectedBlocks.length <= 0)
+                return false;
+            
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+            @(tblId)_Handlers.selectedBlocks.forEach(function (block) {
+               var detail =
+                {
+
+                   BLOCKID: block.BLOCKID,
+                   BLOCKCODE: block.CODE,
+                   BLOCKAREA: block.LUASBLOCK,
+                   WORKAREA: block.LUASBLOCK,
+                   THNTANAM: block.THNTANAM,
+                   TOPOGRAFI: block.TOPOGRAPI,
+                   SPH: block.SPH,
+                   BJR: 0,
+                   AKP: 0,
+                   JANJANG: 0,
+                   KG: 0,
+                   BASIS: 0,
+                   LEBIHBASIS: 0,
+                   OUTPUTPANEN: 0,
+                   ESTBUTUHPANEN: 0,
+                   ANCAKTK:0
+                };
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                    ft.rows.add(detail, false);
+                     @(tblId)_Handlers.rows.push[detail];
+                    added++;
+                }
+            });
+
+            if (added)
+                ft.draw();
+        },
+
+        deleteRows: function (blocks) {
+            
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                if (blocks) {
+                    //Caused By delete Activity Detail
+                    if (blocks.length > 0 && Array.isArray(blocks)) {
+                        $.each(blocks, function (i, blockId) {
+                            $.each(ft.rows.all, function (i, row) {
+                                if (row && row.val) {
+                                    if (row.val()["BLOCKID"] === blockId) {
+                                        row.delete(false);
+                                        deletedCount++;
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Yakin akan menghapus detail taksasi panen?'))
+                        return;
+                    $('[name = "chkDeleteTaksasi"]').each(function () {
+                        if (this.id !== 'chkAllTaksasi') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount)
+                    ft.draw();
+            }
+        },        
+        calculateRowValue: function (row) {
+            if (!row)
+                return row;
+
+            var rowVal;
+            if (typeof row.val !== 'undefined')
+                rowVal = row.val();
+            else
+                rowVal = row;
+
+            rowVal.JANJANG = (rowVal.WORKAREA * (rowVal.SPH / 100.00) * rowVal.AKP).toFixed(2);
+
+            rowVal.KG = (rowVal.JANJANG * rowVal.BJR).toFixed(2);
+            rowVal.OUTPUTPANEN =  (parseFloat(rowVal.BASIS) + parseFloat(rowVal.LEBIHBASIS)).toFixed(2);
+            if (rowVal.OUTPUTPANEN > 0)
+                rowVal.ESTBUTUHPANEN = ( Math.round(rowVal.KG / rowVal.OUTPUTPANEN)).toFixed(0);
+            else
+                rowVal.ESTBUTUHPANEN = 0;
+
+            if (rowVal.ESTBUTUHPANEN > 0)
+                rowVal.ANCAKTK =  (rowVal.WORKAREA / rowVal.ESTBUTUHPANEN).toFixed(2);
+            else
+                rowVal.ANCAKTK = 0;
+            return rowVal;
+        },
+
+        calculateAllRows: function (allrows,outputAngkut,percentBrondol,outputKutipBrondol) {
+            var totalKg = 0, totalBasis = 0, totalLebihBasis = 0, totalOutputPemanen = 0, totalEstTkPanen = 0, totalAncakTk = 0, avgBasis = 0, avgLebihBasis = 0, avgAncakTk = 0,
+                ritasi = 0, kgBrondol = 0, estTkBrondol = 0, rasioTk = 0;
+            if (allrows && Array.isArray(allrows) && allrows.length > 0) {
+                allrows.forEach(function (row) {
+                    //var calculatedValue = calculateRowValue(value);
+                    //value = calculatedValue;
+                    var rowVal;
+                    if (row) {
+                        if (typeof row.val !== 'undefined')
+                            rowVal = row.val();
+                        else
+                            rowVal = row;
+                    }
+                        
+                    if (rowVal) {
+                        totalKg += parseFloat(rowVal.KG);
+                        totalBasis += parseFloat(rowVal.BASIS);
+                        totalLebihBasis += parseFloat(rowVal.LEBIHBASIS);
+                        totalOutputPemanen += parseFloat(rowVal.OUTPUTPANEN);
+                        totalEstTkPanen += parseFloat(rowVal.ESTBUTUHPANEN);
+                        totalAncakTk += parseFloat(rowVal.ANCAKTK);
+                    }
+                });
+                avgBasis = (totalBasis / allrows.length).toFixed(2);
+                avgLebihBasis = (totalLebihBasis / allrows.length).toFixed(2);
+                avgAncakTk = (totalAncakTk / allrows.length).toFixed(2);
+                if (outputAngkut && outputAngkut > 0)
+                    ritasi = (totalKg / outputAngkut).toFixed(2);
+                if (percentBrondol && percentBrondol > 0)
+                    kgBrondol = (totalKg * 0.01 * percentBrondol).toFixed(2);
+                if (outputKutipBrondol && outputKutipBrondol > 0)
+                    estTkBrondol =  (kgBrondol / outputKutipBrondol).toFixed(2);
+                if (estTkBrondol > 0 && totalEstTkPanen > 0)
+                    rasioTk = (totalEstTkPanen / estTkBrondol).toFixed(2);
+            }
+            var result = {
+                BASIS: avgBasis,
+                LEBIH: avgLebihBasis,
+                OUTPUTPANEN: totalOutputPemanen,
+                ESTTKPANEN: totalEstTkPanen,
+                ANCAKPANEN: avgAncakTk,
+                OUTPUTANGKUT: outputAngkut,
+                RITASI: ritasi,
+                ESTBRONDOLPCT: percentBrondol,
+                ESTBRONDOLKG: kgBrondol,
+                OUTPUTKUTIP: outputKutipBrondol,
+                ESTTKBRONDOL: estTkBrondol,
+                RATIO: rasioTk
+
+            };
+            return result;
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+
+
+
+
+    };
+    </script>

@@ -1,0 +1,267 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblKartuTimbang = "tblSPBKartuTimbang";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblKartuTimbang)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihKartu" class="btn btn-primary pull-left" onclick="@(tblKartuTimbang)_Handlers.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusKartu" class="btn" onclick="@(tblKartuTimbang)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="mdlKartu" caption="Pilih Karyawan">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-select id="SRNO" binding-field="SRNO" caption="SR No" read-only="false" place-holder="1" xs-size="12" md-size="6"  >
+                    <option value="1" selected="selected">1</option>
+                    <option value="2">2</option>
+                </x-field-select>
+            </x-form-row>
+            <x-form-row>
+                <x-field-date id="CHECKDATE" binding-field="CHECKDATE" caption="Tanggal & Jam" xs-size="12" md-size="6" picker-option="DateTime">
+                </x-field-date>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="WEIGHT" binding-field="WEIGHT" caption="Berat Timbang" place-holder="" xs-size="12" md-size="6" read-only="false">
+                </x-field-number>
+            </x-form-row>
+            <x-form-row>
+                <x-field-text id="UOM" binding-field="UOM" caption="Unit Timbang" place-holder="KG" xs-size="12" md-size="6" read-only="false">
+                </x-field-text>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail" class="btn" onclick="resetElements('mdlKartu')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddDetail" class="btn btn-primary" onclick="@(tblKartuTimbang)_Handlers.addRows(true)">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddCloseDetail" class="btn btn-primary" onclick="@(tblKartuTimbang)_Handlers.addRows(true,true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnCloseDetail" class="btn" onclick="$('#mdlKartu').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+
+
+<script>
+    var @(tblKartuTimbang)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllKartu' name='chkDeleteKartu' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteKartu'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "SPBNO",
+                "name": "SPBNO",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "SR No",
+                "name": "SRNO",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "CHECKDATE",
+                "title": "Tanggal & Jam",
+                "visible": true
+            },
+
+            {
+                "type": "number",
+                "title": "Berat Timbang",
+                "name": "WEIGHT",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "WEIGHT_INPUT",
+                "title": "Berat Timbang",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='WEIGHT' value='" + rowdata["WEIGHT"] + "'  data-bf='WEIGHT' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+        
+            {
+                "type": "text",
+                "title": "Unit Timbang",
+                "name": "UOM",
+                "visible": true
+            },
+
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.SPBNO = dictCards[row.SRNO].SPBNO;
+                    row.SRNO = dictCards[row.SRNO].SRNO;
+                    row.CHECKDATE = dictCards[row.SRNO].CHECKDATE;
+                    row.UOM = dictCards[row.SRNO].UOM;
+
+
+                });
+            }
+            $("#@(tblKartuTimbang)").footable({
+                "columns": @(tblKartuTimbang)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["SRNO"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblKartuTimbang)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblKartuTimbang)_Handlers.rowKeys);
+        },
+
+        selectedCards: [],
+
+        addRows: function (fromCard,closeForm) {
+            var qty = 0;
+            if (fromCard) {
+               
+
+                srno = $('#SRNO').val();
+                weight = $('#WEIGHT').val();
+                date = $('#CHECKDATE').val();
+                alatukur = $('#UOM').val();
+               
+            }
+
+            var ft = FooTable.get('#@(tblKartuTimbang)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+                var detail = {
+                    SRNO: srno,
+                    CHECKDATE: date,
+                    WEIGHT: weight,
+                    UOM: alatukur
+                            
+
+
+                    };
+
+                    detail.key = @(tblKartuTimbang)_Handlers.getRowKey(detail);
+                    if (!@(tblKartuTimbang)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlKartu').modal('hide');
+        },
+        showForm: function () {
+
+            if (!$('#DIVID').flexdatalist('value')) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            $('#mdlKartu').modal('show');
+            return true;
+        },
+        deleteRows: function (activities) {
+
+            var ft = FooTable.get('#@(tblKartuTimbang)');
+            var deletedCount = 0;
+            if (ft) {
+                    if (!confirm('Yakin akan menghapus Kartu Timbang?'))
+                        return;
+                    $('[name = "chkDeleteKartu"]').each(function () {
+                        if (this.id !== 'chkAllKartu') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblKartuTimbang)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["SRNO"] > 0)
+                    rows.push(row.val());
+
+            });
+            return rows;
+        },
+    };
+
+</script>
+

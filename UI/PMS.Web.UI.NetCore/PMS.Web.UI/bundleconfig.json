@@ -1,0 +1,76 @@
+﻿// Configure bundling and minification for the project.
+// More info at https://go.microsoft.com/fwlink/?LinkId=808241
+[
+  {
+    "outputFileName": "wwwroot/css/bundles.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "wwwroot/css/bootstrap.min.css",
+      "wwwroot/css/bootstrap-select.css",
+      "wwwroot/css/bootstrap-datepicker3.min.css",
+      "wwwroot/css/footable/footable.bootstrap.css",
+      "wwwroot/css/select2/select2.css",
+      //"wwwroot/css/daterangepicker2/daterangepicker.css",
+      "wwwroot/css/datetimepicker/bootstrap-datetimepicker.min.css",
+      "wwwroot/css/font-awesome.min.css",
+      //"wwwroot/css/icheck/blue.min.css",
+      "wwwroot/css/AdminLTE.css",
+      "wwwroot/css/skins/_all-skins.css",
+      "wwwroot/css/jquery-flexdatalist-2.2.4/jquery.flexdatalist.css",
+      "wwwroot/css/dynatabs/tabs.css",
+      "wwwroot/css/waitme/waitMe.css",
+      "wwwroot/css/tabulator/tabulator.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles.min.js",
+    "inputFiles": [
+      "wwwroot/js/plugins/jquery/jquery-3.3.1.js",
+      //"wwwroot/js/plugins/jquery/jquery.layout.js",
+      "wwwroot/js/plugins/bootstrap/bootstrap.js",
+      "wwwroot/js/plugins/fastclick/fastclick.js",
+      "wwwroot/js/plugins/slimscroll/jquery.slimscroll.js",
+      "wwwroot/js/plugins/bootstrap-select/bootstrap-select.js",
+      "wwwroot/js/plugins/moment/moment.js",
+
+      //"wwwroot/js/plugins/daterangepicker2/daterangepicker.js",
+      "wwwroot/js/plugins/datepicker/bootstrap-datepicker.js",
+      "wwwroot/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js",
+      //"wwwroot/js/plugins/icheck/icheck.js",
+      "wwwroot/js/plugins/validator/validator.js",
+      "wwwroot/js/plugins/select2/select2.js",
+      "wwwroot/js/plugins/inputmask/jquery.inputmask.bundle.js",
+      "wwwroot/js/adminlte.js",
+      "wwwroot/js/init.js",
+      "wwwroot/js/plugins/jquery.twbsPagination.js",
+      "wwwroot/js/plugins/dynatabs/tdi.tabs.js",
+      "wwwroot/js/plugins/bootstable/bootstable.js",
+      "wwwroot/js/plugins/footable/footable.js",
+      "wwwroot/js/plugins/jquery-flexdatalist-2.2.4/jquery.flexdatalist.js",
+      "wwwroot/js/plugins/tabulator/tabulator.js",
+      "wwwroot/js/plugins/jwt-decode/jwt-decode.js"
+
+      //"wwwroot/Scripts/dhs.js",
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/bundles.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/utility.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  }
+]

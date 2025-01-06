@@ -1,0 +1,196 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblPremiPanenBlock";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihBlock" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.addRows()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusBlock" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="width:30%" data-paging-size="8"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnPilihBlock" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.addRows()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnHapusBlock" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+}
+
+<script>
+
+    $('.test').flexdatalist({
+        selectionRequired: true,
+        minLength: 1,
+        textProperty: "{BLOCKID}",
+        valueProperty: "*",
+        multiple: false,
+        visibleProperties: "BLOCKID",
+        searchIn: "BLOCKID",
+        SearchContain: true,
+        url: "http://localhost:1635/api/block/list?RecordStatus=A&DivisionID=7122-1"
+    });
+
+    var _htmlFlexDataList = '<form>  <input type="text" class="test"> </form>';
+    var _htmlList = '<form>  <input list="warna" > <datalist id="warna"><option>Merah</option><option>Biru</option> </datalist></form>';
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllBlock' name='chkDeleteBlock' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteBlock'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "PREMIPANENID",
+                "title": "PREMI PANEN ID",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "DIVID",
+                "title": "DIVISI",
+                "visible": true
+            },
+            {
+                "name": "html",
+                "title": "BLOK",
+                "visible": true,
+                "formatter": function () {
+                    return _htmlFlexDataList;
+                },
+            }
+        ],
+
+        initTable: function (rows) {
+
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.DIVID = dictBlocks[row.BLOCKID].BLOCKID.substr(0, 6);
+                    row.BLOCKID = dictBlocks[row.BLOCKID].BLOCKID;
+                });
+            }
+
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedBlocks: [],
+
+        addRows: function () {
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var values = {
+                DIVID: '<input type="text">'
+            }
+
+            ft.rows.add(values);
+            return;
+
+        },
+
+        deleteRows: function (deletedBlocks) {
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                if (deletedBlocks) {
+                    if (deletedBlocks.length > 0 && Array.isArray(deletedBlocks)) {
+                        $.each(deletedBlocks, function (d, blk) {
+                            $.each(ft.rows.all, function (i, row) {
+                                if (row.val()["BLOCKID"] === blk.BLOCKID) {
+                                    row.delete(false);
+                                    deletedCount++;
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    if (!confirm('Yakin akan menghapus detail Block?'))
+                        return;
+                    $('[name = "chkDeleteBlock"]').each(function () {
+                        if (this.id !== 'chkAllBlock') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                }
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                    rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

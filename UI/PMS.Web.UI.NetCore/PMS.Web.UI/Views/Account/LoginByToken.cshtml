@@ -1,0 +1,36 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNoLogin.cshtml";
+}
+
+
+
+<script>
+    var submitLogin = function () {
+        var token = '@ViewBag.Token';
+        var destType = '@ViewBag.DestType';
+        var destination = '@ViewBag.Destination';
+        if (!token) {
+            authServices.clearAuthData();
+            window.location=_LOGIN_PAGE;
+            return;
+        }
+        authServices.setToken(token);
+        if (!destType || !destination) {
+            window.location = "/Home/Index";
+            return;
+        }
+
+        switch (destType) {
+            case "menu":
+                window.location = "/Menu?Id=" + destination;
+                break;
+            case "path":
+                window.location = "/Menu/" + destination;
+                return;
+            default:
+                window.location = destination;
+                return;
+        }
+    };
+    submitLogin();
+</script>

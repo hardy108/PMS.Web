@@ -1,0 +1,80 @@
+﻿@{
+    Layout = null;
+}
+
+
+<x-form id="@(ViewBag.Prefix)formGenerateBP">
+    <x-form-col xs-size="12">
+        <x-form-row>
+            <x-field-data-list-divisi-by-user-name id="@(ViewBag.Prefix)DIVISI" xs-size="12" md-size="4" caption="Divisi" value-field="DIVID" multiple="false">
+            </x-field-data-list-divisi-by-user-name>
+
+            <x-field-date id="@(ViewBag.Prefix)DATE" xs-size="12" md-size="2" picker-option="DateOnly" date-format="DD-MMM-YYYY" caption="Tanggal" value="@(DateTime.Today.ToString("dd-MMM-yyyy"))">
+            </x-field-date>
+
+        </x-form-row>
+
+        <x-form-row>
+
+            <x-form-col xs-size="12">
+                <button id="@(ViewBag.Prefix)GENERATE" class="btn btn-primary" onclick="doAction(generateBP)">Generate</button>
+            </x-form-col>
+        </x-form-row>
+        &nbsp;
+        &nbsp;
+        
+    </x-form-col>
+
+</x-form>
+
+<script>
+
+    var beforeDoAction = function () {
+        hideError();
+
+        
+        if (!$('#@(ViewBag.Prefix)DIVISI').val()) {
+            showError("Error","Divisi belum dipilih");
+            return false;
+        }
+        if (!$('#@(ViewBag.Prefix)DATE').val()) {
+            showError("Error","Tanggal belum dipilih");
+            return false;
+        }
+        return true;
+    }
+
+    
+    var generateBP = function () {
+        
+        var divisionId = $('#@(ViewBag.Prefix)DIVISI').flexdatalist('value'),
+            date = $('#@(ViewBag.Prefix)DATE').val();
+
+        
+        var successFunction = function (responseData) {
+            alert("Buku Panen " + divisionId + " " + date + " sukses digenerate");
+            closeWaitingBar();
+            loading = false;
+        };
+
+        var errorFunction = function (error) {
+            closeWaitingBar();
+            var errorText = "Unknown error";
+            if (error) {
+                if (error.responseJSON && error.responseJSON.Message)
+                    errorText = error.responseJSON.Message;
+                else if (error.responseText)
+                    errorText = error.responseText;
+            }
+            showError("Error", errorText);
+        };
+
+        helper.callAjaxRequestJson('api/harvesting/generateBP', { DivisionID: divisionId, Date: date }, "get", successFunction, errorFunction);
+    }
+
+
+
+</script>
+
+
+

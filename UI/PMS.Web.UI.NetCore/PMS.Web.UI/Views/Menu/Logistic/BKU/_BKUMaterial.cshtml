@@ -1,0 +1,252 @@
+﻿@using PMS.Web.UI.Code
+@{
+
+    string tblMaterialId = "tblBKUMaterial";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tblMaterialId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+@if (!(ViewBag.ReadOnly))
+{
+<x-form-row>
+    <x-form-col xs-size="12">
+        <button id="btnPilihMaterial" class="btn btn-primary pull-left" onclick="@(tblMaterialId)_Handlers.showForm()">
+            Tambah
+        </button>
+        &nbsp;&nbsp;
+        <button id="btnHapusMaterial" class="btn" onclick="@(tblMaterialId)_Handlers.deleteRows()">
+            Hapus
+        </button>
+    </x-form-col>
+</x-form-row>
+
+<x-modal id="mdlMaterial" caption="Pilih Material">
+    <x-modal-body>
+        <x-form-row>
+            <x-field-data-list-material id="MATERIALID2" binding-field="MATID" caption="Material" multiple="true" xs-size="12" value-field="*">
+            </x-field-data-list-material>
+        </x-form-row>
+        <x-form-row>
+            <x-field-number id="MATERIALQTY2" binding-field="QTY" caption="Qty" xs-size="12" md-size="4"></x-field-number>
+        </x-form-row>
+    </x-modal-body>
+    <x-modal-footer>
+        <x-form-row>
+            <x-form-col xs-size="12">
+                <button id="btnResetHerbisida" class="btn" onclick="resetElements('mdlMaterial')">
+                    Reset
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddMaterial" class="btn btn-primary" onclick="@(tblMaterialId)_Handlers.addRows(true)">
+                    Tambah
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnAddCloseMaterial" class="btn btn-primary" onclick="@(tblMaterialId)_Handlers.addRows(true,true)">
+                    Tambah dan Tutup
+                </button>
+                &nbsp;&nbsp;
+                <button id="btnCloseActivity" class="btn" onclick="$('#mdlMaterial').modal('hide')">
+                    Tutup
+                </button>
+            </x-form-col>
+        </x-form-row>
+    </x-modal-footer>
+</x-modal>
+}
+
+
+
+
+<script>
+    var @(tblMaterialId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllMaterial' name='chkDeleteMaterial' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteMaterial'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title":"ID",
+                "name": "ID",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "title": "EQUIPTIMESHEETID",
+                "name": "EQUIPTIMESHEETID",
+                "visible": false,
+            },
+            {
+                "type": "text",
+                "name": "MATID",
+                "title": "Kode Material",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "title": "Nama Material",
+                "name": "MATNAME",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "title": "Qty",
+                "name": "QTY",
+                "visible": @(isReadOnlyString),
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Qty",
+                "formatter": function (value, option, rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY' onfocusout='updateInputToRow(this)'>";
+                },
+                "visible": !@(isReadOnlyString),
+            },
+            {
+                "type": "text",
+                "name": "UOM",
+                "title": "UOM",
+                "visible": false
+            }
+        ],
+
+        initTable: function (rows) {
+            if (isAny(rows)) {
+                rows.forEach(function (row) {
+                    row.ID = dictMaterials[row.MATID].ID;
+                    row.EQUIPTIMESHEETID = dictMaterials[row.MATID].EQUIPTIMESHEETID;
+                    row.MATID = dictMaterials[row.MATID].MATID;
+                    row.MATNAME = dictMaterials[row.MATID].MAT.MATERIALNAME;
+                    //row.UOM = dictMaterials[row.MATID].UOM;
+                });
+            }
+            $("#@(tblMaterialId)").footable({
+                "columns": @(tblMaterialId)_Handlers.columns,
+                "rows": rows
+            });
+        },
+        rowKeys: ["MATID"],
+
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblMaterialId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblMaterialId)_Handlers.rowKeys);
+        },
+        //selectedActivities: [],
+        selectedMaterials: [],
+        addRows: function (fromMaterial,closeForm) {
+            var qty = 0;
+            if (fromMaterial) {
+                @(tblMaterialId)_Handlers.selectedMaterials = $('#MATERIALID2').flexdatalist('value');
+                qty = $('#MATERIALQTY2').val();
+            }
+
+            if (!@(tblMaterialId)_Handlers.selectedMaterials || @(tblMaterialId)_Handlers.selectedMaterials.length <= 0)
+                return false;
+
+            var ft = FooTable.get('#@(tblMaterialId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+
+            var added = 0;
+
+            @(tblMaterialId)_Handlers.selectedMaterials.forEach(function (material) {
+                var mat = {
+                    MATID: material.MATERIALID,
+                    MATNAME: material.MATERIALNAME,
+                    UOM: material.UOM
+                };
+                dictMaterials[material.MATERIALID] = mat;
+                var detail = {
+                            MATID: material.MATERIALID,
+                            MATNAME: material.MATERIALNAME,
+                            UOM: material.UOM,
+                            QTY: qty
+                    };
+
+                    detail.key = @(tblMaterialId)_Handlers.getRowKey(detail);
+                    if (!@(tblMaterialId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                        ft.rows.add(detail, false);
+                        added++;
+                    }
+
+                });
+
+
+            if (added)
+                ft.draw();
+            if (closeForm)
+                $('#mdlMaterial').modal('hide');
+        },
+        showForm: function () {        
+
+            if (!$('#DIVID').flexdatalist('value')) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            $('#mdlMaterial').modal('show');
+            return true;
+        },
+        deleteRows: function (activities) {
+
+            var ft = FooTable.get('#@(tblMaterialId)');
+            var deletedCount = 0;
+            if (ft) {
+         
+                    if (!confirm('Yakin akan menghapus detail material?'))
+                        return;
+                    $('[name = "chkDeleteMaterial"]').each(function () {
+                        if (this.id !== 'chkAllMaterial') {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                $row.delete(false);
+                                deletedCount++;
+                            }
+
+                        }
+                    });
+                
+                if (deletedCount)
+                    ft.draw();
+            }
+        },
+
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblMaterialId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["QTY"] > 0)
+                    rows.push(row.val());
+            });
+            return rows;
+        },
+    };
+</script>

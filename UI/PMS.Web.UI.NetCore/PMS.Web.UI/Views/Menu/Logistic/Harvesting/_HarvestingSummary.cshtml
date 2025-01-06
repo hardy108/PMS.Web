@@ -1,0 +1,94 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Summary";
+    string tbl = "tbl" + prefix;
+
+
+}
+
+
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+
+<script>
+
+    var @(prefix)_ = {
+
+
+        columns: [
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "Employee",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true
+            },
+
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Hasil",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTYKG",
+                "title": "Kg",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTYFINE",
+                "title": "Denda",
+                "visible": true
+            }
+
+        ],
+
+
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+            return;
+        },
+        rowKeys: ["EMPLOYEEID","BLOCKID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        }
+    };
+</script>

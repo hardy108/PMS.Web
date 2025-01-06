@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "Id": "UnitId",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 2
+    },
+    {
+      "Id": "DivisionId",
+      "Caption": "Divisi",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "MDSize": 6,
+      "Ascendants": [
+        {
+          "ElementID": "UnitId",
+          "FieldID": "UnitID"
+        }
+      ]
+    },
+    {
+      "Id": "StartDate",
+      "Caption": "Bulan",
+      "Type": "month", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 4
+    }
+  ]
+]

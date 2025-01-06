@@ -1,0 +1,47 @@
+[
+  [
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Date",
+      "Caption2": "&nbsp",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 6
+    },
+    {
+      "Id": "UnitID",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getunitsforselect",
+
+      //"XSSize": 0,
+      //"SMSize": 0,
+      "MDSize": 2
+      //"LGSize": 0,
+      //"XLSize": 0
+
+    },
+    {
+      "Id": "DocType",
+      "Caption": "Doc. Type",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/Workflow/authorizeddoctypes",
+      "AscendantIds": [ "UnitID" ],
+      "AscendantFields": [ "UnitID" ],
+      "DescendantIds": [],
+      "MDSize": 4
+    }
+  ],
+  [
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "XSSize": 12
+    }
+
+  ]
+  
+]
+
+

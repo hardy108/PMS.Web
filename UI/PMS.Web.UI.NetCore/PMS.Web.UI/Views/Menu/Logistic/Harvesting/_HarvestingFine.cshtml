@@ -1,0 +1,443 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+    string prefix = "Fine";
+    string tbl = "tbl" + prefix;
+    string mdl = "mdl" + prefix;
+
+}
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddTop@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteTop@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+    <x-form-row>&nbsp;</x-form-row>
+}
+<x-form-row>
+    <x-form-col xs-size="12">
+        <table id="@(tbl)" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+    </x-form-col>
+</x-form-row>
+
+@if (!(ViewBag.ReadOnly))
+{
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <button id="btnAddBottom@(prefix)" class="btn btn-primary pull-left" onclick="@(prefix)_.showForm()">
+                Tambah
+            </button>
+            &nbsp;&nbsp;
+            <button id="btnDeleteButtom@(prefix)" class="btn" onclick="@(prefix)_.deleteRows()">
+                Hapus
+            </button>
+        </x-form-col>
+    </x-form-row>
+
+    <x-modal id="@(mdl)" caption="Input Denda Panen">
+        <x-modal-body>
+            <x-form-row>
+                <x-field-data-list id="@(prefix)EMPLOYEEBLOCK" binding-field="ID" caption="Karyawan - Blok" text-fields="TEXT" xs-size="12" value-field="*" min-length-search="0">
+                </x-field-data-list>
+            </x-form-row>
+            <x-form-row>
+                <x-field-data-list-penalty id="@(prefix)FINECODE" binding-field="FINECODE" caption="Jenis Denda" xs-size="12" md-size="6" value-field="*">
+                </x-field-data-list-penalty>
+            </x-form-row>
+            <x-form-row>
+                <x-field-number id="@(prefix)QTY" binding-field="QTY" caption="Jumlah" xs-size="12" md-size="4">
+
+                </x-field-number>
+            </x-form-row>
+        </x-modal-body>
+        <x-modal-footer>
+            <x-form-row>
+                <x-form-col xs-size="12">
+                    <button id="btnResetDetail@(prefix)" class="btn" onclick="resetElements('@(mdl)')">
+                        Reset
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAdd@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows()">
+                        Tambah
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnAddClose@(prefix)" class="btn btn-primary" onclick="@(prefix)_.addRows(true)">
+                        Tambah dan Tutup
+                    </button>
+                    &nbsp;&nbsp;
+                    <button id="btnClose@(prefix)" class="btn" onclick="$('#@(mdl)').modal('hide')">
+                        Tutup
+                    </button>
+                </x-form-col>
+            </x-form-row>
+        </x-modal-footer>
+    </x-modal>
+}
+
+
+<script>
+
+    var @(prefix)_ = {
+        selectedFines: {},
+        isFineExist: function (employeeId,blockId,fineCode) {
+            if (!blockId || !employeeId || !fineCode )
+                return true;
+            var data = { EMPLOYEEID: employeeId, BLOCKID: blockId, FINECODE: fineCode}
+            var x = this.selectedFines[this.getRowKey(data)];
+            if (x) return true;
+            return false;
+        },
+
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAll@(prefix)' name='chkDelete@(prefix)' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDelete@(prefix)'>";
+                },
+            },
+            {
+                "type": "text",
+                "name": "key",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPLOYEEID",
+                "title": "Employee",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "EMPNAME",
+                "title": "Karyawan",
+                "visible": true
+            },
+            {
+                "type": "text",
+                "name": "BLOCKID",
+                "title": "Blok",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "BLOCKCODE",
+                "title": "Blok",
+                "visible": true
+            },
+
+            {
+                "type": "text",
+                "name": "FINECODE",
+                "title": "Jenis Denda",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "name": "FINENAME",
+                "title": "Jenis Denda",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "name": "QTY",
+                "title": "Jumlah",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "html",
+                "name": "QTY_INPUT",
+                "title": "Jumlah",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='QTY' value='" + rowdata["QTY"] + "'  data-bf='QTY'  onfocusout='updateInputToRow(this)'>";
+                },
+
+            }
+        ],
+
+        showForm: function () {
+            if (!$('#DIVID').val()) {
+                alert("Divisi belum dipilih");
+                return false;
+            }
+
+            if (!$('#HARVESTDATE').val()) {
+                alert("Tanggal panen belum dipilih");
+                return false;
+            }
+
+            if (!$('#ACTIVITYID').val()) {
+                alert("Kode kegiatan belum dipilih");
+                return false;
+            }
+
+            var collections = [];
+
+            Object.keys(Collection_.collectionByEmployeeBlock).forEach(function (key) {
+                var collection = Collection_.collectionByEmployeeBlock[key];
+                if (collection && collection.QTY>0) {
+                    collections.push(collection);
+                }
+            });
+            if (collections.length <= 0) {
+                alert("detail panen belum diiinput");
+                return false;
+            }
+
+            $('#@(prefix)EMPLOYEEBLOCK').flexdatalist({
+                minLength: 0,
+                textProperty: "{TEXT}",
+                valueProperty: "*",
+                selectionRequired: true,
+                multiple: true,
+                visibleProperties: "TEXT",
+                searchIn: "TEXT",
+                data: collections
+            });
+
+
+            $('#@(mdl)').modal('show');
+
+            return true;
+        },
+        initTable: function (rows) {
+            var _this = @(prefix)_;
+            $("#@(tbl)").footable({
+                "columns": this.columns,
+                "rows": rows
+            });
+
+            if (rows && Array.isArray(rows) && rows.length > 0) {
+                rows.forEach(function (row) {
+                    if (row.BLOCKID && row.EMPLOYEEID && row.FINECODE) {
+
+                        _this.selectedFines[_this.getRowKey(row)] =
+                        {
+                            EMPLOYEEID: row.EMPLOYEEID,
+                            BLOCKID: row.BLOCKID,
+                            FINECODE: row.FINECODE
+                        };
+                    }
+                });
+            }
+
+            return;
+        },
+        rowKeys: ["EMPLOYEEID","BLOCKID","FINECODE"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, this.rowKeys);
+            return null;
+        },
+
+
+
+
+        addRows: function (closeForm) {
+            var _this = @(prefix)_;
+            var collection = $('#@(prefix)EMPLOYEEBLOCK').flexdatalist('value');
+            if (!collection || (Array.isArray(collection) && collection.length < 1)) {
+                alert("Karyawan dan blok belum dipilih");
+                return;
+            }
+
+            var finecode = $('#@(prefix)FINECODE').flexdatalist('value')
+            if (!finecode) {
+                alert("Jenis denda belum dipilih");
+                return;
+            }
+
+            var qty = parseFloat($('#@(prefix)QTY').val());
+            if (!qty || qty<=0) {
+                alert("Jumlah denda belum diisi");
+                return;
+            }
+
+            qty = qty.toFixed(2);
+
+            if (Array.isArray(collection) && collection.length === 1)
+                collection = collection[0];
+
+
+            var added = 0;
+            var addRow = function (icollection, ifinecode, iqty, ft) {
+
+                var newFine =
+                {
+                    EMPLOYEEID: icollection.EMPLOYEEID,
+                    EMPNAME: icollection.EMPNAME,
+                    BLOCKID: icollection.BLOCKID,
+                    BLOCKCODE: icollection.BLOCKCODE,
+                    FINECODE: ifinecode.Id,
+                    FINENAME: ifinecode.Text,
+                    QTY: iqty
+                };
+                newFine.key = _this.getRowKey(newFine);
+                if (_this.isFineExist(icollection.EMPLOYEEID, icollection.BLOCKID, ifinecode.Id)) {
+                    alert("Jenis denda sudah diinput sebelumya");
+                    return;
+                }
+                added++;
+                ft.rows.add(newFine, false);
+                if (newFine) {
+                    _this.selectedFines[newFine.key] =
+                    {
+                        EMPLOYEEID: newFine.EMPLOYEEID,
+                        BLOCKID: newFine.BLOCKID,
+                        FINECODE: newFine.FINECODE
+                    };
+                    var newQty = parseFloat(newFine.QTY);
+                    var qty = 0;
+
+                    var collByEmp = Collection_.collectionByEmployee[newFine.EMPLOYEEID];
+                    if (collByEmp)
+                        qty = parseFloat(collByEmp["QTYFINE"]);
+                    qty += newQty;
+                    Collection_.collectionByEmployee[newFine.EMPLOYEEID] = { QTYFINE: qty };
+
+                    qty = 0;
+
+                    var collByBlock = Collection_.collectionByBlock[newFine.BLOCKID];
+                    if (collByBlock)
+                        qty = parseFloat(collByBlock["QTYFINE"]);
+                    qty +=  newQty
+                    Collection_.collectionByBlock[newFine.BLOCKID] = { QTYFINE: qty };
+
+                    qty = 0;
+
+
+                    var collByEmpBlock = Collection_.collectionByEmployeeBlock[newFine.EMPLOYEEID + "*" + newFine.BLOCKID];
+                    if (collByEmpBlock) {
+                        qty = parseFloat(collByEmpBlock["QTYFINE"]) + newQty;
+                        $.extend(collByEmpBlock, { QTYFINE: qty });
+                    }
+                    Collection_.collectionByEmployeeBlock[newFine.EMPLOYEEID + "*" + newFine.BLOCKID] = collByEmpBlock;
+
+
+                }
+
+            };
+
+
+            var ft = FooTable.get('#@(tbl)')
+            addRow(collection, finecode, qty, ft);
+            if (added)
+                ft.draw();
+            $("#@(prefix)FINECODE").val(null);
+            $("#@(prefix)QTY").val(null);
+
+            if (closeForm)
+                $('#@(mdl)').modal('hide');
+            return;
+        },
+
+        deleteRows: function (employeeId, blockId) {
+            if (!employeeId && !blockId) {
+                if (!confirm('Yakin akan menghapus detail denda?'))
+                    return;
+            }
+            var _this = @(prefix)_;
+
+            var ft = FooTable.get('#@(tbl)');
+
+
+            if (ft) {
+
+                var deletedCount = 0;
+                var dictQtyBlock = {}, dictQtyEmp = {}, dictQtyEmpBlock = {};
+
+                var deleteRow = function ($row) {
+                    var row = $row.val();
+                    _this.selectedFines[row.key] = null;
+
+                    var newQty = parseFloat(row.QTY);
+                    var qty = 0;
+                    var xQty = dictQtyBlock[row.BLOCKID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyBlock[row.BLOCKID] = qty;
+
+                    qty = 0;
+                    xQty = dictQtyEmp[row.EMPLOYEEID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyEmp[row.EMPLOYEEID] = qty;
+
+                    qty = 0;
+                    xQty = dictQtyEmpBlock[row.EMPLOYEEID + "*" + row.BLOCKID];
+                    if (xQty)
+                        qty = parseFloat(xQty);
+                    qty += newQty;
+                    dictQtyEmpBlock[row.EMPLOYEEID + "*" + row.BLOCKID] = qty;
+                    $row.delete(false);
+                    deletedCount++;
+                };
+                if (!employeeId && !blockId) {
+                    $('[name = "chkDelete@(prefix)"]').each(function () {
+                        if (!(this.id)) {
+                            if (this.checked) {
+                                var $row = FooTable.getRow($(this).closest('tr'));
+                                deleteRow($row)
+                            }
+                        }
+                    });
+                }
+                else {
+                    $.each(ft.rows.all, function (i, $row) {
+                        if ($row && $row.val) {
+                            if ($row.val()["EMPLOYEEID"] === employeeId || $row.val()["BLOCKID"] === blockId) {
+                                deleteRow($row);
+                            }
+                        }
+                    });
+                }
+
+                if (deletedCount) {
+                    ft.draw();
+                    Object.keys(dictQtyEmp).forEach(function (key) {
+                        _this.collectionByEmployee[key].QTYFINE -= parseFloat(dictQtyEmp[key]);
+                    });
+
+                    Object.keys(dictQtyBlock).forEach(function (key) {
+                        _this.collectionByBlock[key].QTYFINE -= parseFloat(dictQtyBlock[key]);
+                    });
+
+                    Object.keys(dictQtyEmpBlock).forEach(function (key) {
+                        _this.collectionByEmployeeBlock[key].QTYFINE -= parseFloat(dictQtyEmpBlock[key]);
+                    });
+
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tbl)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                rows.push(row.val());
+            });
+            return rows;
+        }
+    };
+</script>

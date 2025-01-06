@@ -1,0 +1,228 @@
+﻿@using PMS.Web.UI.Models
+@using System.IO;
+@using Newtonsoft.Json
+@using PMS.Shared.Models
+
+@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment
+@{
+
+    string filterId = ViewBag.FilterID,
+           filterName = ViewBag.FilterName,
+           prefixID = ViewBag.Prefix;
+    FilterJson filterJsons = ViewBag.FilterRows;
+}
+
+        <x-form id="@filterId">
+
+            @if (filterJsons != null)
+            {
+                string scriptAccendant = string.Empty, scriptDescendants = string.Empty, scriptAccendantFields = string.Empty;
+                @foreach (FilterJsonRow row in filterJsons)
+                {
+                    <x-form-row>
+                        @foreach (FilterJsonField field in row)
+                        {
+
+
+                            @if (field.Type.Equals("text"))
+                            {
+                                <x-field-text id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-text>
+                            }
+                            else if (field.Type.Equals("number"))
+                            {
+                                <x-field-number id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-number>
+                            }
+                            else if (field.Type.Equals("boolean"))
+                            {
+                                <x-field-select select-type="Boolean" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-select>
+                            }
+                            else if (field.Type.Equals("select") || field.Type.Equals("multiselect"))
+                            {
+                                
+                                <x-field-data-list id="@prefixID@field.Id" text-fields="@field.TextField"
+                                       visible-fields="@field.VisibleField" value-field="@field.ValueField"
+                                       search-contain="true" search-fields="@field.SearchField"
+                                       search-disabled="@field.SearchDisabled"
+                                       min-length-search="@field.MinLengthSearch"
+                                       binding-field="@field.Id"
+                                       caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize"
+                                       md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize"
+                                       api-url="@field.ApiUrl" ascendants="@field.Ascendants" chain-to-relatives="@(field.Ascendants != null && field.Ascendants.Any())" multiple="@(field.Type.Equals("multiselect")?true:false)">
+                                @if (field.OptionItems != null && field.OptionItems.Any())
+                                {
+                                    @foreach (var optionItem in field.OptionItems)
+                                    {
+                                        @if (optionItem.IsSelected)
+                                        {
+                                            <option value="@(optionItem.Id)" selected="selected">@(optionItem.Text)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@(optionItem.Id)">@(optionItem.Text)</option>
+                                        }
+
+                                    }
+
+                                }
+
+                                </x-field-data-list>
+                            }                      
+                            else if (field.Type.Equals("selectoptions") || field.Type.Equals("multiselectoptions"))
+                            {
+                                
+                                <x-field-data-list id="@prefixID@field.Id"
+                                       search-disabled="@field.SearchDisabled"
+                                       min-length-search="@field.MinLengthSearch"
+                                       binding-field="@field.Id"
+                                       caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize"
+                                       md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize"
+                                       multiple="@(field.Type.Equals("multiselectoptions")?true:false)"
+ 
+                                >
+                                @if (field.OptionItems != null && field.OptionItems.Any())
+                                {
+                                    @foreach (var optionItem in field.OptionItems)
+                                    {
+                                        @if (optionItem.IsSelected)
+                                        {
+                                            <option value="@(optionItem.Id)" selected="selected">@(optionItem.Text)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@(optionItem.Id)">@(optionItem.Text)</option>
+                                        }
+
+                                    }
+
+                                }
+
+                                </x-field-data-list>
+                            }       
+                            else if (field.Type.Equals("year"))
+                            {
+                                <x-field-date picker-option="DateOnly" date-format="YYYY" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-date>
+                            }
+                            else if (field.Type.Equals("month"))
+                            {
+                                <x-field-date picker-option="DateOnly" date-format="MMM-YYYY" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-date>
+                            }
+                            else if (field.Type.Equals("date"))
+                            {
+                                <x-field-date picker-option="DateOnly" date-format="DD-MMM-YYYY" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-date>
+                            }
+                            else if (field.Type.Equals("datetime"))
+                            {
+                                <x-field-date picker-option="DateTime" date-format="DD-MMM-YYYY" time-format="HH:mm" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-date>
+                            }
+                            else if (field.Type.Equals("time"))
+                            {
+                                <x-field-date picker-option="TimeOnly" time-format="HH:mm" id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-date>
+                            }
+                            else if (field.Type.Equals("yearrange"))
+                            {
+                                <x-form-col xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+                                    <x-form-row no-gutters="true">
+                                        <x-field-date id="@prefixID@field.Id" picker-option="DateOnly" xs-size="6" caption="@field.Caption" date-format="yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                        <x-field-date id="@prefixID@field.Id2" picker-option="DateOnly" xs-size="6" caption="@field.Caption2" date-format="yyyy" time-format="HH:mm" binding-field="@field.Id2"></x-field-date>
+                                    </x-form-row>
+                                </x-form-col>
+                                <script>helper.initDateRange2('@prefixID@field.Id', '@prefixID@field.Id2', 'YYYY')</script>
+                            }
+                            else if (field.Type.Equals("monthrange"))
+                            {
+                                <x-form-col xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+                                    <x-form-row no-gutters="true">
+                                        <x-field-date id="@prefixID@field.Id" picker-option="DateOnly" xs-size="6" caption="@field.Caption" date-format="MMM-yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                        <x-field-date id="@prefixID@field.Id2" picker-option="DateOnly" xs-size="6" caption="@field.Caption2" date-format="MMM-yyyy" time-format="HH:mm" binding-field="@field.Id2"></x-field-date>
+                                    </x-form-row>
+                                </x-form-col>
+                                <script>helper.initDateRange2('@prefixID@field.Id', '@prefixID@field.Id2', 'MMM-YYYY')</script>
+                            }
+                            else if (field.Type.Equals("daterange"))
+                            {
+                                <x-form-col xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+                                    <x-form-row no-gutters="true">
+                                        <x-field-date id="@prefixID@field.Id" picker-option="DateOnly" xs-size="6" caption="@field.Caption" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                        <x-field-date id="@prefixID@field.Id2" picker-option="DateOnly" xs-size="6" caption="@field.Caption2" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id2"></x-field-date>
+                                    </x-form-row>
+                                </x-form-col>
+                                <script>helper.initDateRange2('@prefixID@field.Id', '@prefixID@field.Id2', 'DD-MMM-YYYY')</script>
+                            }
+                            else if (field.Type.Equals("datetimerange"))
+                            {
+                                <x-form-col xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+                                    <x-form-row no-gutters="true">
+                                        <x-field-date id="@prefixID@field.Id" picker-option="DateTime" xs-size="6" caption="@field.Caption" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                        <x-field-date id="@prefixID@field.Id2" picker-option="DateTime" xs-size="6" caption="@field.Caption2" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id2"></x-field-date>
+                                    </x-form-row>
+                                </x-form-col>
+                                <script>helper.initDateRange2('@prefixID@field.Id', '@prefixID@field.Id2', 'DD-MMM-YYYY')</script>
+                            }
+                            else if (field.Type.Equals("timerange"))
+                            {
+                                <x-form-col xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+                                    <x-form-row no-gutters="true">
+                                        <x-field-date id="@prefixID@field.Id" picker-option="TimeOnly" xs-size="6" caption="@field.Caption" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                        <x-field-date id="@prefixID@field.Id2" picker-option="TimeOnly" xs-size="6" caption="@field.Caption2" date-format="dd-MMM-yyyy" time-format="HH:mm" binding-field="@field.Id"></x-field-date>
+                                    </x-form-row>
+                                </x-form-col>
+                                <script>helper.initDateRange2('@prefixID@field.Id', '@prefixID@field.Id2', 'DD-MMM-YYYY')</script>
+                            }
+                            else
+                            {
+                                <x-field-text id="@prefixID@field.Id" binding-field="@field.Id" caption="@field.Caption" xs-size="@field.XSSize" sm-size="@field.SMSize" md-size="@field.MDSize" lg-size="@field.LGSize" xl-size="@field.XLSize">
+
+                                </x-field-text>
+                            }
+                        }
+                    </x-form-row>
+                }
+            }
+        </x-form>
+    
+
+        <script>
+
+        var @(prefixID)mandatoryFilterIds = @Html.Raw(ViewBag.MandatoryFilterItems);
+        var @(prefixID)checkFilter = function (f)
+        {
+            if (@(prefixID)mandatoryFilterIds.length <= 0)
+                return true;
+
+            var filterOk = true;
+
+            @(prefixID)mandatoryFilterIds.forEach(function (Id) {
+                if (!f[Id]) {
+                    filterOk = false;
+                    return;
+                }
+                else if (Array.isArray(f[Id]) && f[Id].length <= 0) {
+                    filterOk = false;
+                    return;
+                }
+
+            });
+            if (!filterOk) {
+                return false;
+            }
+            return true;
+        }
+
+
+        </script>

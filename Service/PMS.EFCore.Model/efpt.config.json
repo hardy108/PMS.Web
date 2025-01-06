@@ -1,0 +1,42 @@
+﻿{
+   "CodeGenerationMode": 1,
+   "ContextClassName": "PMSContextBaseBaseXXXX",
+   "ContextNamespace": "",
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "",
+   "OutputContextPath": "Temp",
+   "OutputPath": "Temp",
+   "ProjectRootNamespace": "PMS.EFCore.Model",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[EM_TINSPECTION]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EM_TTRACKING]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "SMRD-01.PMSDEV",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

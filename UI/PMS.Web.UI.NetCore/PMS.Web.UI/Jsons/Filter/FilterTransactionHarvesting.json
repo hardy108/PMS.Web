@@ -1,0 +1,70 @@
+[
+  [
+    {
+      "Id": "StartDate",
+      "Id2": "EndDate",
+      "Caption": "Tanggal",
+      "Caption2": "&nbsp;",
+      "Type": "daterange", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 6
+    },
+    {
+      "Id": "UnitID",
+      "Caption": "Estate",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean      
+      "Type2": "",
+      "ApiUrl": "api/login/getunitsforselect",
+      "MDSize": 3,
+      "MinLengthSearch": 0
+      
+    },
+    {
+      "Id": "DivisionIDs",
+      "Caption": "Divisi",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/login/getdivisionsforselect",
+      "Ascendants": [
+        {
+          "ElementID": "UnitID",
+          "FieldID": "UnitID"
+        }
+      ],
+      "MDSize": 3,
+      "MinLengthSearch": 0
+    }
+  ],
+  [
+    {
+      "Id": "HarvestTypes",
+      "Caption": "Jenis Pekerjaan",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/reference/harvesttype",
+      "MDSize": 3,
+      "MinLengthSearch": 0
+    },
+    {
+      "Id": "PaymentTypes",
+      "Caption": "Jenis Pembayaran",
+      "Type": "multiselect", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/reference/paymenttype",
+      "MDSize": 3,
+      "MinLengthSearch": 0
+    },
+    {
+      "Id": "SearchTerm",
+      "Caption": "Keyword",
+      "Type": "text", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "MDSize": 3
+    },
+    {
+      "Id": "RecordStatus",
+      "Caption": "Status",
+      "Type": "select", //select, multiselect, date, datetime, time, daterange, datetimerange,timerange,text,number,boolean
+      "ApiUrl": "api/reference/transactionstatus",
+      "MDSize": 3
+    }
+
+  ]
+]
+
+

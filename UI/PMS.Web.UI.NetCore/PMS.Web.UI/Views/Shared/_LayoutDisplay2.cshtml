@@ -1,0 +1,258 @@
+﻿@using PMS.Web.UI.Code
+@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var mode = '@ViewBag.Mode',
+        mode2 = '@ViewBag.Mode',
+        record = JSON.parse('@(Html.Raw(ViewBag.DataString))'),
+        authorizationData = JSON.parse('@(Html.Raw(ViewBag.MenuAccess))'),
+        useStandardDisplayFunction = true,
+        mainFormId = '@ViewBag.MainFormID';
+</script>
+
+
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">@ViewBag.Title - @ViewBag.Mode</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">      
+        @RenderBody()
+    </div>
+    <!-- /.row -->
+    <!-- /.box-body -->
+    <div class="box-footer with-border">
+        <div class="col-xs-12" style="display:none" id="calloutErrorMessage">
+        </div>
+        <div class="col-xs-12" id="divButtons">
+        </div>
+     </div>
+</div>
+
+
+<script>
+    
+
+    
+
+    var setApprovalButtons = function () {
+        var buttons = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>";
+        urlGet = "api/Approval/getnextactions/@ViewBag.Key";
+
+        if (mode2 == "Display") {
+            $('#divButtons').html(buttons);
+            return;
+        }
+        if (mode == "Approval") {
+            $.ajax({
+                type: "get",
+                url: _API_URL + urlGet,
+                headers: { "Authorization": authServices.getBearerToken() },
+                success: function (responseData, textStatus, jqXHR) {
+                    var buttonApprovals = "";
+                    if (responseData) {
+                        if (Array.isArray(responseData) && responseData.length > 0) {
+                            responseData.forEach(function (data) {
+                                var action = '"doAction(\'Approval\',\'' + data.ActionTypeID + '\',\'' + data.Name + '\')"';
+                                buttonApprovals += "<button id='btn" + data.ActionTypeID + "' type='button' class='btn btn-primary' onclick=" + action + ">" + data.Name + "</button>&nbsp;&nbsp;";
+                            });
+                        }
+                    }
+                    if (buttonApprovals) {
+                        if ($('#divApprovalNotes'))
+                            $('#divApprovalNotes').show();
+                        if ($('#txtApprovalNotes'))
+                            helper.setInputReadOnly('txtApprovalNotes', 'readonly', false);
+                    }
+                    if (buttonApprovals)
+                        buttonApprovals += "&nbsp;&nbsp;";
+                    $('#divButtons').html(buttonApprovals + buttons);
+                },
+                error: function (error) {
+                    $('#divButtons').html(buttons);
+                }
+            });
+        }
+    };
+
+    var setButtons = function () {
+        var buttons = "";
+        var action = "";
+
+        
+        var buttonBack = "<button type='button' class='btn btn-default' onclick='backToMainListPage()'>Back</button>";
+        
+        if (mode == "New") {
+            action = '"doAction(\'New\',\'New\',\'Insert\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Edit") {
+            action = '"doAction(\'Edit\',\'Edit\',\'Update\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Save</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Delete") {
+            action = '"doAction(\'Delete\',\'Delete\',\'Delete\')"';
+            buttons = "<button id='btnSave' type='button' class='btn btn-primary' onclick=" + action + ">Delete</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Post") {
+            action = '"doAction(\'Approve\',\'Approve\',\'Approve\')"';
+            buttons = "<button id='btnPost' type='button' class='btn btn-primary' onclick=" + action + ">Approve</button>&nbsp;&nbsp;";
+        }
+        else if (mode == "Unpost") {
+            action = '"doAction(\'CancelApprove\',\'CancelApprove\',\'Cancel Approve\')"';
+            buttons = "<button id='btnUnpost' type='button' class='btn btn-primary' onclick=" + action + ">Cancel Approve</button>&nbsp;&nbsp;";
+        }
+
+
+        if (mode == "New" || mode == "Edit") {
+            if (authorizationData.NeedApproval) {
+                action = '"doAction(\'Approval\',\'SUBM\',\'Ask Approval\')"';
+                buttons += "<button id='btnAskApproval' type='button' class='btn btn-primary' onclick=" + action +">Ask Approval</button>&nbsp;&nbsp;";
+            }
+        }
+        if (mode == "Approval") {
+            return setApprovalButtons();
+        }
+        else {            
+            if (buttons)
+                buttons += "&nbsp;&nbsp;";
+            $('#divButtons').html(buttons + buttonBack);
+            return true;
+        }
+    };
+
+    //Error Display Utilies
+    var backToMainListPage = function () {
+        window.location = "/Menu/Open/@(ViewBag.Menu.MenuID)/List";
+        return true;
+    };
+
+    var showError = function (errorTitle, errorMessage) {
+        var htmlError = '';
+        if (errorTitle && errorTitle != '')
+            htmlError += "<h4 id='calloutTitle'>" + errorTitle + "</h4>";
+        if (errorMessage && errorMessage != '')
+            htmlError += "<p id='calloutMessage'>" + errorMessage + "</p>";
+        if (htmlError != '') {
+            htmlError = "<div class='callout callout-danger'>" + htmlError + "</div>";
+            $('#calloutErrorMessage').html(htmlError);
+            $('#calloutErrorMessage').show();
+            return;
+        }
+        hideError();
+    };
+    var hideError = function () {
+        $('#calloutErrorMessage').html('');
+        $('#calloutErrorMessage').hide();
+    };
+
+
+    var displayRecord = function () {
+        //Display Functions
+        if (typeof checkMode !== 'undefined') {
+            if (!checkMode()) {
+                return false;
+            }
+        }
+
+        if (typeof beforeDisplay !== 'undefined') {
+            if (!beforeDisplay()) {
+                return false;
+            }
+        }
+
+        if (useStandardDisplayFunction) {
+            xFormDisplay(mainFormId, record);
+        }
+        if (typeof customDisplay !== 'undefined') {
+            if (!customDisplay()) {
+                return false;
+            }
+        }
+
+        setButtons();
+    //Action
+    }
+
+    var doAction = function (action, actionCode, actionName) {
+        if (typeof beforeSaveRecord !== 'undefined') {
+            if (!beforeSaveRecord())
+                return false;
+        }
+
+        var savedRecord = xFormSave('@ViewBag.MainFormID');
+
+        hideError();
+
+        if (action == "Approval") {
+            if (savedRecord.APPRVNOTES) {
+                if (!confirm('Anda yakin akan melakukan ' + actionName + ' atas data ini?')) {
+                    return;
+                }
+
+            }
+            else {
+                if (!confirm('Anda yakin akan melakukan ' + actionName + ' atas data ini tanpa komentar?')) {
+                    if ($('#txtApprovalNotes')) {
+                        helper.setInputReadOnly("txtApprovalNotes", "readonly", false);
+                        $('#txtApprovalNotes').focus();
+                    }
+                    if ($('#divApprovalNotes'))
+                        $('#divApprovalNotes').show();
+
+                    return;
+                }
+            }
+        }
+        else if (!confirm('Anda yakin untuk melakukan ' + actionName + ' data ini?')) {
+                return;
+        }
+
+        if (typeof beforeSendAction !== 'undefined') {
+            savedRecord = beforeSendAction(action, savedRecord);
+            if (!savedRecord)
+                return;
+        }
+        
+        
+        $.ajax({
+            type: "post",
+            contentType: "application/x-www-form-urlencoded",
+            headers: { "Authorization": authServices.getBearerToken() },
+            url: _API_URL + '@(ViewBag.ApiUrl)/' + action,
+            data: savedRecord,
+            success: function (responseData, textStatus, jqXHR) {
+                if (!responseData) {
+                    showError("Error", "Unknown Error");
+                    return;
+                }
+                
+                alert(action + "  Success");
+                if (typeof afterSendAction !== 'undefined') {
+                    if (!afterSendAction(action, savedRecord, responseData))
+                        return;
+                }
+                backToMainListPage();
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var errorText = "Unknown error";
+                if (jqXHR) {
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.Message)
+                        errorText = jqXHR.responseJSON.Message;
+                    else if (jqXHR.responseText)
+                        errorText = jqXHR.responseText;
+                }
+                showError("Error", errorText);
+            }
+        });
+    };
+    
+
+    displayRecord();
+
+
+
+</script>
+

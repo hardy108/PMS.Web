@@ -1,0 +1,465 @@
+﻿
+@{
+
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnly = mode != "New" && mode != "Edit" && mode != "Approval";
+
+    bool onCreate = false;
+    bool onApproval = false;
+    bool onDevelopment = false;
+    bool onUAT = false;
+    bool onRN = false;
+    bool onDeployment = false;
+    bool onExecution = false;
+    bool onModeration = false;
+
+    try
+    {
+        if (ViewBag.OnCreate)
+        {
+            onCreate = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnApproval)
+        {
+            onApproval = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnDevelopment)
+        {
+            onDevelopment = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnUAT)
+        {
+            onUAT = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnRN)
+        {
+            onRN = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnDeployment)
+        {
+            onDeployment = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnExecution)
+        {
+            onExecution = true;
+        }
+    }
+    catch { }
+
+    try
+    {
+        if (ViewBag.OnModeration)
+        {
+            onModeration = true;
+        }
+    }
+    catch { }
+
+
+
+
+    onCreate = onCreate && !readOnly;
+    onApproval = onApproval && !readOnly;
+    onDevelopment = onDevelopment && !readOnly;
+    onUAT = onUAT && !readOnly;
+    onDeployment = onDeployment && !readOnly;
+    onRN = onRN && !readOnly;
+    onExecution = onExecution && !readOnly;
+    onModeration = onModeration && !readOnly;
+
+}
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ICRNO" binding-field="ICRNO" caption="ICR No." read-only="true" place-holder="Auto Number" xs-size="12" md-size="2">
+        </x-field-text>
+        <x-field-input binding-field="CREATEDDATE_IN_TEXT" caption="Requested Date" read-only="true" xs-size="12" md-size="2">
+        </x-field-input>
+        <x-field-input binding-field="CREATEDBY" caption="Requested By" read-only="true" xs-size="12" md-size="2">
+        </x-field-input>
+        <x-field-input binding-field="WFDOCSTATUSTEXT" caption="Status" read-only="true" xs-size="12" md-size="2">
+        </x-field-input>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-data-list-department id="DEPTID" caption="Departemen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DEPTID" min-length-search="0">
+        </x-field-data-list-department>
+        <x-field-text id="TITLE" binding-field="TITLE" caption="Judul" read-only="@(!onCreate)" place-holder="Judul" xs-size="12" md-size="4">
+        </x-field-text>
+        <x-field-data-list-icr-app id="APPIDs" caption="Application Type" xs-size="12" md-size="2" multiple="true" read-only="@(!onCreate && !onApproval)" binding-field="APPIDs" min-length-search="0">
+        </x-field-data-list-icr-app>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="DESCRIPTION" caption="Description" xs-size="12" read-only="@(!onCreate)" binding-field="DESCRIPTION" rows="6">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="REASON" caption="Reason" xs-size="12" read-only="@(!onCreate)" binding-field="REASON" rows="6">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row>
+        <x-form-col md-size="4" xs-size="12">
+            <x-field-file property-name="FILEATTACHMENT1" caption="Attachment 01" read-only="@(!onCreate)" binding-field="FILEATTACHMENT1">
+            </x-field-file>
+        </x-form-col>
+        <x-form-col md-size="4" xs-size="12">
+            <x-field-file property-name="FILEATTACHMENT2" caption="Attachment 02" read-only="@(!onCreate)" binding-field="FILEATTACHMENT2">
+            </x-field-file>
+        </x-form-col>
+        <x-form-col md-size="4" xs-size="12">
+            <x-field-file property-name="FILEATTACHMENT3" caption="Attachment 03" read-only="@(!onCreate)" binding-field="FILEATTACHMENT3">
+            </x-field-file>
+        </x-form-col>
+    </x-form-row>
+
+    <x-form-row>
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Approval</div>
+                <div class="panel-body">
+                    <x-form-row>
+                        <x-field-select id="ACTIONTYPE" caption="Action Type" xs-size="12" md-size="6" binding-field="ACTIONTYPE" read-only="@(!onModeration)">
+                            <option value="MD">Update Master Data</option>
+                            <option value="AUTH">Update Authorization and System Access</option>
+                            <option value="SAP">Development By SAP Development</option>
+                            <option value="PMS">Development By PMS Development</option>
+                            <option value="HD">Execution By IT Helpdesk</option>
+                            <option value="GOV">Execution By IT Governance & Master Data</option>
+                            <option value="INFRA">Execution By IT Network & Infrastructure</option>
+                        </x-field-select>
+                    </x-form-row>
+
+                    <x-form-row>
+                        <x-field-select select-type="Boolean" id="IMPACTTOSW" caption="Impact To Application" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTOSW">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTOHW" caption="Impact To Hardware" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTOHW">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTODB" caption="Impact To Database" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTODB">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTONETW" caption="Impact To Network" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTONETW">
+                        </x-field-select>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-select select-type="Boolean" id="IMPACTTOPROC" caption="Impact To Procedures" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTOPROC">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTOSEC" caption="Impact To Security" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTOSEC">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTOSCHED" caption="Impact To Schedule Outage" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTTOSCHED">
+                        </x-field-select>
+                        <x-field-select select-type="Boolean" id="IMPACTTOOS" caption="Impact To OS" xs-size="12" md-size="3" read-only="@(!onApproval  && !onModeration)" binding-field="IMPACTTOOS">
+                        </x-field-select>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-select id="PRIORITYLEVEL" caption="Change Priority" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="PRIORITYLEVEL">
+                            <option value="0">Not Specified</option>
+                            <option value="4">Low</option>
+                            <option value="3">Medium</option>
+                            <option value="2">High</option>
+                            <option value="1">Urgent</option>
+                        </x-field-select>
+                        <x-field-select id="IMPACTLEVEL" caption="Change Impact" xs-size="12" md-size="3" read-only="@(!onApproval && !onModeration)" binding-field="IMPACTLEVEL">
+                            <option value="0">Not Specified</option>
+                            <option value="1">Minor</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Major</option>
+                        </x-field-select>
+                    </x-form-row>
+
+                    <x-form-row>
+                        <x-field-text-area id="ACTION" caption="Action" xs-size="12" read-only="@(!onApproval && !onModeration)" binding-field="ACTION" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="RESOURCES" caption="Resources" xs-size="12" read-only="@(!onApproval && !onModeration)" binding-field="RESOURCES" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+
+    <x-form-row id="panelDEV">
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Development</div>
+                <div class="panel-body">
+                    <x-form-col xs-size="12" md-size="6">
+                        <x-form-row no-gutters="true">
+                            <x-field-date id="DEVSTARTPLAN" picker-option="DateOnly" xs-size="6" caption="Development Date (Plan)" date-format="dd-MMM-yyyy" binding-field="DEVSTARTPLAN" read-only="@(!onDevelopment)"></x-field-date>
+                            <x-field-date id="DEVENDPLAN" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="DEVENDPLAN" read-only="@(!onDevelopment)"></x-field-date>
+                        </x-form-row>
+                    </x-form-col>
+                    <script>helper.initDateRange2('DEVSTARTPLAN', 'DEVENDPLAN', 'DD-MMM-YYYY')</script>
+                    <x-form-col xs-size="12" md-size="6">
+                        <x-form-row no-gutters="true">
+                            <x-field-date id="DEVSTARTACTUAL" picker-option="DateOnly" xs-size="6" caption="Development Date (Actual)" date-format="dd-MMM-yyyy" binding-field="DEVSTARTACTUAL" read-only="true"></x-field-date>
+                            <x-field-date id="DEVENDACTUAL" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="DEVENDACTUAL" read-only="true"></x-field-date>
+                        </x-form-row>
+                    </x-form-col>
+                    @*<script>helper.initDateRange2('DEVSTARTACTUAL', 'DEVENDACTUAL', 'DD-MMM-YYYY')</script>*@
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+    <x-form-row id="panelUAT">
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">UAT</div>
+                <div class="panel-body">
+                    <x-form-row>
+                        <x-field-text id="UATNO" caption="UAT No." xs-size="12" md-size="4" read-only="@(!onUAT)" binding-field="UATNO">
+                        </x-field-text>
+                        <x-form-col md-size="4" xs-size="12">
+                            <x-field-file property-name="FILEUAT" caption="File UAT" read-only="@(!onUAT)" binding-field="FILEUAT">
+                            </x-field-file>
+                        </x-form-col>
+                        <x-form-col md-size="4" xs-size="12">
+                            <x-field-file property-name="FILESCENARIOTEST" caption="File Scenario Test" read-only="@(!onUAT)" binding-field="FILESCENARIOTEST">
+                            </x-field-file>
+                        </x-form-col>
+                    </x-form-row>
+
+                    <x-form-row>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="UATSTARTPLAN" picker-option="DateOnly" xs-size="6" caption="UAT Date (Plan)" date-format="dd-MMM-yyyy" binding-field="UATSTARTPLAN" read-only="@(!onUAT)"></x-field-date>
+                                <x-field-date id="UATENDPLAN" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="UATENDPLAN" read-only="@(!onUAT)"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        <script>helper.initDateRange2('UATSTARTPLAN', 'UATENDPLAN', 'DD-MMM-YYYY')</script>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="UATSTARTACTUAL" picker-option="DateOnly" xs-size="6" caption="UAT Date (Actual)" date-format="dd-MMM-yyyy" binding-field="UATSTARTACTUAL" read-only="true"></x-field-date>
+                                <x-field-date id="UATENDACTUAL" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="UATENDACTUAL" read-only="true"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        @*<script>helper.initDateRange2('UATSTARTACTUAL', 'UATENDACTUAL', 'DD-MMM-YYYY')</script>*@
+                    </x-form-row>
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+    <x-form-row id="panelRN">
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Release Note</div>
+                <div class="panel-body">
+
+                    <x-form-row>
+                        <x-field-text id="RNNO" caption="RN No." xs-size="12" md-size="4" read-only="@(!onRN)" binding-field="RNNO">
+                        </x-field-text>
+                        <x-field-date id="RNDATE" picker-option="DateOnly" xs-size="12" md-size="4" caption="RN Date" date-format="dd-MMM-yyyy" binding-field="RNDATE" read-only="true"></x-field-date>
+                        <x-form-col md-size="4" xs-size="12">
+                            <x-field-file property-name="FILERELEASENOTE" caption="File Release Note" read-only="@(!onRN)" binding-field="FILERELEASENOTE">
+                            </x-field-file>
+                        </x-form-col>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="RN" caption="Notes" xs-size="12" read-only="@(!onRN)" binding-field="RN" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    
+
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+    <x-form-row id="panelDEP">
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Deployment</div>
+                <div class="panel-body">
+                    <x-form-row>
+                        <x-field-text-area id="TESTPLAN" caption="Test Plan" xs-size="12" read-only="@(!onDeployment)" binding-field="TESTPLAN" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="ROLLBACKPLAN" caption="Rollback Plan" xs-size="12" read-only="@(!onDeployment)" binding-field="ROLLBACKPLAN" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="TESTRESULT" caption="Test Result" xs-size="12" read-only="@(!onDeployment)" binding-field="TESTRESULT" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="DEPLOYSTARTPLAN" picker-option="DateOnly" xs-size="6" caption="Deployment Date (Plan)" date-format="dd-MMM-yyyy" binding-field="DEPLOYSTARTPLAN" read-only="@(!onDeployment)"></x-field-date>
+                                <x-field-date id="DEPLOYENDPLAN" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="DEPLOYENDPLAN" read-only="@(!onDeployment)"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        <script>helper.initDateRange2('DEPLOYSTARTPLAN', 'DEPLOYENDPLAN', 'DD-MMM-YYYY')</script>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="DEPLOYSTARTACTUAL" picker-option="DateOnly" xs-size="6" caption="Deployment Date (Actual)" date-format="dd-MMM-yyyy" binding-field="DEPLOYSTARTACTUAL" read-only="true"></x-field-date>
+                                <x-field-date id="DEPLOYENDACTUAL" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="DEPLOYENDACTUAL" read-only="true"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        @*<script>helper.initDateRange2('DEPLOYSTARTACTUAL', 'DEPLOYENDACTUAL', 'DD-MMM-YYYY')</script>*@
+                    </x-form-row>
+                    <x-form-row>
+                        <x-form-col md-size="4" xs-size="12">
+                            <x-field-file property-name="FILEBADEPLOYMENT" caption="File Berita Acara" read-only="@(!onDeployment)" binding-field="FILEBADEPLOYMENT">
+                            </x-field-file>
+                        </x-form-col>
+                    </x-form-row>
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+
+    <x-form-row id="panelEXC">
+        <x-form-col xs-size="12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Execution</div>
+                <div class="panel-body">
+                    <x-form-row>
+                        <x-field-text-area id="TESTPLAN" caption="Test Plan" xs-size="12" read-only="@(!onExecution)" binding-field="TESTPLAN" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="ROLLBACKPLAN" caption="Rollback Plan" xs-size="12" read-only="@(!onExecution)" binding-field="ROLLBACKPLAN" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-field-text-area id="TESTRESULT" caption="Test Result" xs-size="12" read-only="@(!onExecution)" binding-field="TESTRESULT" rows="6">
+                        </x-field-text-area>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="ACTIONSTARTPLAN" picker-option="DateOnly" xs-size="6" caption="Execution Date (Plan)" date-format="dd-MMM-yyyy" binding-field="ACTIONSTARTPLAN" read-only="@(!onExecution)"></x-field-date>
+                                <x-field-date id="ACTIONENDPLAN" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="ACTIONENDPLAN" read-only="@(!onExecution)"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        <script>helper.initDateRange2('ACTIONSTARTPLAN', 'ACTIONENDPLAN', 'DD-MMM-YYYY')</script>
+                        <x-form-col xs-size="12" md-size="6">
+                            <x-form-row no-gutters="true">
+                                <x-field-date id="ACTIONSTARTACTUAL" picker-option="DateOnly" xs-size="6" caption="Execution Date (Actual)" date-format="dd-MMM-yyyy" binding-field="ACTIONSTARTACTUAL" read-only="true"></x-field-date>
+                                <x-field-date id="ACTIONENDACTUAL" picker-option="DateOnly" xs-size="6" caption="&nbsp;" date-format="dd-MMM-yyyy" binding-field="ACTIONENDACTUAL" read-only="true"></x-field-date>
+                            </x-form-row>
+                        </x-form-col>
+                        <script>helper.initDateRange2('ACTIONSTARTACTUAL', 'ACTIONENDACTUAL', 'DD-MMM-YYYY')</script>
+                    </x-form-row>
+                    <x-form-row>
+                        <x-form-col md-size="4" xs-size="12">
+                            <x-field-file caption="File Berita Acara" property-name="FILEBAEXECUTION" read-only="@(!onExecution)" binding-field="FILEBAEXECUTION">
+                            </x-field-file>
+                        </x-form-col>
+                    </x-form-row>
+                </div>
+            </div>
+        </x-form-col>
+    </x-form-row>
+
+
+
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+
+
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+
+
+
+    var customDisplay = function () {
+        if (!record.ACTIONTYPE) {
+            $('#panelDEV').hide();
+            $('#panelUAT').hide();
+            $('#panelDEP').hide();
+            $('#panelRN').hide();
+            $('#panelEXC').hide();
+        }
+        else if (record.ACTIONTYPE === "PMS" || record.ACTIONTYPE === "SAP") {
+            $('#panelDEV').show();
+            $('#panelUAT').show();
+            $('#panelDEP').show();
+            $('#panelRN').show();
+            $('#panelEXC').hide();
+        }
+        else {
+            $('#panelDEV').hide();
+            $('#panelUAT').hide();
+            $('#panelDEP').hide();
+            $('#panelRN').hide();
+            $('#panelEXC').show();
+        }
+        return true;
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        var errorTitle = action + ' - ' + '@ViewBag.Title';
+
+        var selectedvalues = $('#APPIDs').flexdatalist('value');
+        var selectedApps = [];
+        if (selectedvalues && Array.isArray(selectedvalues) && selectedvalues.length > 0)
+        {
+            selectedvalues.forEach(function (appId) {
+                selectedApps.push({ ICRNO:"",APPID: appId });
+            });
+        }
+        savedRecord.TICRAPP = selectedApps;
+        savedRecord.TICRAPP_COUNT = selectedApps.length;
+        return savedRecord;
+    }
+
+
+
+
+
+
+
+
+
+</script>

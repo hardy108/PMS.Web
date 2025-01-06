@@ -1,0 +1,556 @@
+﻿
+@using PMS.Web.UI.Code
+
+@{
+
+    Layout = null;
+}
+
+@{
+                string jsonId = ViewBag.JsonId;
+                string formId = "frm" + jsonId;
+                string viewFolderPath = ViewBag.ViewFolderPath;
+                List<HtmlSelectOptionItem> optionListBoolean = new List<HtmlSelectOptionItem>();
+                optionListBoolean.Add(new HtmlSelectOptionItem { Id = "true", Text = "Ya" });
+                optionListBoolean.Add(new HtmlSelectOptionItem { Id = "false", Text = "Tidak"});
+
+                HtmlJsonFormatter htmlJsonFormatter = new HtmlJsonFormatter { Id = jsonId };
+
+
+                HtmlForm form = new HtmlForm
+                {
+                    HtmlInputs =
+        {
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=6, HtmlInput = new HtmlInputText{ Caption = "Nomer Registrasi", Id="txtRegistrationID",ReadOnly=true,BindingField="REGISTRATIONID",JsonFormatter=htmlJsonFormatter }  }
+        }
+        },
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=6, HtmlInput = new HtmlInputText{ Caption = "No. KTP", Id="txtKTP",BindingField="KTPID", JsonFormatter=htmlJsonFormatter } },
+            }
+        },
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=6, HtmlInput = new HtmlInputText{ Caption = "No. SPK", Id="txtSPK",BindingField="NOSPK", JsonFormatter=htmlJsonFormatter } },
+            }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=4, HtmlInput = new HtmlInputText{ Caption = "Nama Karyawan", Id="txtEmpName",BindingField="EMPNAME", JsonFormatter=htmlJsonFormatter }  },
+        new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlAjaxInputSelect{ Caption="Jenis Kelamin",Id="cboJenisKelamin", BindingField="EMPSEX",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/gender"   }},
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption = "Tempat Lahir", Id="txtTempatLahir",BindingField="PLACEOFBIRTH", JsonFormatter=htmlJsonFormatter }  },
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputDateTimePicker{ Caption="Tanggal Lahir",Id="dtBirthDate", BindingField="BIRTHDAY",JsonFormatter=htmlJsonFormatter,WithInitScript=true,PickerOption= HtmlInputDateTimePickerOption.DateOnly } }
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption = "Agama", Id="txtAgama",BindingField="RELIGION", JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/religion"  }  },
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption = "Suku", Id="txtSuku",BindingField="RACE", JsonFormatter=htmlJsonFormatter,WithInitScript=true  }  }
+
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption = "Pendidikan", Id="txtPendidikan",BindingField="EDUCATION", JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/education" }  },
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption = "Status", Id="txtStatus",BindingField="STATUSID", JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=false  }  }
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=6, HtmlInput = new HtmlInputTextArea{ Caption = "Alamat", Id="txtAlamat",BindingField="KTPADDRESS",JsonFormatter=htmlJsonFormatter } }
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption = "Estate", Id="cboEstate",BindingField="UNITCODE",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true }  },
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput =  new HtmlAjaxInputSelect{ Caption = "Divisi", Id="cboDivisi",BindingField="DIVID",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=false } }
+        }
+        },
+        new HtmlFormRow
+        {
+        HtmlInputs =
+        {
+
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption="Jabatan",Id="cboJabatan", BindingField="POSITIONID",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/position/listforselect?active=true"  }},
+        new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption="Tipe Karyawan",Id="cboTipe", BindingField="EMPTYPE",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/employeetype/listforselect?active=true"  }},
+        new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputSelect{ Caption="PKWT",Id="cboPKWT", BindingField="PKWT",JsonFormatter=htmlJsonFormatter,WithInitScript=true,   OptionList = optionListBoolean        } },
+        new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputNumber{ Caption = "Gaji Pokok", Id="txtGajiPokok",BindingField="BASICWAGES", JsonFormatter=htmlJsonFormatter }  },
+        new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputDateTimePicker{ Caption="Tanggal Masuk",Id="dtJoinDate", BindingField="JOINTDATE",JsonFormatter=htmlJsonFormatter,WithInitScript=true,PickerOption= HtmlInputDateTimePickerOption.DateOnly } }
+
+        }
+        },
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=6, HtmlInput = new HtmlInputText{ Caption = "NPWP", Id="txtNPWP",BindingField="NPWP", JsonFormatter=htmlJsonFormatter }  },
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption="Status Pajak",Id="cboStatusPajak", BindingField="STATUSPAJAK",JsonFormatter=htmlJsonFormatter,WithInitScript=true,ReadOnly = true } },
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption="Status Keluarga",Id="cboStatusPajakKeluarga", BindingField="FAMILYSTATUS",JsonFormatter=htmlJsonFormatter,WithInitScript=true,ReadOnly = true}}
+            }
+
+        },
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputSelect{ Caption="Hak Mendapat Natura",Id="cboNatura", BindingField="NATURA",JsonFormatter=htmlJsonFormatter,WithInitScript=true,        OptionList = optionListBoolean        } },
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlAjaxInputSelect{ Caption="Nama Bank",Id="cboBank", BindingField="BANKID",JsonFormatter=htmlJsonFormatter,WithInitScript=true,StaticLoad=true,ApiRouteURL="api/bank/listforselect?active=true"  }},
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption="No Rekening",Id="txtBankNo", BindingField="BANKACCNO",JsonFormatter=htmlJsonFormatter,WithInitScript=true,ReadOnly = true } },
+                new HtmlFormColumn { XSSize=12, MDSize=3, HtmlInput = new HtmlInputText{ Caption="Nama Rekening Bank",Id="txtBankAccName", BindingField="BANKACCNAME",JsonFormatter=htmlJsonFormatter,WithInitScript=true,ReadOnly = true}}
+            }
+        },
+
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputSelect{ Caption="BPJS Kesehatan",Id="cboBPJSKes", BindingField="BPJSKES",JsonFormatter=htmlJsonFormatter,WithInitScript=true,OptionList = optionListBoolean }},
+                new HtmlFormColumn { XSSize=12, MDSize=4, HtmlInput = new HtmlInputText{ Caption = "No. BPJS Kesehatan", Id="txtNoBPJSKes",BindingField="BPJSKESEHATANNO", JsonFormatter=htmlJsonFormatter } },
+                new HtmlFormColumn { XSSize=12, MDSize=4, HtmlInput = new HtmlInputText{ Caption = "Kode Entitas", Id="txtKodeEntitasBPJSKes",BindingField="BPJSKESEHATANET", JsonFormatter=htmlJsonFormatter } },
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputNumber{ Caption = "Upah Dasar", Id="txtBPJSKesBase",BindingField="BPJSKESEHATANBASE", JsonFormatter=htmlJsonFormatter }  },
+            }
+        },
+
+        new HtmlFormRow
+        {
+            HtmlInputs =
+            {
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputSelect{ Caption="JKK dan JKM",Id="cboJKKJKM", BindingField="BPJSJKK",JsonFormatter=htmlJsonFormatter,WithInitScript=true,OptionList = optionListBoolean }},
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputSelect{ Caption="JHT",Id="cboJHTJP", BindingField="BPJSJHT",JsonFormatter=htmlJsonFormatter,WithInitScript=true,OptionList = optionListBoolean }},
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputSelect{ Caption="JP",Id="cboJP", BindingField="BPJSJP",JsonFormatter=htmlJsonFormatter,WithInitScript=true,OptionList = optionListBoolean }},
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputText{ Caption = "No. BPJS TK", Id="txtNoBPJSTK",BindingField="BPJSKETENAGAKERJAANNO", JsonFormatter=htmlJsonFormatter } },
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputText{ Caption = "NPP", Id="txtNPP",BindingField="BPJSKETENAGAKERJAANNPP", JsonFormatter=htmlJsonFormatter } },
+                new HtmlFormColumn { XSSize=12, MDSize=2, HtmlInput = new HtmlInputNumber{ Caption = "Upah Dasar", Id="txtBPJSTKBase",BindingField="BPJSBASE", JsonFormatter=htmlJsonFormatter }  },
+            }
+        },
+
+        new HtmlFormRow
+        {
+        Id = "divApprovalNotes",
+        Hidden = true,
+        HtmlInputs =
+        {
+        new HtmlFormColumn { XSSize=12, HtmlInput = new HtmlInputTextArea{ Caption = "Approval Notes", Id="txtApprovalNotes",BindingField="APPRVNOTES",JsonFormatter=htmlJsonFormatter,ReadOnly = true } },
+        new HtmlInputHidden { Id="txtActionCode",BindingField="APRVCODE",JsonFormatter = htmlJsonFormatter}
+        }
+        }
+
+
+
+        }
+                };
+
+                string tblID = "tblDetail";
+                string tblEditorPrefix = "inputFor_" + tblID + "_";
+
+                HtmlInputTable table = new HtmlInputTable
+                {
+                    Id = tblID,
+                    Caption = "Daftar Keluarga",
+                    BindingField = "TEMPLOYEEREGISTRATIONFAMILY",
+                    JsonFormatter = htmlJsonFormatter,
+                    WithInitScript = true,
+                    ReadOnly = false,
+                    UseCustomDisplayScripts = true,
+                    AddRowCaption = "Add Row",
+                    Columns =
+        {
+            new HtmlInputTableColumn
+            {
+            IsKey = true,
+            Id = "KTPID",
+            Caption = "NIK/KTP",
+            Editor =  new HtmlInputText()
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "FULLNAME",
+            Caption = "NAMA",
+            Editor =  new HtmlInputText()
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "GENDER",
+            Caption = "JNS KELAMIN",
+            Editor =  new HtmlAjaxInputSelect{ WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/gender"   }
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "PLACEOFBIRTH",
+            Caption = "TEMPAT LAHIR",
+            Editor =  new HtmlInputText()
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "BIRTHDAY",
+            Caption = "TGL LAHIR",
+            Editor =  new HtmlInputDateTimePicker{WithInitScript=true,PickerOption= HtmlInputDateTimePickerOption.DateOnly }
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "EDUCATION",
+            Caption = "PENDIDIKAN",
+            Editor =  new HtmlAjaxInputSelect{ WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/education" }
+            },
+            new HtmlInputTableColumn
+            {
+
+            Id = "RELATIONSHIP",
+            Caption = "HUBUNGAN",
+            Editor =  new HtmlAjaxInputSelect{ WithInitScript=true,StaticLoad=true,ApiRouteURL="api/reference/familyrelation" }
+            }
+        },
+                    AllowEdit = false,
+                    AllowAdd = true,
+                    AllowDelete = true,
+
+                };
+
+            }
+
+
+
+<script>
+
+    //--Select spesific data--Start
+
+    var dictStatus = {};
+
+            var loadStatus = function (selectedStatusId) {
+        dictStatus = {};
+        helper.callAjaxRequestJson("api/status/list?active=true", null, "get", function (data) {
+                if (Array.isArray(data)) {
+                    data.forEach(function (data) {
+                        dictStatus["K-" + data.STATUSID] = data;
+                    });
+                $("#txtStatus").change(function () {
+                        if ($(this).val()) {
+                        $("#cboStatusPajak").val(dictStatus["K-" + $(this).val()].TAXSTATUS);
+                        $("#cboStatusPajakKeluarga").val(dictStatus["K-" + $(this).val()].FAMILYSTATUS);
+                        }
+                    else {
+                        $("#cboStatusPajak").val(null);
+                        $("#cboStatusPajakKeluarga").val(null);
+                        }
+                    });
+                    helper.loadSelect2StaticFromDictionary(dictStatus, "STATUSID", "STATUSNAME", "txtStatus",selectedStatusId);
+                }
+            });
+    };
+
+        var loadDivision = function (selectedEstateId, selectedDivisionId) {
+        helper.callAjaxRequestJson("api/login/getdivisionsforselect", { UnitID: selectedEstateId}, "get", function (data) {
+        if (Array.isArray(data) && data.length > 0) {
+            helper.loadSelect2StaticFromArray(data, "cboDivisi", selectedDivisionId);
+        }
+    });
+    };
+
+    var loadEstates = function (selectedEstateId, selectedDivisionId) {
+        //Clear Combo Estate
+
+        helper.callAjaxRequestJson("api/login/getunitsforselect", null, "get", function (data) {
+        if (Array.isArray(data) && data.length > 0) {
+            helper.loadSelect2StaticFromArray(data, "cboEstate", selectedEstateId);
+            loadDivision(selectedEstateId, selectedDivisionId);
+            if (mode == "New" || mode == "Edit") {
+                    $("#cboEstate").change(function () {
+                    loadDivision($(this).val(), $('#cboDivisi').val());
+                });
+            }
+        }
+    });
+    };
+
+
+    var beforeGetData = function (mode) {
+        /*Specific Code -  Start*/        
+        apiUrl = 'api/employeeregistration/';
+        /*Specific Code -  End*/
+        return true;
+    };
+
+    //--Select spesific data--End
+    var currentRecord;
+
+    var customDisplayRecord = function (responseData) {
+        currentRecord = responseData;
+
+        loadStatus(currentRecord.STATUSID);
+
+    loadEstates(currentRecord.UNITCODE, currentRecord.DIVID);
+        
+        if (responseData.NATURA)
+            $("#cboNatura").val("true").trigger("change");
+        else
+            $("#cboNatura").val("false").trigger("change");
+
+        if (responseData.BPJSKES)
+            $("#cboBPJSKes").val("true").trigger("change");
+        else
+            $("#cboBPJSKes").val("false").trigger("change");
+
+        if (responseData.BPJSJKK)
+            $("#cboJKKJKM").val("true").trigger("change");
+        else
+            $("#cboJKKJKM").val("false").trigger("change");
+
+        if (responseData.BPJSJHT)
+            $("#cboJHTJP").val("true").trigger("change");
+        else
+            $("#cboJHTJP").val("false").trigger("change");
+
+        if (responseData.BPJSJP)
+            $("#cboJP").val("true").trigger("change");
+        else
+            $("#cboJP").val("false").trigger("change");
+
+    var familyItems = responseData.TEMPLOYEEREGISTRATIONFAMILY;
+    helper.loadArrayToFooTable('@tblID', familyItems, ['KTPID']);
+        var readOnly = (mode !== "New" && mode !== "Edit");
+        if (readOnly)
+            helper.setTableReadOnly("@tblID");
+
+    displayFiles(responseData.TEMPLOYEEREGISTRATIONFILE, readOnly);
+
+        return true;
+    };
+
+    var setEditingControl = function (mode) {
+        /*Specific Code -  Start*/
+        var readOnly = (mode !== "New" && mode !== "Edit");
+
+    helper.setInputReadOnly('cboEstate', 'disabled', mode !== "New");
+        helper.setInputReadOnly('cboDivisi', 'disabled', mode !== "New");
+        helper.setInputReadOnly('txtKTP', 'readonly', readOnly);
+        helper.setInputReadOnly('txtEmpName', 'readonly', readOnly);
+        helper.setInputReadOnly('cboJenisKelamin', 'disabled', readOnly);
+        helper.setInputReadOnly('txtTempatLahir', 'readonly', readOnly);
+        helper.setInputReadOnly('dtBirthDate', 'readonly', readOnly);
+        helper.setInputReadOnly('txtAgama', 'disabled', readOnly);
+        helper.setInputReadOnly('txtPendidikan', 'disabled', readOnly);
+        helper.setInputReadOnly('txtStatus', 'disabled', readOnly);
+        helper.setInputReadOnly('txtAlamat', 'readonly', readOnly);
+        helper.setInputReadOnly('cboJabatan', 'disabled', readOnly);
+        helper.setInputReadOnly('cboTipe', 'disabled', readOnly);
+        helper.setInputReadOnly('txtGajiPokok', 'readonly', readOnly);
+        helper.setInputReadOnly('dtJoinDate', 'readonly', readOnly);
+        helper.setInputReadOnly('txtNPWP', 'readonly', readOnly);
+        //helper.setInputReadOnly('cboStatusPajak', 'readonly', readOnly);
+        helper.setInputReadOnly('cboJabatan', 'disabled', readOnly);
+        helper.setInputReadOnly('cboTipe', 'disabled', readOnly);
+        helper.setInputReadOnly('txtGajiPokok', 'readonly', readOnly);
+        //helper.setInputReadOnly('cboStatusPajakKeluarga', 'readonly', readOnly);
+        helper.setInputReadOnly('cboNatura', 'disabled', readOnly);
+        helper.setInputReadOnly('txtSPK', 'readonly', readOnly);
+        helper.setInputReadOnly('txtSuku', 'readonly', readOnly);
+        helper.setInputReadOnly('txtBankNo', 'readonly', readOnly);
+        helper.setInputReadOnly('txtBankAccName', 'readonly', readOnly);
+        helper.setInputReadOnly('cboBank', 'disabled', readOnly);
+        if (readOnly) {
+            $('#divBtnUpload').html('');
+    helper.setTableReadOnly('tblDetail');
+        }
+        /*Specific Code -  End*/
+
+        setButtons();
+
+
+    };
+
+    var beforeSendAction = function (action, record) {
+        /* Specific Code Here - Start*/
+        var errorTitle = mode + ' - ' + '@ViewBag.Title';
+
+        if (mode == "New" || mode == "Edit") {
+
+            //if (!record.REGISTRATIONID) {
+            //     showError(errorTitle, 'Nomer Registrasi tidak boleh kosong')
+            //     return false;
+            //}
+
+            if (!record.KTPID) {
+                showError(errorTitle, 'No.KTP tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.EMPNAME) {
+                showError(errorTitle, 'Nama karyawan tidak boleh kosong')
+                        return false;
+            }
+
+            if (!record.EMPSEX) {
+                showError(errorTitle, 'Jenis kelamin tidak boleh kosong')
+                        return false;
+            }
+
+            if (!record.PLACEOFBIRTH) {
+                showError(errorTitle, 'Tempat lahir tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.BIRTHDAY) {
+                showError(errorTitle, 'Tanggal lahir tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.RELIGION) {
+                showError(errorTitle, 'Agama tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.EDUCATION) {
+                showError(errorTitle, 'Pendidikan tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.STATUSID) {
+                showError(errorTitle, 'Status tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.KTPADDRESS) {
+                showError(errorTitle, 'Alamat tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.UNITCODE) {
+                showError(errorTitle, 'Estate tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.DIVID) {
+                showError(errorTitle, 'Divisi tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.POSITIONID) {
+                showError(errorTitle, 'Jabatan tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.EMPTYPE) {
+                showError(errorTitle, 'Tipe Karyawan tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.BASICWAGES) {
+                showError(errorTitle, 'Gaji pokok tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.JOINTDATE) {
+                showError(errorTitle, 'Tanggal masuk tidak boleh kosong')
+                         return false;
+            }
+
+            //if (!record.NPWP) {
+            //    showError(errorTitle, 'NPWP tidak boleh kosong')
+            //             return false;
+            //}
+
+            if (!record.STATUSPAJAK) {
+                showError(errorTitle, 'Status pajak tidak boleh kosong')
+                         return false;
+            }
+
+            if (!record.NATURA) {
+                showError(errorTitle, 'Natura tidak boleh kosong')
+                         return false;
+            }
+
+            var checkFiles = beforeSaveFiles();
+            if (checkFiles !== true) {
+                showError(checkFiles);
+                return false;
+            }
+            record.TEMPLOYEEREGISTRATIONFILE = employeeFiles;     
+            record.TEMPLOYEEREGISTRATIONFILE_COUNT = employeeFiles.length;
+        }
+
+        /* Specific Code Here - End*/
+        return true;
+    };
+
+    var afterSendAction = function (action, record, responseData) {
+        history.back();
+    };
+
+    
+
+    //Check Family
+    var @table.JsIsRowValidFunctionName = function(values) {
+        if (!$('#' + '@tblEditorPrefix' + 'KTPID').val()) {
+            alert('NIK/KTP tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'FULLNAME').val()) {
+            alert('Nama anggota keluarga tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'GENDER').val()) {
+            alert('Jenis kelamin tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'PLACEOFBIRTH').val()) {
+            alert('Tempat lahir tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'BIRTHDAY').val()) {
+            alert('Tanggal lahir tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'EDUCATION').val()) {
+            alert('Pendidikan tidak boleh kosong');
+            return false;
+        }
+
+        if (!$('#' + '@tblEditorPrefix' + 'RELATIONSHIP').val()) {
+            alert('Hubungan keluarga tidak boleh kosong');
+            return false;
+        }
+        return true;
+    };
+</script>
+
+@Html.Raw(form)
+<div style="height:10px"></div>
+@Html.Partial("_EmployeeAttachment.cshtml")
+<div style="height:10px"></div>
+@Html.Raw(table)
+@Html.Raw(htmlJsonFormatter)
+

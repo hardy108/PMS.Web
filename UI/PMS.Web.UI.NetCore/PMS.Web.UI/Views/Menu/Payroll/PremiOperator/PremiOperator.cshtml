@@ -1,0 +1,92 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Premi Operator";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+<script>
+    var dictBlocks = {}
+</script>
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="ID PREMI OPERATOR" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Estate" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Estate" xs-size="12" md-size="3" value-field="UNITCODE">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-text binding-field="STATUS" id="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-activity id="ACTIVITYID" binding-field="ACTIVITYID" caption="Jenis Pekerjaan" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="ACTIVITYID" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+        </x-field-data-list-activity>
+        <x-field-data-list-vehicle-type id="VEHICLETYPEID" binding-field="VEHICLETYPEID" caption="Tipe Kendaraan" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" min-length-search="2">
+        </x-field-data-list-vehicle-type>
+        <x-field-select id="PRODUCTID" binding-field="PRODUCTID" caption="Produk" read-only="@ViewBag.ReadOnly" place-holder="PRODUCT" xs-size="12" md-size="1">
+            <option value="1">TBS</option>
+        </x-field-select>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text id="BASISGROUP" binding-field="BASISGROUP" caption="Grup Basis" read-only="@ViewBag.ReadOnly" place-holder="Grup Basis" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text binding-field="DESCRIPTION" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="5">
+        </x-field-text>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+
+        <x-tab-panel caption="Basis Dasar">
+            @Html.Partial("_PremiMuatBasisBasic.cshtml")
+        </x-tab-panel>
+        <x-tab-panel caption="Borong">
+            @Html.Partial("_PremiMuatBorong.cshtml")
+        </x-tab-panel>
+
+    </x-tab>
+
+</x-form>
+
+<script>
+
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+</script>

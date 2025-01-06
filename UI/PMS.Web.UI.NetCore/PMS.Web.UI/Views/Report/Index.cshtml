@@ -1,0 +1,123 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Report";
+}
+
+<script>
+    var dictReportGroup = {};
+</script>
+
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <x-form-row>
+            <x-field-select place-holder="Pilih Report Group" id="cboReportGroup" no-caption="true" md-size="3" xs-size="12">
+                @foreach (ReportGroup group in ViewBag.ReportGroups)
+                {
+                    <option value="@(group.Id)">@(group.Text)</option>
+                }
+            </x-field-select>
+            <x-field-select place-holder="Pilih Report" id="cboReport" no-caption="true" md-size="4" xs-size="12"></x-field-select>
+            <button class="btn btn-primary" onclick="openReport()">Open</button>
+        </x-form-row>
+    </div>
+</div>
+
+<x-tab tab-style="nav-pills" id="tabReports">
+
+</x-tab>
+
+
+
+
+@foreach (ReportGroup group in ViewBag.ReportGroups)
+{
+    <script>
+        dictReportGroup["@(group.Id)"] = "@(Html.Raw(ViewData["RG" + group.Id]))";
+    </script>
+    
+}
+
+
+<script>
+
+    var reportUrl = '',
+        reportParameter = '',
+        showInline = false,
+        dictReports = {},
+        dictReportGroups = {};
+
+    @Html.Raw(ViewBag.DicReports)
+    @Html.Raw(ViewBag.DicReportGroups)
+
+
+
+
+    var addNewTab = function (report) {
+        if ($('#' + report.ReportID).html()) {
+            $.fn.activateTab(report.ReportID);
+            return;
+        }
+
+
+
+        $.addDynaTab({
+            tabID: 'tabReports_Nav',
+            tabPageId: report.ReportID,
+            type: 'ajax',
+            url: '/Report/Show/' + report.ReportID,
+            method: 'get',
+            dtype: 'html',
+            params: {},
+            tabTitle: report.ReportName
+        });
+    };
+
+    var openReport = function () {
+        if (!$('#cboReport').val()) {
+            alert("Pilih report yang akan dibuka")
+            return;
+        }
+
+        var report = dictReports[$('#cboReport').val()];
+        if (!report) {
+            alert("Report tidak valid")
+            return;
+        }
+        $('#tabReports').show();
+        addNewTab(report);
+    };
+
+    var loadReports = function() {
+        var options = dictReportGroups[$('#cboReportGroup').val()];
+        $('#cboReport').html("");
+        if (options) {
+            options.forEach(function (option) {
+                $('#cboReport').append("<option value='" + option.ReportID + "'>" + option.ReportName + "</option>")
+            });
+        }
+    }
+
+    $(function () {
+        $('#cboReportGroup').on('change', function () {
+            loadReports(); 
+        });
+        loadReports();
+        
+
+
+
+
+
+        $('#tabReports_Nav').dynatabs({
+            tabBodyID: "tabReports",
+            showCloseBtn: true,
+            confirmDelete: true,
+            confirmMessage: "Anda akan menutup laporan"
+        });
+
+    });
+
+
+</script>
+

@@ -1,0 +1,83 @@
+﻿{
+   "ContextClassName": "AMContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "DoNotCombineNamespace": false,
+   "IdReplace": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "AM.EFCore",
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMOBJECT]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMOBJECTTYPE]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMORGANIZATION]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMPROPERTY]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMRELATION]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMRELATIONTYPE]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[AMUSER]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMPERMISSIONALL]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMPERMISSIONALLVALID]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMPROPERTY]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMPROPERTYVALID]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMRELATION]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMRELATIONMEMBERSHIP]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMRELATIONORGANIZATIONVALID]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[VAMUSER]"
+      }
+   ],
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseSpatial": false
+}

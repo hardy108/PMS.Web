@@ -1,0 +1,63 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models;
+@{
+
+    ViewData["Title"] = "Approval Buku Panen - Validasi Limit Transaksi";
+    Layout = null;
+    string mode = ViewBag.Mode;
+
+    bool readOnlyWhenNotInsert = false;
+    try
+    {
+        readOnlyWhenNotInsert = ViewBag.ReadOnlyWhenNotInsert;
+    }
+    catch { }
+
+    bool readOnly = false;
+    try
+    {
+        readOnly = ViewBag.ReadOnly;
+    }
+    catch { }
+
+
+    List<FilterAscendant> ascendants = new List<FilterAscendant>();
+    if (!readOnlyWhenNotInsert)
+    {
+        ascendants.Add(new FilterAscendant { ElementID = "UNITCODE", FieldID = "UnitID" });
+    }
+
+
+    
+
+
+
+
+}
+
+<script>
+        var mode = "@(mode)";
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text id="ID" binding-field="ID" caption="No. Buku Panen" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-unit-by-user-name id="UNITCODE" caption="Estate" xs-size="12" md-size="3" read-only="true" binding-field="UNITCODE" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-date id="DATE" binding-field="DATE" caption="Tgl. Pengajuan" read-only="true" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text id="WFDOCSTATUSTEXT" binding-field="WFDOCSTATUSTEXT" caption="Status Pengajuan" read-only="true" place-holder="Status Pengajuan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+
+    
+</x-form>
+
+
+
+
+
+
+
+

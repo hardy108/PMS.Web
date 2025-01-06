@@ -1,0 +1,17 @@
+﻿@using Microsoft.Extensions.Options
+@using PMS.Shared.Models
+@inject IOptions<AppSetting> Settings
+
+    <script>
+        var _API_URL = '@Settings.Value.WebApiUrl',
+            _DHS_HOST = '@Settings.Value.DHSHost',
+            _LOGIN_PAGE = '@Settings.Value.LoginPage',
+            _DEFAULT_HOMEPAGE = '@Settings.Value.HomePage',
+            _LIST_PAGE_SIZE = @Settings.Value.ListPageSize,
+            _MAX_ATTACHMENT_FILE_SIZE =   @Settings.Value.MaxAttachmentFileSize,
+            _CHANGE_PASSWORD_PAGE = '@Settings.Value.ChangePasswordPage',
+            _SKIN = '@Settings.Value.Skin';
+
+        if (!_SKIN)
+            _SKIN = 'skin-blue';
+    </script>

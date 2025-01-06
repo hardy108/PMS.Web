@@ -1,0 +1,38 @@
+[
+  {
+    "Id": "RPTATT",
+    "Text": "Attendance"
+  },
+  {
+    "Id": "RPTEMP",
+    "Text": "Employee"
+  },
+  {
+    "Id": "RPTFIN",
+    "Text": "Financial"
+  },
+  {
+    "Id": "RPTGL",
+    "Text": "General Ledger"
+  },
+  {
+    "Id": "RPTHVT",
+    "Text": "Harvesting"
+  },
+  {
+    "Id": "RPTINV",
+    "Text": "Inventory"
+  },
+  {
+    "Id": "RPTOPR",
+    "Text": "Operasional"
+  },
+  {
+    "Id": "RPTPROD",
+    "Text": "Produksi"
+  },
+  {
+    "Id": "RPTUPK",
+    "Text": "Upkeep"
+  }
+]

@@ -1,0 +1,200 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    ViewData["Title"] = "BUku Panen";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    string tblDetail = "tblCollection";
+    string tblEmployee = "tblEmployee";
+    string tblBlock = "tblBlock";
+    string tblFine = "tblFine";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+
+}
+
+<script>
+    var dictEmployees = {},
+        dictBlocks = {},
+        readonly = @(isReadOnlyString);
+
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-text xs-size="12" md-size="3" id="HARVESTCODE" binding-field="HARVESTCODE" caption="No. Buku Panen" read-only="true" place-holder="Auto Number">
+        </x-field-text>
+        <x-field-data-list-divisi-by-user-name xs-size="12" md-size="3" id="DIVID" caption="Divisi" binding-field="DIVID" min-length-search="2" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-date id="HARVESTDATE" binding-field="HARVESTDATE" caption="Tgl. RKH" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-text binding-field="STATUS_IN_TEXT" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-employee xs-size="12" md-size="4" id="MANDORID" binding-field="MANDORID" caption="Mandor" api-url-param="MandorTanam=true" read-only="@ViewBag.ReadOnlyWhenNotInsert"></x-field-data-list-employee>
+        <x-field-data-list-employee xs-size="12" md-size="4" id="MANDOR1ID" binding-field="MANDOR1ID" caption="Mandor 1" api-url-param="Mandor1=true" read-only="@ViewBag.ReadOnlyWhenNotInsert"></x-field-data-list-employee>
+        <x-field-data-list-employee xs-size="12" md-size="4" id="KRANIID" binding-field="KRANIID" caption="Krani" api-url-param="KraniTanam=true" read-only="@ViewBag.ReadOnlyWhenNotInsert"></x-field-data-list-employee>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-payment-type xs-size="12" md-size="2" id="HARVESTPAYMENTTYPE" binding-field="HARVESTPAYMENTTYPE" caption="Tipe" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-payment-type>
+        <x-field-data-list-harvest-type xs-size="12" md-size="2" id="HARVESTTYPE" binding-field="HARVESTTYPE" caption="Pekerjaan" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-harvest-type>
+        <x-field-data-list-activity xs-size="12" md-size="4" caption="Kode Kegiatan" id="ACTIVITYID" binding-field="ACTIVITYID" read-only="@ViewBag.ReadOnlyWhenNotInsert" chain-to-relatives="true" ascendants="@(new List<FilterAscendant> { new FilterAscendant { FieldID = "HVYTPE",ElementID="HARVESTTYPE" } })" api-url-param="HV=true" min-length-search="0"></x-field-data-list-activity>
+        <input type="hidden" id="CARDTYPE">
+        <x-field-data-list-employee xs-size="12" md-size="4" caption="Checker" id="CHECKERID" binding-field="CHECKERID" read-only="@ViewBag.ReadOnly"></x-field-data-list-employee>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area binding-field="REMARK" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="KETERANGAN" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form-row is-hidden="@((ViewBag.Mode!="Unpost"))">
+        <x-field-text-area binding-field="CANCELEDCOMMENT" caption="Alasan Pembatalan" read-only="@ViewBag.ReadOnly" place-holder="Alasan Pembatalan" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+    <x-tab tab-style="nav-pills">
+
+
+        <x-tab-panel caption="Karyawan Panen">
+            @Html.Partial("_HarvestingEmployee.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Blok Panen">
+            @Html.Partial("_HarvestingBlock.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Hasil Panen">
+            @Html.Partial("_HarvestingCollection.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Denda Panen">
+            @Html.Partial("_HarvestingFine.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Summary">
+            @Html.Partial("_HarvestingSummary.cshtml")
+        </x-tab-panel>
+
+    </x-tab>
+</x-form>
+
+
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],        
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+    var checkMode = function () { 
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        //dictActivities = {};
+        //if (record.VRKHACTIVITYREF && record.VRKHACTIVITYREF.length > 0) {
+        //    record.VRKHACTIVITYREF.forEach(function (value) {
+        //        dictActivities[value.ACTID] = value;
+        //    });
+        //}
+
+        //dictMaterials = {};
+        //if (record.VRKHMATERIALREF && record.VRKHMATERIALREF.length > 0) {
+        //    record.VRKHMATERIALREF.forEach(function (value) {
+        //        dictMaterials[value.MATID] = value;
+        //    });
+        //}
+
+        //dictMandors = {};
+        //if (record.VRKHMANDORREF && record.VRKHMANDORREF.length > 0) {
+        //    record.VRKHMANDORREF.forEach(function (value) {
+        //        dictMandors[value.SPVID] = value;
+        //    });
+        //}
+
+        //dictBlocks = {};
+        //if (record.VRKHBLOCKREF && record.VRKHBLOCKREF.length > 0) {
+        //    record.VRKHBLOCKREF.forEach(function (value) {
+        //        dictBlocks[value.BLOCKID] = value;
+        //    });
+        //}
+        return true;
+    };
+
+    
+  
+
+    var customDisplay = function () {
+
+        Employee_.initTable(record.THARVESTEMPLOYEE);        
+        Block_.initTable(record.VHARVESTBLOCK);    
+        Collection_.initTable(record.THARVESTCOLLECT);
+        Fine_.initTable(record.THARVESTFINE);
+        Summary_.initTable(record.THARVESTBLOCK);        
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        //resetElements('mdlActivity');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        if (action == "New" || action == "Edit") {
+            savedRecord["THARVESTEMPLOYEE"] = Employee_.saveRows();
+            if (savedRecord["THARVESTEMPLOYEE"])
+                savedRecord["THARVESTEMPLOYEE_COUNT"] = savedRecord["THARVESTEMPLOYEE"].length;
+
+            savedRecord["VHARVESTBLOCK"] = Block_.saveRows();
+            if (savedRecord["VHARVESTBLOCK"])
+                savedRecord["VHARVESTBLOCK_COUNT"] = savedRecord["VHARVESTBLOCK"].length;
+
+            savedRecord["THARVESTCOLLECT"] = Collection_.saveRows();
+            if (savedRecord["THARVESTCOLLECT"])
+                savedRecord["THARVESTCOLLECT_COUNT"] = savedRecord["THARVESTCOLLECT"].length;
+
+            savedRecord["THARVESTFINE"] = Fine_.saveRows();
+            if (savedRecord["THARVESTFINE"])
+                savedRecord["THARVESTFINE_COUNT"] = savedRecord["THARVESTFINE"].length;
+        }
+        return savedRecord;
+    }
+   
+
+    
+
+    
+
+
+
+
+</script>

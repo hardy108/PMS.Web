@@ -1,0 +1,47 @@
+[
+  {
+    "FieldName": "NO",
+    "FieldCaption": "NO",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": false,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "UNITCODE",
+    "FieldCaption": "Estate",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FNoSort",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 20
+  },
+  {
+    "FieldName": "VOUCHERNO",
+    "FieldCaption": "No Voucher",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FLeft",
+    "Visible": true,
+    "SortSequence": 30
+  },
+  {
+    "FieldName": "DATE",
+    "FieldCaption": "Tanggal",
+    "FieldType": "FDate",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Format": "dd MMM yyyy",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 40
+  }
+]

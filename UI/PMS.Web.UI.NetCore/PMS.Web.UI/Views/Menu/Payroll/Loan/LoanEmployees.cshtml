@@ -1,0 +1,141 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+
+
+    ViewData["Title"] = "LoanEmployees";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+    bool isReadonly = (!mode.Equals("New") && !mode.Equals("Edit"));
+    bool isReadonlyWhenNotInsert = !mode.Equals("New");
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string tblLoanItem = "tblLoanItem";
+
+}
+<script>
+    var
+        dictItem = {};
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+
+
+
+    <x-form-row>
+        <x-field-date binding-field="LOANDATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="now">
+        </x-field-date>
+        <x-field-data-list-unit-by-user-name id="UNITID" caption="Estate" xs-size="12" md-size="2" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="UNITID" min-length-search="0">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-text id="TRANID" binding-field="TRANID" caption="No. Transaksi" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text id="STATUS" binding-field="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="1">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+
+        <x-field-data-list-employee id="EMPID" caption="Karyawan" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="EMPID" min-length-search="3"
+                                    chain-to-relatives="@(!ViewBag.ReadOnlyWhenNotInsert)"
+                                    ascendants="@(ViewBag.ReadOnlyWhenNotInsert ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITID",FieldID = "UnitID"}})">
+            is-unit-mandatory="true">
+        </x-field-data-list-employee>
+    </x-form-row>
+    <x-form-row>
+        <x-field-number id="TENOR" binding-field="TENOR" caption="Tenor / Bulan" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="2"></x-field-number>
+        <x-field-number id="TOTAL" binding-field="TOTAL" caption="Total" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="2"></x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text-area id="NOTE" binding-field="NOTE" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="4">
+        </x-field-text-area>
+    </x-form-row>
+    <x-form>
+        &nbsp;
+    </x-form>
+    @*<x-tab tab-style="nav-pills">
+            <x-tab-panel caption="Loan Item">
+                @Html.Partial("LoanEmpItem.cshtml")
+            </x-tab-panel>
+
+        </x-tab>*@
+
+</x-form>
+
+
+
+
+<script>
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display","Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    }
+
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+    //var beforeDisplay = function () {
+ 
+
+    //    dictItem = {};
+    //    if (record.TLOANEMPITEM && record.TLOANEMPITEM.length > 0) {
+    //        record.TLOANEMPITEM.forEach(function (value) {
+    //            dictItem[value.ID] = value;
+    //        });
+    //    }
+
+    //    return true;
+    //};
+
+
+    @*var customDisplay = function () {
+        @(tblLoanItem)_Handlers.initTable(record.TLOANEMPITEM);
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlLoanItem');
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit" ) {
+            savedRecord["TLOANEMPITEM"] = @(tblLoanItem)_Handlers.saveRows();
+            if (savedRecord["TLOANEMPITEM"])
+                savedRecord["TLOANEMPITEM_COUNT"] = savedRecord["TLOANEMPITEM"].length;
+
+        return savedRecord;
+    }*@
+
+</script>

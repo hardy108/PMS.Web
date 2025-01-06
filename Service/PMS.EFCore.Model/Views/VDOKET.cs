@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PMS.EFCore.Model
+{
+    public class VDOKET
+    {
+        public DateTime DOK_TGLPANEN { get; set; }
+        public DateTime? DOK_JAMCATAT { get; set; }
+        public string DOK_ID { get; set; }
+        public string DOK_TPHCODE { get; set; }
+        public string DOK_BLOCKID { get; set; }
+        public string DOK_DIVID { get; set; }
+        public string DOK_KERANIID { get; set; }
+        public string DOK_MANDORID { get; set; }
+        public string DOK_PEMANEN { get; set; }
+        public string DOK_PEMBRONDOL { get; set; }
+        public string DOK_FOTO { get; set; }
+        public string DOK_LT { get; set; }
+        public string DOK_LG { get; set; }
+        public string DOK_CATATAN { get; set; }
+        public string DOK_FOTO2 { get; set; }
+        public string DOK_XDOKETID { get; set; }
+        public string DOK_BLOCKCODE { get; set; }
+        public string DOK_STATUS { get; set; }
+        public string CREATEDBY { get; set; }
+        public DateTime? CREATED { get; set; }
+        public string UPDATEDBY { get; set; }
+        public DateTime? UPDATED { get; set; }
+        public string DOK_CHECKERID { get; set; }
+        public string DOK_ISRSPO { get; set; }
+        public decimal? DOK_NORMAL { get; set; }
+        public decimal? DOK_ABNORMAL { get; set; }
+        public decimal? DOK_TOTALTBS { get; set; }
+        public decimal? DOK_BRONDOLAN { get; set; }
+        public decimal? DOK_BUSUK { get; set; }
+        public decimal? DOK_MENTAH { get; set; }
+        public decimal? DOK_JJGKOSONG { get; set; }
+        public decimal? DOK_TGKPANJANG { get; set; }
+        public decimal? DOK_PARTHENO { get; set; }
+        public decimal? DOK_HAMA { get; set; }
+        public string DOK_PINALTI1 { get; set; }
+        public string DOK_PINALTI2 { get; set; }
+        public string DOK_PINALTI3 { get; set; }
+        public string DETAIL_CREATEDBY { get; set; }
+        public DateTime? DETAIL_CREATED { get; set; }
+        public string DETAIL_UPDATEBY { get; set; }
+        public DateTime? DETAIL_UPDATED { get; set; }
+    }
+
+}

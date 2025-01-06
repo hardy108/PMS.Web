@@ -1,0 +1,258 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+
+    string tblId = "tblDetail";
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<x-form-col xs-size="12">
+    <div class="panel panel-default">
+        <div class="panel-heading">Detail Kontrak</div>
+        <div class="panel-body">
+            <x-form-row>
+                <table id="@(tblId)" class="table table-bordered table-hover" data-paging="true" data-sorting="true" style="table-layout: fixed; width:100%;min-width:100%;max-width:100%"></table>
+            </x-form-row>
+            <x-form-row>&nbsp;</x-form-row>
+            @if (!(ViewBag.ReadOnly))
+            {
+                <x-form-row>
+                    <x-form-col xs-size="12">
+                        <button id="btnPilihActivityTop" class="btn btn-primary pull-left" onclick="@(tblId)_Handlers.showForm()">
+                            Tambah
+                        </button>
+                        &nbsp;&nbsp;
+                        <button id="btnHapusActivityTop" class="btn" onclick="@(tblId)_Handlers.deleteRows()">
+                            Hapus
+                        </button>
+                    </x-form-col>
+                </x-form-row>
+
+                <x-modal id="mdlDetail" caption="Tambah Detail Kontrak">
+                    <x-modal-body>
+                        <x-form-row>
+                            <x-field-data-list-activity id="ACTID" binding-field="ACTID" caption="Activity" multiple="true" xs-size="12" value-field="*" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+                            </x-field-data-list-activity>
+                        </x-form-row>
+                        <x-form-row>
+                            <x-field-number id="OUTPUT" binding-field="OUTPUT" caption="Output" xs-size="12" md-size="4"></x-field-number>
+                        </x-form-row>
+
+                        <x-form-row>
+                            <x-field-number id="PRICE" binding-field="PRICE" caption="Harga" xs-size="12" md-size="4"></x-field-number>
+                        </x-form-row>
+                    </x-modal-body>
+                    <x-modal-footer>
+                        <x-form-row>
+                            <x-form-col xs-size="12">
+                                <button id="btnResetActivity" class="btn" onclick="resetElements('mdlDetail')">
+                                    Reset
+                                </button>
+                                &nbsp;&nbsp;
+                                <button id="btnAddActivity" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows()">
+                                    Tambah
+                                </button>
+                                &nbsp;&nbsp;
+                                <button id="btnAddCloseActivity" class="btn btn-primary" onclick="@(tblId)_Handlers.addRows(true)">
+                                    Tambah dan Tutup
+                                </button>
+                                &nbsp;&nbsp;
+                                <button id="btnCloseActivity" class="btn" onclick="$('#mdlDetail').modal('hide')">
+                                    Tutup
+                                </button>
+                            </x-form-col>
+                        </x-form-row>
+                    </x-modal-footer>
+                </x-modal>
+            }
+        </div>
+    </div>
+</x-form-col>
+
+<script>
+
+    var @(tblId)_Handlers = {
+        columns: [
+            {
+                "type": "html",
+                "name": "CHKSELECT",
+                "title": "<input type='checkbox' id='chkAllDetail' name='chkDeleteDetail' onclick='checkAllCheckBox(this)'>",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='checkbox' name='chkDeleteDetail'>";
+                }
+            },
+            {
+                "type": "text",
+                "name": "ACTID",
+                "title": "Kode Kegiatan",
+                "visible": false
+            },
+            {
+                "type": "text",
+                "title": "Kegiatan",
+                "name": "ACTNAME",
+                "visible": true
+            },
+            {
+                "type": "number",
+                "title": "Output",
+                "name": "OUTPUT",
+                "visible": @(isReadOnlyString)
+                
+            },
+            {
+                "type": "html",
+                 "name": "OUTPUT_INPUT",
+                 "title": "Output",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='OUTPUT' value='" + rowdata["OUTPUT"] + "'  data-bf='OUTPUT'  onfocusout='updateInputToRow(this)' style='max-width:100%'>";
+                }
+
+            },
+            {
+                "type": "number",
+                "title": "Harga",
+                "name": "PRICE",
+                "visible": @(isReadOnlyString)
+            },
+            {
+                "type": "html",
+                 "name": "PRICE_INPUT",
+                "title": "Harga",
+                "visible": !@(isReadOnlyString),
+                "formatter": function (value,option,rowdata) {
+                    return "<input type='number' name='PRICE' value='" + rowdata["PRICE"] + "'  data-bf='PRICE'  onfocusout='updateInputToRow(this)' style='max-width:100%'>";
+                }
+
+            }
+        ],
+        showForm: function () {
+            $('#mdlDetail').modal('show');
+            return true;
+        },
+        initTable: function (rows) {
+            $("#@(tblId)").footable({
+                "columns": @(tblId)_Handlers.columns,
+                "rows": rows
+            });
+            return;
+        },
+        rowKeys: ["ACTID"],
+        getRowKey: function (values) {
+            if (values)
+                return helper.footableRowKey(values, @(tblId)_Handlers.rowKeys);
+            return null;
+        },
+
+        isRowExist: function (values, allrows) {
+            return helper.footableRowExist(values, allrows,@(tblId)_Handlers.rowKeys);
+        },
+
+        selectedActivities: [],
+
+
+
+        addRows: function (closeForm) {
+
+            @(tblId)_Handlers.selectedActivities = $('#ACTID').flexdatalist('value');
+            if (!@(tblId)_Handlers.selectedActivities || !@(tblId)_Handlers.selectedActivities.length) {
+                alert("Kegiatan belum dipilih");
+                return false;
+            }
+
+
+            if (!$('#OUTPUT').val()) {
+                alert("Output belum diisi");
+                return false;
+            }
+
+            if (!$('#PRICE').val()) {
+                alert("Harga belum diisi");
+                return false;
+            }
+
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return;
+            }
+            var added = 0;
+
+            var existActivities = "";
+            @(tblId)_Handlers.selectedActivities.forEach(function (activity) {
+                var detail =
+                {
+                    ACTID: activity.ACTIVITYID,
+                    ACTNAME: activity.ACTIVITYID + ' - ' + activity.ACTIVITYNAME,
+                    OUTPUT: $('#OUTPUT').val(),
+                    PRICE: $('#PRICE').val()
+                };
+                detail.key = @(tblId)_Handlers.getRowKey(detail);
+                if (!@(tblId)_Handlers.isRowExist(detail, ft.rows.all)) {
+                    ft.rows.add(detail, false);
+                    added++;
+                }
+                else {
+                    existActivities += "\r\n" + detail.ACTNAME;
+                }
+            });
+
+
+            if (added) {
+                ft.draw();
+            }
+            else {
+                if (existActivities)
+                    alert("Kegiatan berikut sudah ada : " + existActivities);
+            }
+
+
+            $('#ACTID').val(null);
+            if (closeForm)
+                $('#mdlDetail').modal('hide');
+            return;
+        },
+
+        deleteRows: function () {
+            if (!confirm('Yakin akan menghapus detail kontrak?'))
+                return;
+
+            var ft = FooTable.get('#@(tblId)');
+            var deletedCount = 0;
+            if (ft) {
+                $('[name = "chkDeleteDetail"]').each(function () {
+                    if (!(this.id)) {
+                        if (this.checked) {
+                            var $row = FooTable.getRow($(this).closest('tr'));
+                            $row.delete(false);
+                            deletedCount++;
+                        }
+
+                    }
+                });
+                if (deletedCount) {
+                    ft.draw();
+                }
+
+            }
+        },
+        saveRows : function () {
+            var ft = FooTable.get('#@(tblId)');
+            if (!ft) {
+                alert("invalid table");
+                return null;
+            }
+
+            var rows = [];
+            $.each(ft.rows.all, function (i, row) {
+                if (row.val()["OUTPUT"] > 0 && row.val()["PRICE"]>0)
+                    rows.push(row.val());
+            });
+
+            return rows;
+        }
+    };
+</script>

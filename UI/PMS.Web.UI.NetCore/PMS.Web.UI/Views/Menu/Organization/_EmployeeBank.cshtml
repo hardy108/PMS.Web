@@ -1,0 +1,9 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+
+    <x-form-row>
+        <x-field-data-list  id="BANKID" binding-field="BANKID" caption="Nama Bank"  read-only="@(ViewBag.ReadOnly)" place-holder="Nama Bank" xs-size="12" md-size="3" api-url="api/bank/list?" 
+            visible-fields="BANKNAME" value-field="BANKID" search-contain="true" min-length-search="0" search-fields="[BANKID,BANKNAME]"></x-field-data-list>
+        <x-field-text id="BANKACCNO" binding-field="BANKACCNO" caption="No. Rekening"  read-only="@(ViewBag.ReadOnly)" place-holder="No. Rekening" xs-size="12" md-size="3"></x-field-text>
+        <x-field-text id="BANKACCNAME" binding-field="BANKACCNAME" caption="Nama Rekening"  read-only="@(ViewBag.ReadOnly)" place-holder="Nama Rekening" xs-size="12" md-size="6"></x-field-text>
+    </x-form-row>

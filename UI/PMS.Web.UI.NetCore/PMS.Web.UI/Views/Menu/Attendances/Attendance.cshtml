@@ -1,0 +1,89 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Attendance";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+}
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+
+        <x-field-text id="ID" binding-field="ID" caption="Attendance ID" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-data-list-employee id="EMPLOYEE" binding-field="EMPLOYEE" caption="Karyawan" value-field="*" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert">
+        </x-field-data-list-employee>
+        <input type="hidden" name="EMPLOYEEID" id="EMPLOYEEID" data-bf="EMPLOYEEID" />
+        <x-field-data-list-divisi id="DIVID" binding-field="DIVID" caption="Divisi" xs-size="12" md-size="4" read-only="true" >
+        </x-field-data-list-divisi>
+        <x-field-text id="STATUS" binding-field="STATUS" caption="Status" read-only="true" place-holder="Status" xs-size="12" md-size="2">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        @*<x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="3">
+        </x-field-data-list-divisi-by-user-name>*@
+        <x-field-date binding-field="DATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="3" picker-option="DateOnly" date-format="dd-MMM-yyyy">
+        </x-field-date>
+        <x-field-data-list id="ABSENTCODE" binding-field="ABSENTCODE" caption="Kode Absen" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" min-length-search="0"
+                           api-url="api/absenttype/list" text-fields="{ABSENTCODE} - {ABSENTDESCRIPTION}" search-fields="[ABSENTCODE,ABSENTDESCRIPTION]" value-field="ABSENTCODE" visible-fields="[ABSENTCODE,ABSENTDESCRIPTION]">
+        </x-field-data-list>
+        @*<x-field-select id="PRESENT" binding-field="PRESENT" select-type="Boolean" caption="Hadir" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly"></x-field-select>*@
+        @*<x-field-select id="PRESENT" binding-field="PRESENT" caption="Hadir" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Boolean">
+        </x-field-select>*@
+        <x-field-select id="S_PRESENT" binding-field="S_PRESENT" caption="Hadir" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" select-type="Single">
+            <option value="True">Ya</option>
+            <option value="False">Tidak</option>
+        </x-field-select>
+        <x-field-number id="HK" binding-field="HK" caption="Jumlah HK" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly">
+        </x-field-number>
+    </x-form-row>
+    <x-form-row>
+        <x-field-text binding-field="REF" caption="Referensi" read-only="@ViewBag.ReadOnly" place-holder="REFERENSI" xs-size="12" md-size="6">
+        </x-field-text>
+        <x-field-text binding-field="REMARK" caption="KETERANGAN" read-only="@ViewBag.ReadOnly" place-holder="REMARK" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+</x-form>
+
+<script>
+    var checkMode = function () {
+        return true;
+    };
+
+
+    var beforeDisplay = function () {
+        var empId = $("#EMPLOYEEID").val();
+        $("#EMPLOYEE").val(empId);
+        return true;
+    };
+
+
+    var customDisplay = function () {
+        var emp = [];
+        $('#EMPLOYEE').on('change', function () {
+            emp = $('#EMPLOYEE').flexdatalist('value');
+            var employeeId = emp.EMPID;
+            var divId = emp.DIVID;
+            $("#EMPLOYEEID").val(employeeId);
+            $("#DIVID").val(divId);
+        });
+
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        return true;
+    }
+
+    var beforeSendAction = function (action, savedRecord) {
+        
+        return savedRecord;
+    }
+
+</script>

@@ -1,0 +1,195 @@
+﻿@using PMS.Web.UI.Code
+
+<input type="hidden" value="@ViewBag.MenuID" id="menuId" />
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">                
+                <button type="button" id="btnFilter" class="btn btn-primary btn-sm dropdown-toggle pull-right" data-toggle="collapse" data-target="#formFilter">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+            <div class="box-body">
+                <div id="formFilterPanel" class="panel-group">
+                    <div class="panel panel-default">
+                        <div id="formFilter" class="panel-collapse collapse">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="mainTable" class="table table-bordered table-hover" data-paging="true" data-sorting="true"></table>
+                </div>
+                <ul id="pagination" class="pagination-md"></ul>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+
+<script>
+    var menuId = "@ViewBag.MenuID";
+    var unitIDs = '', docTypes = '', startDate =null, endDate = null, searchTerm = '';
+    
+    
+    var filterStringKey = "@ViewBag.MenuID" + "_FilterString";
+    var filterString = sessionStorage.getItem(filterStringKey);
+
+    if (!filterString)
+        filterString = "@Html.Raw(JsHelper.GetDefaultFilterString(ViewBag.MenuID))";
+
+    var keyword = "";
+    var authorizationData;
+    var totalPages = 0, startPage = 1, visiblePages = 10;
+
+    
+    var showData = function (pageNo, filterString, keyword) {
+
+        if (pageNo > totalPages)
+            pageNo = totalPages;
+        else if (pageNo < 1)
+            pageNo = 1;
+
+        var data =
+        {
+            StartDate: startDate,
+            EndDate: endDate,
+            UnitIDs: unitIDs,
+            DocTypes: docTypes,
+            SearchTerm: searchTerm,
+            PageNo: pageNo,
+            PageSize: _LIST_PAGE_SIZE
+        };
+
+        
+        if (authorizationData)
+            $.extend(data, authorizationData);
+
+        var ajax = $.ajax({
+            type: "get",
+            url: _API_URL + "api/approval/inbox",
+            data: data,
+            headers: { "Authorization": authServices.getBearerToken() }
+        });
+
+        removeRows();
+        $("#mainTable").footable({
+            "columns": getColumns(authorizationData.ListID),
+            "rows": ajax
+        });
+    };
+
+    var checkAuthorization = function () {
+        $.ajax({
+            type: "get",
+            url: _API_URL + "api/login/ismenuauthorized?MenuID=" + $('#menuId').val(),
+            headers: { "Authorization": authServices.getBearerToken() },
+            success: function (responseData, textStatus, jqXHR) {
+                if (responseData) {
+                    authorizationData = responseData;
+                    $('#pageHeader').html(authorizationData.MenuName);
+                    if (authorizationData.ViewFilterName && authorizationData.ViewFilterName != '')
+                        $('#btnFilter').show();
+                    else {
+                        $('#btnFilter').hide();
+                        $("#formFilterPanel").hide()
+                    }
+
+                }
+                else window.location = _DEFAULT_HOMEPAGE;
+            },
+            error: function () {
+                window.location = _DEFAULT_HOMEPAGE;
+            }
+        }).then(function () {
+            if (authorizationData.ViewFilterName && authorizationData.ViewFilterName != '') {
+                $.get("/Filter/Index?filterName=" + authorizationData.ViewFilterName + "&prefix=" + authorizationData.ViewFilterName).done(function (responseData) {
+                    $('#formFilter').html(responseData);
+                    filter_saveJson = window[authorizationData.ViewFilterName + "_saveJson"]; //Use window to take function name by string concatenate
+                });
+            }
+        }).then(function () {
+                doPagination(filterString, keyword);
+        });
+    };
+
+    var doActionApprovalfunction = function (key, indexController, viewPath,mode2) {
+        var url = "/";
+        if (!indexController)
+            indexController = "Menu"
+        url += indexController + "/Approval/" + key;
+        if (viewPath)
+            url += "?viewPath=" + viewPath
+        if (mode2)
+            url += "&mode2=" + mode2;
+        window.location = url;
+        return false;
+    };
+
+    var doAction = function (action, key, key2, key3) {
+        if (action == "Approval") {
+            return doActionApprovalfunction(key, key2, key3);
+        }
+
+        if (action == "Display") {
+            return doActionApprovalfunction(key, key2, key3,action);
+        }
+        alert("unknown action");
+        return false;
+    };
+
+    function removeRows() {
+        $("#mainTable>tbody>tr").each(function (index, elem) {
+            $(elem).remove();
+        });
+    }
+
+
+    var doPagination = function (filterString, keyword) {
+        $('#pagination').twbsPagination('destroy');
+        var data =
+        {
+            StartDate: startDate,
+            EndDate: endDate,
+            UnitIDs: unitIDs,
+            DocTypes: docTypes,
+            SearchTerm: searchTerm
+        };
+
+        helper.callAjaxRequestJson("api/approval/inboxcount", data, "get", function (responseData) {
+            var recordCount = responseData;
+
+            if (recordCount <= 0) {
+                totalPages = 0;
+                startPage = 1;
+                showData(1, filterString, keyword);
+            }
+            totalPages = Math.ceil(recordCount / _LIST_PAGE_SIZE);
+            if (totalPages * _LIST_PAGE_SIZE < recordCount)
+                totalPages++;
+
+            if (totalPages >= 1) {
+                $('#pagination').twbsPagination({
+                    totalPages: totalPages,
+                    visiblePages: visiblePages,
+                    startPage: startPage,
+                    hideOnlyOnePage: true,
+                    initiateStartPageClick: true,
+                    onPageClick: function (event, page) {
+                        showData(page, filterString, keyword);
+                        //alert(event);
+                    }
+                });
+            }
+            //showData(1, filterString);
+        });
+    };
+
+
+
+
+    checkAuthorization();
+
+</script>

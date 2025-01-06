@@ -1,0 +1,46 @@
+[
+  {
+    "FieldName": "BLOCKID",
+    "FieldCaption": "Block ID",
+    "FieldType": "FText",
+    "IsKey": true,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": false,
+    "SortSequence": 10
+  },
+  {
+    "FieldName": "CODE",
+    "FieldCaption": "Block",
+    "FieldType": "FText",
+    "IsKey": false,
+    "ForSearch": true,
+    "Sort": "FSortAsc",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "LUASBLOCK",
+    "FieldCaption": "Luas",
+    "FieldType": "FFloat",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FRight",
+    "Visible": true,
+    "SortSequence": 0
+  },
+  {
+    "FieldName": "THNTANAM",
+    "FieldCaption": "Tahun Tanam",
+    "FieldType": "FInteger",
+    "IsKey": false,
+    "ForSearch": false,
+    "Sort": "FNoSort",
+    "Alignment": "FCenter",
+    "Visible": true,
+    "SortSequence": 30
+  }
+]

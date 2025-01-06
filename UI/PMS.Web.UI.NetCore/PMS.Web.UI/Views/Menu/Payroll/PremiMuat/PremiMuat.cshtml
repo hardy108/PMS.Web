@@ -1,0 +1,113 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Premi Muat";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string tblPremiPanenBlockId = "tblPremiMuat";
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+}
+
+<script>
+    var dictBlocks = {},
+        readonly = @(isReadOnlyString);
+</script>
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <input type="hidden" id="PREMIMUATID" name="PREMIMUATID" data-bf="PREMIMUATID">
+        <input type="hidden" name="STATUS" id="STATUS" data-bf="STATUS" />
+        <x-field-data-list-unit-by-user-name id="UNITCODE" binding-field="UNITCODE" caption="Estate" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Estate" xs-size="12" md-size="3" value-field="UNITCODE">
+        </x-field-data-list-unit-by-user-name>
+        <x-field-text id="BASISGROUP" binding-field="BASISGROUP" caption="Grup Basis" read-only="@ViewBag.ReadOnly" place-holder="Grup Basis" xs-size="12" md-size="6">
+        </x-field-text>
+        <x-field-data-list-activity id="ACTID" binding-field="ACTID" xs-size="12" md-size="3" caption="Jenis Kegiatan" read-only="@ViewBag.ReadOnly" chain-to-relatives="true" min-length-search="0">
+        </x-field-data-list-activity>
+        <input type="hidden" id="HARVESTTYPE" name="HARVESTTYPE" data-bf="HARVESTTYPE">
+    </x-form-row>
+
+    <x-form-row>
+        <x-field-data-list-employee-type-harvest id="EMPLOYEETYPE" binding-field="EMPLOYEETYPE" min-length-search="0" caption="Tipe Karyawan" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="2" value-field="ID" visible-fields="[ID]">
+        </x-field-data-list-employee-type-harvest>
+        <x-field-data-list-vehicle-type id="VEHICLETYPEID" binding-field="VEHICLETYPEID" caption="Tipe Kendaraan" xs-size="12" md-size="4" read-only="@ViewBag.ReadOnly" min-length-search="2">
+        </x-field-data-list-vehicle-type>
+        <x-field-text binding-field="DESCRIPTION" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="6">
+        </x-field-text>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Basis Dasar">
+            @Html.Partial("_PremiMuatBasis.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Borong">
+            @Html.Partial("_PremiMuatBorong.cshtml")
+        </x-tab-panel>
+    </x-tab>
+</x-form>
+
+<script>
+
+    $('#ACTIVITYID').on('addvalue:flexdatalist', function (event, selectedValue) {
+        $('#HARVESTTYPE').val(selectedValue.HVTYPE);
+        return;
+    });
+
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var beforeDisplay = function () {
+        return true;
+    };
+
+    var customDisplay = function () {
+        return true;
+    };
+
+    var beforeSaveRecord = function () {
+        return true;
+    };
+    
+    var beforeSendAction = function (action, savedRecord) {
+
+        savedRecord.HARVESTTYPE = $('#HARVESTTYPE').val();
+        savedRecord.EMPLOYEETYPE = $('#EMPLOYEETYPE').val();
+        return savedRecord;
+    };
+
+</script>

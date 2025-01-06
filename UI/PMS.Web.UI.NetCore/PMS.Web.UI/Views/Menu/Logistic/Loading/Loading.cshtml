@@ -1,0 +1,291 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    ViewData["Title"] = "Buku Kegiatan Pemuat";
+    Layout = null;
+
+    string mode = ViewBag.Mode;
+
+    DateTime now = DateTime.Now;
+    string strNow = now.ToString("yyyy-MM-dd HH:mm:ss");
+    string strToday = now.ToString("yyyy-MM-dd");
+
+    string tblLoadingEmployeeId = "tblLoadingEmployee";
+    string tblLoadingBlockId = "tblLoadingBlock";
+    string tblLoadingCollectId = "tblLoadingCollect";
+    string tblLoadingDriverId = "tblLoadingDriver";
+
+    string isReadOnlyString = GeneralHelpers.BooleanStringHtml(ViewBag.ReadOnly);
+
+}
+
+<script>
+    var dictEmployees = {},
+        dictBlocks = {},
+        dictCollects = {},
+        readonly = @(isReadOnlyString);
+</script>
+
+
+<x-form id="@ViewBag.MainFormID">
+    <x-form-row>
+        <x-field-date binding-field="LOADINGDATE" caption="Tanggal" read-only="@ViewBag.ReadOnlyWhenNotInsert" xs-size="12" md-size="2" picker-option="DateOnly" date-format="dd-MMM-yyyy" value="@strToday">
+        </x-field-date>
+        <x-field-data-list-divisi-by-user-name id="DIVID" caption="Divisi" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnlyWhenNotInsert" binding-field="DIVID" min-length-search="2">
+        </x-field-data-list-divisi-by-user-name>
+        <x-field-text binding-field="LOADINGCODE" caption="No. BKP" read-only="true" place-holder="Auto Number" xs-size="12" md-size="3">
+        </x-field-text>
+        <x-field-text binding-field="STATUS" caption="Status BKP" read-only="true" place-holder="Status" xs-size="12" md-size="1">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+        <x-field-data-list-payment-type xs-size="12" md-size="2" id="LOADINGPAYMENTTYPE" binding-field="LOADINGPAYMENTTYPE" caption="Tipe BKP" read-only="@ViewBag.ReadOnly">
+        </x-field-data-list-payment-type>
+
+        @*<x-field-data-list-employee id="KRANIID" caption="Krani" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" binding-field="KRANIID" min-length-search="3" value-field="EMPID"
+                                    chain-to-relatives="@(!(ViewBag.ReadOnly))"
+                                    ascendants="@(ViewBag.ReadOnly ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITID",FieldID = "UnitID"}})">
+        </x-field-data-list-employee>*@
+
+        <x-field-data-list-employee id="KRANIID" binding-field="KRANIID" caption="Krani" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="EMPID" api-url-param="STATUS=A">
+        </x-field-data-list-employee>
+
+        <x-field-select id="PRODUCTID" binding-field="PRODUCTID" caption="Produk" read-only="@ViewBag.ReadOnly" place-holder="PRODUCT" xs-size="12" md-size="1">
+            <option value="1">TBS</option>
+        </x-field-select>
+        <x-field-data-list-activity id="ACTIVITYID" binding-field="ACTIVITYID" caption="Jenis Pekerjaan" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="ACTIVITYID" visible-fields="[ACTIVITYID,ACTIVITYNAME]">
+        </x-field-data-list-activity>
+        <input type="hidden" id="LOADINGTYPE" name="LOADINGTYPE" data-bf="LOADINGTYPE">
+    </x-form-row>
+    <x-form-row>
+        <x-field-select id="SPBDATATYPE" binding-field="SPBDATATYPE" caption="Tipe SPB" read-only="@ViewBag.ReadOnly" place-holder="SPBDATATYPE" xs-size="12" md-size="2">
+            <option value="0">Manual</option>
+            <option value="1">Otomatis</option>
+        </x-field-select>
+        <x-field-data-list-spb id="NOSPB" binding-field="NOSPB" caption="NO.SPB" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="SPBID" visible-fields="[SPBID,NETTO,MILL]">
+        </x-field-data-list-spb>
+        <x-field-data-list-vehicle id="VEHICLEID" binding-field="VEHICLEID" caption="Kendaraan" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="3" value-field="ID" visible-fields="[CODE,NO]">
+        </x-field-data-list-vehicle>
+        <x-field-text id="VEHICLETYPEID" binding-field="VEHICLETYPEID" read-only="true" caption="Tipe Kend." place-holder="Tipe Kend." xs-size="12" md-size="1">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row>
+
+        @*<x-field-data-list-employee id="DRIVERID" caption="Operator" xs-size="12" md-size="3" read-only="@ViewBag.ReadOnly" binding-field="DRIVERID" min-length-search="3" value-field="EMPID"
+                                        chain-to-relatives="@(!(ViewBag.ReadOnly))"
+                                        ascendants="@(ViewBag.ReadOnly ? new List<FilterAscendant>() : new List<FilterAscendant> { new FilterAscendant { ElementID="UNITID",FieldID = "UnitID"}})">
+            </x-field-data-list-employee>*@
+
+        <x-field-data-list-employee id="DRIVERID" binding-field="DRIVERID" caption="Operator" read-only="@ViewBag.ReadOnly" multiple="false" xs-size="12" md-size="3" value-field="EMPID" api-url-param="STATUS=A">
+        </x-field-data-list-employee>
+
+        <x-field-text id="DRIVERHK" binding-field="DRIVERHK" caption="HK OPR" read-only="true" place-holder="HK-OPR" xs-size="12" md-size="1">
+        </x-field-text>
+
+        <x-field-text id="DESTINATIONID" binding-field="DESTINATIONID" caption="Lokasi Tujuan" read-only="@ViewBag.ReadOnly" place-holder="Lokasi Tujuan" xs-size="12" md-size="2">
+        </x-field-text>
+
+        @*<x-field-data-list-organization id="DESTINATIONID" binding-field="DESTINATIONID" caption="Lokasi Tujuan" multiple="false" read-only="@ViewBag.ReadOnly" xs-size="12" md-size="2"
+                                            ascendants="@(new List<FilterAscendant>
+                            {   new FilterAscendant { ElementID = "DIVID", FieldID = "Id" }
+
+                            })" chain-to-relatives="true"
+                                            value-field="ID" visible-fields="[ID,CODE,NAME]"
+                                            >
+            </x-field-data-list-organization>*@
+
+        <x-field-text binding-field="REMARK" caption="Keterangan" read-only="@ViewBag.ReadOnly" place-holder="Keterangan" xs-size="12" md-size="3">
+        </x-field-text>
+    </x-form-row>
+    <x-form-row is-hidden="@((ViewBag.Mode!="Unpost"))">
+        <x-field-text-area binding-field="CANCELEDCOMMENT" caption="Alasan Pembatalan" read-only="false" place-holder="Alasan Pembatalan" xs-size="12">
+        </x-field-text-area>
+    </x-form-row>
+
+    <x-tab tab-style="nav-pills">
+        <x-tab-panel caption="Detail">
+            @Html.Partial("_LoadingCollect.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Blok">
+            @Html.Partial("_LoadingBlock.cshtml")
+        </x-tab-panel>
+
+        <x-tab-panel caption="Karyawan">
+            @Html.Partial("_LoadingEmployee.cshtml")
+        </x-tab-panel>
+
+    </x-tab>
+</x-form>
+    
+<script>
+    
+    var mode = "@(mode)";
+    var dictAllowedMode = {
+        "A": ["Display", "Unpost"],
+        "C": ["Display"],
+        "D": ["Display"]
+    };
+    var checkMode = function () {
+        if (typeof dictAllowedMode[record.STATUS] !== 'undefined') {
+            var allowedMode = dictAllowedMode[record.STATUS];
+            var allowed = false;
+            if (Array.isArray(allowedMode) && allowedMode.length > 0) {
+                allowedMode.forEach(function (modeOk) {
+                    if (modeOk === mode) {
+                        allowed = true;
+                        return;
+                    }
+                });
+                if (!allowed) {
+                    alert("Maaf anda tidak diijinkan untuk melakukan " + mode + " atas data ini");
+                    mode = allowedMode[0];
+                    return true;
+                }
+
+            }
+            if (!allowed) {
+                alert("Maaf anda tidak diijinkan untuk melakukan apapun atas data ini");
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+    var loadFirst = false;
+
+    if (mode === "Edit" || mode === "Delete") {
+        loadFirst = true;
+    }
+
+    $('#NOSPB').change(function () {
+        if (loadFirst == false) {
+            var deleteOnly = true;
+            if ($('#NOSPB').flexdatalist('value') != "") {
+                deleteOnly = false;
+            }
+            @(tblLoadingBlockId)_Handlers.deleteAllRows(deleteOnly);
+
+            if ($('#NOSPB').flexdatalist('value') != "") {
+                var spbId = $('#NOSPB').val();
+                @(tblLoadingBlockId)_Handlers.ReadKG();
+                @(tblLoadingBlockId)_Handlers.addSPB(spbId);
+            }
+        }
+        loadFirst = false;
+    });
+
+
+    $('#SPBDATATYPE').change(function () {
+        if ($('#SPBDATATYPE').val() != "") {
+            if ($('#SPBDATATYPE').val() == 0) {
+                $('#NOSPB').flexdatalist('value', '')
+                $('#NOSPB').flexdatalist('disabled', true);
+                $('#btnHapusMuat').attr("disabled", false);
+                $('#btnHapusBlock').attr("disabled", false);
+            }
+
+            if ($('#SPBDATATYPE').val() == 1) {
+                $('#NOSPB').flexdatalist('disabled', false);
+                $('#btnHapusMuat').attr("disabled", true);
+                $('#btnHapusBlock').attr("disabled", true);
+            }
+        }
+    });
+
+    $('#VEHICLEID').on('addvalue:flexdatalist', function (event, selectedValue) {
+        $('#VEHICLETYPEID').val(selectedValue.TYPEID);
+        return;
+    });
+
+    $('#ACTIVITYID').on('addvalue:flexdatalist', function (event, selectedValue) {
+        $('#LOADINGTYPE').val(selectedValue.HVTYPE);
+        return;
+    });
+
+    //$('#VEHICLEID').change(function () {
+        //var vehId = $('#VEHICLEID').val();
+
+        //helper.callAjaxRequestJson("api/vehicle/get/" + vehId, null, "get", function (data) {
+        //    $('#VEHICLETYPEID').val(data.TYPEID);
+        //    });
+
+    //});
+
+
+    var beforeDisplay = function () {
+
+        dictBlocks = {};
+        if (record.VLOADINGBLOCKREF && record.VLOADINGBLOCKREF.length > 0) {
+            record.VLOADINGBLOCKREF.forEach(function (value) {
+                dictBlocks[value.BLOCKID] = value;
+            });
+        }
+
+        dictEmployees = {};
+        if (record.VLOADINGEMPLOYEEREF && record.VLOADINGEMPLOYEEREF.length > 0) {
+            record.VLOADINGEMPLOYEEREF.forEach(function (value) {
+                dictEmployees[value.EMPID] = value;
+            });
+        }
+
+        return true;
+    };
+
+    var customDisplay = function () {
+
+        if (mode === "New") {
+            $("#LOADINGPAYMENTTYPE").val("0").trigger("change");
+            $("#PRODUCTID").val("1").trigger("change");
+            $("#SPBDATATYPE").val("1").trigger("change");
+        }
+
+        if (isAny(record.TLOADINGDRIVER)) {
+            record.TLOADINGDRIVER.forEach(function (row) {
+                $('#DRIVERHK').val(row.VALUE);
+            });
+        }
+
+        @(tblLoadingCollectId)_Handlers.initTable(record.TLOADINGCOLLECT);
+        @(tblLoadingEmployeeId)_Handlers.initTable(record.TLOADINGEMPLOYEE);
+        @(tblLoadingBlockId)_Handlers.initTable(record.VLOADINGBLOCKREF);
+
+        return true;
+
+    }
+
+    var beforeSaveRecord = function () {
+        resetElements('mdlCollect');
+        return true;
+    };
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        
+        savedRecord["TLOADINGCOLLECT"] = @(tblLoadingCollectId)_Handlers.saveRows();
+        if (savedRecord["TLOADINGCOLLECT"])
+            savedRecord["TLOADINGCOLLECT_COUNT"] = savedRecord["TLOADINGCOLLECT"].length;
+
+        savedRecord["TLOADINGEMPLOYEE"] = @(tblLoadingEmployeeId)_Handlers.saveRows();
+        if (savedRecord["TLOADINGEMPLOYEE"])
+            savedRecord["TLOADINGEMPLOYEE_COUNT"] = savedRecord["TLOADINGEMPLOYEE"].length;
+
+        savedRecord["TLOADINGBLOCK"] = @(tblLoadingBlockId)_Handlers.saveRows();
+        if (savedRecord["TLOADINGBLOCK"])
+            savedRecord["TLOADINGBLOCK_COUNT"] = savedRecord["TLOADINGBLOCK"].length;
+
+        var rowsDriver = [];
+        rowsDriver.push({ DRIVERID: $('#DRIVERID').val() });
+        savedRecord["TLOADINGDRIVER"] = rowsDriver;
+        if (savedRecord["TLOADINGDRIVER"])
+            savedRecord["TLOADINGDRIVER_COUNT"] = 1;
+
+        savedRecord.LOADINGTYPE = $('#LOADINGTYPE').val();
+
+        return savedRecord;
+    };
+
+
+
+</script>

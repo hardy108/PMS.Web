@@ -1,0 +1,149 @@
+﻿@using PMS.Web.UI.Code
+@using PMS.Shared.Models
+@{
+    Layout = null;
+    string mode = ViewBag.Mode;
+}
+
+
+    <x-form id="@ViewBag.MainFormID">
+
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="3" id="ACTIVITYID" binding-field="ACTIVITYID" caption="Kode" read-only="@ViewBag.ReadOnlyWhenNotInsert" place-holder="Kode">
+            </x-field-text>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="ACTIVE" binding-field="ACTIVE" caption="Aktif" read-only="@ViewBag.ReadOnly">
+            </x-field-select>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="6" id="ACTIVITYNAME" binding-field="ACTIVITYNAME" caption="Nama" read-only="@ViewBag.ReadOnly" place-holder="Nama">
+            </x-field-text>
+            <x-field-text xs-size="12" md-size="3" id="TYPEACTIVITY" binding-field="TYPEACTIVITY" caption="Nama" read-only="@ViewBag.ReadOnly" place-holder="Tipe Kegiatan">
+            </x-field-text>
+        </x-form-row>
+        <x-form-row>
+            <x-field-text xs-size="12" md-size="3" id="UOM1" binding-field="UOM1" caption="Satuan 1" read-only="@ViewBag.ReadOnly" place-holder="Satuan">
+            </x-field-text>
+            <x-field-text xs-size="12" md-size="3" id="UOM2" binding-field="UOM2" caption="Satuan 2" read-only="@ViewBag.ReadOnly" place-holder="Satuan">
+            </x-field-text>
+            <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="REQMAT" binding-field="REQMAT" caption="Membutuhkan Material" read-only="@ViewBag.ReadOnly">
+            </x-field-select>
+            <x-field-data-list-rf-card-type id="RFID" xs-size="12" md-size="3" caption="Tipe Kartu RFID"
+                                            multiple="false" binding-field="RFID"
+                                            read-only="@ViewBag.ReadOnly">
+            </x-field-data-list-rf-card-type>
+        </x-form-row>
+
+
+        <x-tab tab-style="nav-pills">
+
+
+            <x-tab-panel caption="Fase Kegiatan">
+                <x-form-row>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="GA" binding-field="GA" caption="GA" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="LC" binding-field="LC" caption="LC" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="NURSERY" binding-field="NURSERY" caption="Nursery" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="RA" binding-field="RA" caption="Running Account" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                </x-form-row>
+                <x-form-row>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="TBM" binding-field="TBM" caption="TBM" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="TM" binding-field="TM" caption="TM" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-select select-type="Boolean" xs-size="12" md-size="3" id="HV" binding-field="HV" caption="Panen" read-only="@ViewBag.ReadOnly">
+                    </x-field-select>
+                    <x-field-data-list-harvest-type xs-size="12" md-size="3" id="HVTYPE" binding-field="HVTYPE" caption="Tipe Panen" read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-harvest-type>
+                </x-form-row>
+            </x-tab-panel>
+
+            <x-tab-panel caption="Linked Account">
+                <x-form-row>
+                    <x-field-data-list-account id="GAMATDEBT" xs-size="12" md-size="6" caption="GA Material Debit"
+                                               multiple="false" binding-field="GAMATDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                    <x-field-data-list-account id="GAHKDEBT" xs-size="12" md-size="6" caption="GA HK Debit"
+                                               multiple="false" binding-field="GAHKDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                </x-form-row>
+                <x-form-row>
+                    <x-field-data-list-account id="LCMATDEBT" xs-size="12" md-size="6" caption="LC Material Debit"
+                                               multiple="false" binding-field="LCMATDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                    <x-field-data-list-account id="LCHKDEBT" xs-size="12" md-size="6" caption="LC HK Debit"
+                                               multiple="false" binding-field="LCHKDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                </x-form-row>
+                <x-form-row>
+                    <x-field-data-list-account id="NMATDEBT" xs-size="12" md-size="6" caption="Nursery Material Debit"
+                                               multiple="false" binding-field="NMATDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                    <x-field-data-list-account id="NHKDEBT" xs-size="12" md-size="6" caption="Nursery HK Debit"
+                                               multiple="false" binding-field="NHKDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                </x-form-row>
+                <x-form-row>
+                    <x-field-data-list-account id="TBMMATDEBT" xs-size="12" md-size="6" caption="TBM Material Debit"
+                                               multiple="false" binding-field="TBMMATDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                    <x-field-data-list-account id="TBMHKDEBT" xs-size="12" md-size="6" caption="TBM HK Debit"
+                                               multiple="false" binding-field="TBMHKDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-data-list-account id="TMMATDEBT" xs-size="12" md-size="6" caption="TM Material Debit"
+                                               multiple="false" binding-field="TMMATDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                    <x-field-data-list-account id="TMHKDEBT" xs-size="12" md-size="6" caption="TM HK Debit"
+                                               multiple="false" binding-field="TMHKDEBT"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+                </x-form-row>
+
+                <x-form-row>
+                    <x-field-data-list-account id="HKCRED" xs-size="12" md-size="6" caption="HK Credit"
+                                               multiple="false" binding-field="HKCRED"
+                                               read-only="@ViewBag.ReadOnly">
+                    </x-field-data-list-account>
+
+                </x-form-row>
+            </x-tab-panel>
+            <x-tab-panel caption="Linked Materials">
+                @Html.Partial("ActivityMaterial.cshtml")
+            </x-tab-panel>
+        </x-tab>
+    </x-form>
+        
+
+
+
+<script>
+    var customDisplay = function () {
+        tblMaterial_Handlers.initTable(record.MATERIAL);
+        return true;
+    };
+
+    var beforeSendAction = function (action, savedRecord) {
+
+        if (action == "New" || action == "Edit") {
+            savedRecord["MATERIAL"] = tblMaterial_Handlers.saveRows();            
+            if (savedRecord["MATERIAL"])
+                savedRecord["MATERIAL_COUNT"] = savedRecord["MATERIAL"].length;
+        }
+        return savedRecord;
+    }
+
+</script>

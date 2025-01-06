@@ -1,0 +1,113 @@
+﻿@{
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin="" />
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin="">
+</script>
+
+
+
+<div id="map" style="height:400px">
+
+</div>
+
+<script>
+
+    var showTrackingPointsById = function (Id) {
+        var apiUrl = "api/em-tracking/points?Id=" + Id;
+
+
+        showProgressWaiting();
+        helper.callAjaxRequestJson(apiUrl, null, "get", function (data) {
+            if (data && data.Coordinates && Array.isArray(data.Coordinates) && data.Coordinates.length>0) {
+                dispayPoints(data);
+            }
+            else {
+                showError("No tracking data found");
+            }
+            
+            hideProgressWaiting();
+        }, function (error) {
+            showError(parseJSONError(error));
+            hideProgressWaiting();
+        });
+    }
+
+    var dispayPoints = function (points) {
+
+        // Creating map options
+        //var map = L.map('map').setView([-6.2273068, 106.8253967], 13);
+        var map = L.map('map');
+
+        // Creating a Layer object
+        //var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+        //map.addLayer(layer);
+
+        var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map);
+
+        
+        
+
+        // Creating poly line options
+        var multiPolyLineOptions = { color: 'red' };
+
+        // Creating multi poly-lines
+        var multipolyline = L.polyline(points.Coordinates, multiPolyLineOptions);
+
+        // Adding multi poly-line to map
+        multipolyline.addTo(map);
+        
+
+        for (var i = 0; i < points.Coordinates.length; i++)
+        {
+            var marker = L.marker(points.Coordinates[i]);     // Creating a Marker
+        //    // Adding popup to the marker
+            marker.bindPopup(points.Dates[i]).openPopup();
+            marker.bindTooltip((i+1).toString(), {
+                permanent: true
+            });
+            marker.addTo(map); // Adding marker to the map
+        }
+        map.fitBounds(multipolyline.getBounds());
+
+
+
+
+    }
+
+    
+
+    
+
+    var beforeDisplay = function () {
+        useStandardDisplayFunction = false;
+        return true;
+    }
+    
+
+    var customDisplay = function () {
+        $('#divApprovalHistory').hide();
+        var Id = "@(ViewBag.Key)";
+        showTrackingPointsById(Id);
+        
+        return true;
+    }
+    
+    
+
+
+</script>
+
